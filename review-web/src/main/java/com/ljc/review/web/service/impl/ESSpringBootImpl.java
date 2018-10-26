@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-@Service("ESSpringBootService")
+//@Service("ESSpringBootService")
 public class ESSpringBootImpl implements ElasticSearchService {
 
     @Resource(name = "ESSpringBootDao")
