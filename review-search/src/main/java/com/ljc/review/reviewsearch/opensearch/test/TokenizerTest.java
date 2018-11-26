@@ -12,6 +12,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,12 +26,13 @@ public class TokenizerTest {
         WordDictionary wd = WordDictionary.getInstance();
         //加载自定义词典 注：jeiba自定义词典规则：一行一个词，分别为：词条/词频/词性(可省略)，之间用空格分开
         wd.loadUserDict(Paths.get(ResourceUtils.getFile("classpath:user-dict.txt").getAbsolutePath()));
-        String str = "充电钻手电钻中华人民共和国";
+        String str = "手电钻 220V";
         str = str.replaceAll(" ", "");
-        List<SegToken> process = segmenter.process(str, JiebaSegmenter.SegMode.INDEX);
+        List<SegToken> process = segmenter.process(str, JiebaSegmenter.SegMode.SEARCH);
+        List<String> stringList = new ArrayList<>();
         for (SegToken st : process) {
             String word = st.word;
-            System.out.println(word);
+            stringList.add(word);
         }
     }
 
