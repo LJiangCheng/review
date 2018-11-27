@@ -6,7 +6,23 @@
 
     <groupId>com.ljc</groupId>
     <artifactId>review</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>review-message</module>
+        <module>review-util</module>
+        <module>review-spiders</module>
+        <module>review-web</module>
+        <module>review-search</module>
+        <module>review-basic</module>
+    </modules>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.0.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
 
 </project>
