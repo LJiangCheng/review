@@ -15,6 +15,7 @@
         <module>review-web</module>
         <module>review-search</module>
         <module>review-basic</module>
+        <module>review-auth</module>
     </modules>
 
     <parent>

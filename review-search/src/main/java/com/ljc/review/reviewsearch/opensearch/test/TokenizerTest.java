@@ -29,10 +29,9 @@ public class TokenizerTest {
         String str = "手电钻 220V";
         str = str.replaceAll(" ", "");
         List<SegToken> process = segmenter.process(str, JiebaSegmenter.SegMode.SEARCH);
-        List<String> stringList = new ArrayList<>();
         for (SegToken st : process) {
             String word = st.word;
-            stringList.add(word);
+            System.out.println(word);
         }
     }
 
