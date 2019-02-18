@@ -64,7 +64,47 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+
+		<!-- 开发环境默认激活的profile -->
+		<!--打包命令 mvn clean package -Pdev-->
+		<profile>
+			<id>dev</id>
+			<properties>
+				<profiles.active>dev</profiles.active>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<id>online</id>
+			<properties>
+				<profiles.active>online</profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>deploy</id>
+			<properties>
+				<profiles.active>deploy</profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
+		<finalName>myReview</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<!-- 资源根目录排除各环境的配置，防止在生成目录中多余其它目录 -->
+				<excludes>
+					<exclude>profile/**</exclude>
+				</excludes>
+			</resource>
+			<resource>
+				<directory>src/main/resources/profile/${profiles.active}</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
