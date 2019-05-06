@@ -1,4 +1,4 @@
-package com.ljc.review.reviewsearch.opensearch.test;
+package com.ljc.review.reviewsearch.elasticsearch.test;
 
 import org.junit.Test;
 import org.springframework.util.CollectionUtils;

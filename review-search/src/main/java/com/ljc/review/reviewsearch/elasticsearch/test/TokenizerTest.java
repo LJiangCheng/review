@@ -1,4 +1,4 @@
-package com.ljc.review.reviewsearch.opensearch.test;
+package com.ljc.review.reviewsearch.elasticsearch.test;
 
 
 import com.huaban.analysis.jieba.JiebaSegmenter;

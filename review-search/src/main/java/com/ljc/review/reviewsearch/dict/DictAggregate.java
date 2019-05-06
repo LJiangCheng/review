@@ -6,6 +6,9 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * 读取多个细胞词库文件数据，汇集到一个文件
+ */
 public class DictAggregate {
 
     public static void main(String[] args) throws Exception {
