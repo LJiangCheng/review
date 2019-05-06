@@ -24,21 +24,18 @@ public class TokenizerTest {
     public void testJieBa() throws IOException {
         JiebaSegmenter segmenter = new JiebaSegmenter();
         WordDictionary wd = WordDictionary.getInstance();
-        String str = "星工（XINGGONG）口罩 防尘防雾霾PM2.5活性炭呼吸阀折叠耳戴式透气 XG8831CV5只装";
-        //str = str.replaceAll(" ", "");
-        List<SegToken> process = segmenter.process(str, JiebaSegmenter.SegMode.SEARCH);
-        for (SegToken st : process) {
-            String word = st.word;
-            System.out.println(word);
-        }
-
         //加载自定义词典 PS：jeiba自定义词典规则：一行一个词，分别为：词条/词频/词性(可省略)，之间用空格分开
-        /*wd.loadUserDict(Paths.get(ResourceUtils.getFile("classpath:user-dict.txt").getAbsolutePath()));
-        process = segmenter.process(str, JiebaSegmenter.SegMode.SEARCH);
+        wd.loadUserDict(Paths.get(ResourceUtils.getFile("classpath:user-dict.txt").getAbsolutePath()));
+
+        String str = "锐奇 9寸电圆锯 2100W圆盘锯含锯片 5609NA/1台固体润滑剂";
+        str = str.replaceAll("[\\s]+", "");
+        StringBuilder out = new StringBuilder();
+        List<SegToken> process = segmenter.process(str, JiebaSegmenter.SegMode.INDEX);
         for (SegToken st : process) {
             String word = st.word;
-            System.out.println(word);
-        }*/
+            out.append(word).append(" ");
+        }
+        System.out.println(out.toString());
     }
 
     @Test
