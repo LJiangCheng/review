@@ -1,10 +1,9 @@
-package com.ljc.review.reviewsearch.elasticsearch.test;
+package com.ljc.review.reviewsearch.test;
 
 import org.junit.Test;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**

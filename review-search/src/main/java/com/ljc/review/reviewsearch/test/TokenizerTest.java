@@ -1,4 +1,4 @@
-package com.ljc.review.reviewsearch.elasticsearch.test;
+package com.ljc.review.reviewsearch.test;
 
 
 import com.huaban.analysis.jieba.JiebaSegmenter;
@@ -12,7 +12,6 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

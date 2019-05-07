@@ -1,4 +1,4 @@
-package com.ljc.review.reviewsearch.elasticsearch.config;
+package com.ljc.review.reviewsearch.config;
 
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;
