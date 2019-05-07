@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+    <!-- 指定一个文件目录，当EhCache把数据写到硬盘上时，将把数据写到这个文件目录下 -->
+    <diskStore path="${java.io.tmpdir}/ehcache/sq"/>
+
+    <!-- 设定缓存的默认数据过期策略
+         超时时间为永不过期，超出最大内存后写出到硬盘
+         LRU:最近较少使用  LFU：总体较少使用 timeToIdleSeconds="1800" timeToLiveSeconds="3600" maxElementsInMemory="1024"
+     -->
+    <defaultCache eternal="true" maxBytesLocalHeap="30M" overflowToDisk="true" diskPersistent="false"
+                  clearOnFlush="true" maxElementsOnDisk="5120" memoryStoreEvictionPolicy="LRU"/>
+</ehcache>

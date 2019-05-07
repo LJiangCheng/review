@@ -1,4 +1,4 @@
-package com.ljc.review.reviewsearch;
+package com.ljc.review.search;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
