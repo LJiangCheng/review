@@ -49,8 +49,12 @@
         <result property="validityDays" column="validity_days"/>
 	</resultMap>
 
-	<select id="getAllProduct" resultType="com.ljc.review.search.entity.vo.SkuToElasticSearchVO">
-		select a.product_allinfo as productName,a.maker_code as makerModel,a.unit as unit,a.toolmall_price as price,d.category_name as categoryName,
+	<select id="countAllProduct" resultType="java.lang.Integer">
+		select count(*) from pc_product_sku where is_deleted = '0'
+	</select>
+
+	<select id="getProductByPage" resultType="com.ljc.review.search.entity.vo.SkuToElasticSearchVO">
+		select a.unicode as unicode,a.product_allinfo as productName,a.maker_code as makerModel,a.unit_name as unit,a.toolmall_price as price,d.category_name as categoryName,c.name as brandName,
 			   ( SELECT
 				  GROUP_CONCAT(
 					o.value_name
@@ -64,7 +68,7 @@
 		from pc_product_sku a join pc_product_spu b on a.product_spuid = b.product_spuid
 			 join pc_brand c on b.brand_id = c.id
 			 join pc_product_category_back d on b.category_id = d.category_id
-		where a.is_deleted = '0'
+		where a.is_deleted = '0' limit #{start},#{pageSize}
 	</select>
 
     <select id="selectPageList" resultMap="RMPcProductSku" flushCache="false" useCache="true">

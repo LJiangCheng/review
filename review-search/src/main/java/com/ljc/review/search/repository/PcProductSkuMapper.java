@@ -2,13 +2,16 @@ package com.ljc.review.search.repository;
 
 import com.ljc.review.search.entity.PcProductSku;
 import com.ljc.review.search.entity.vo.SkuToElasticSearchVO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface PcProductSkuMapper extends IGenericDao<PcProductSku, Integer> {
-    List<SkuToElasticSearchVO> getAllProduct();
+    List<SkuToElasticSearchVO> getProductByPage(@Param("start")int start, @Param("pageSize") int pageSize);
+
+    int countAllProduct();
 
     //==============以下为mybatis使用demo---此方法带注解Delete_sql实现=======================
     //@Delete("delete from pc_product_sku where id =#{id}")

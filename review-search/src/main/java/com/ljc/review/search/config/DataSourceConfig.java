@@ -80,8 +80,8 @@ public class DataSourceConfig {
         configuration.setUseColumnLabel(true);
         //对于批量更新操作缓存SQL以提高性能
         configuration.setDefaultExecutorType(REUSE);
-        // 数据库超过30秒仍未响应则超时
-        configuration.setDefaultStatementTimeout(30);
+        // 数据库超过90秒仍未响应则超时
+        configuration.setDefaultStatementTimeout(90);
         sqlSessionFactoryBean.setConfiguration(configuration);
         sqlSessionFactoryBean.setDataSource(dataSource);
         PageInterceptor pageInterceptor = new PageInterceptor();

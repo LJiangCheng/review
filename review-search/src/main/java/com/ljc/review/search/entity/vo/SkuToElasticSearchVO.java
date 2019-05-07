@@ -11,6 +11,15 @@ public class SkuToElasticSearchVO {
     private String productName;
     private String property;
     private String unit;
+    private String unicode;
+
+    public String getUnicode() {
+        return unicode;
+    }
+
+    public void setUnicode(String unicode) {
+        this.unicode = unicode;
+    }
 
     public String getBrandName() {
         return brandName;
