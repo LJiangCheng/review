@@ -49,6 +49,24 @@
         <result property="validityDays" column="validity_days"/>
 	</resultMap>
 
+	<select id="getAllProduct" resultType="com.ljc.review.search.entity.vo.SkuToElasticSearchVO">
+		select a.product_allinfo as productName,a.maker_code as makerModel,a.unit as unit,a.toolmall_price as price,d.category_name as categoryName,
+			   ( SELECT
+				  GROUP_CONCAT(
+					o.value_name
+					SEPARATOR ' '
+				  )
+				FROM
+				  pc_product_sku_value o
+				WHERE
+				  a.product_skuid = o.product_skuid AND o.is_deleted = '0'
+			   ) as property
+		from pc_product_sku a join pc_product_spu b on a.product_spuid = b.product_spuid
+			 join pc_brand c on b.brand_id = c.id
+			 join pc_product_category_back d on b.category_id = d.category_id
+		where a.is_deleted = '0'
+	</select>
+
     <select id="selectPageList" resultMap="RMPcProductSku" flushCache="false" useCache="true">
         SELECT * FROM pc_product_sku
        <include refid="findPagewhere"/>

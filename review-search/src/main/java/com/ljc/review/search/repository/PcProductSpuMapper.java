@@ -2,6 +2,7 @@ package com.ljc.review.search.repository;
 
 import com.ljc.review.search.entity.PcProductSpu;
 import org.springframework.stereotype.Repository;
+
 @Repository
 public interface PcProductSpuMapper extends IGenericDao<PcProductSpu, Integer> {
 	

@@ -2,6 +2,7 @@ package com.ljc.review.search.repository;
 
 import com.ljc.review.search.entity.PcBusinessProduct;
 import org.springframework.stereotype.Repository;
+
 @Repository
 public interface PcBusinessProductMapper extends IGenericDao<PcBusinessProduct, Integer> {
 	
