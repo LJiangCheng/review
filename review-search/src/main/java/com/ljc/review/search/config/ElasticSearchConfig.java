@@ -9,7 +9,6 @@ public class ElasticSearchConfig {
 
     @Bean
     public RestHighLevelClient getRestHighLevelClient() {
-
         return null;
     }
 

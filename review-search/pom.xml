@@ -21,6 +21,9 @@
 		<java.version>1.8</java.version>
 		<fastjson.version>1.1.40</fastjson.version>
 		<elasticsearvh.version>5.6.12</elasticsearvh.version>
+		<mybatis.version>3.4.6</mybatis.version>
+		<mybatis-spring.version>1.3.2</mybatis-spring.version>
+		<pagehelper.version>5.1.3</pagehelper.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -38,7 +41,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
 		</dependency>
 		<!--elasticsearch begin-->
 		<dependency>
@@ -61,6 +63,37 @@
 			<artifactId>elasticsearch-rest-high-level-client</artifactId>
 			<version>${elasticsearvh.version}</version>
 		</dependency>
+		<!--elsaticsearch end-->
+
+		<!--transactional-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>5.1.4.RELEASE</version>
+		</dependency>
+
+		<!--mybatis begin-->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>${mybatis-spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+			<version>${pagehelper.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.47</version>
+		</dependency>
+		<!--mybatis end-->
 
 		<!--jieba 分词器-->
 		<dependency>
@@ -79,6 +112,15 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>fastjson</artifactId>
 			<version>${fastjson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>5.0.10.RELEASE</version>
 		</dependency>
 	</dependencies>
 

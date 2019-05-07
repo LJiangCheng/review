@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-6-19 10:54:08
+//====================================================================
+!-->
+<mapper namespace="com.ljc.review.search.repository.PcProductSkuMapper">
+	<resultMap id="RMPcProductSku" type="com.ljc.review.search.entity.PcProductSku">
+        <result property="id" column="id"/>
+        <result property="productSkuid" column="product_skuid"/>
+        <result property="productSpuid" column="product_spuid"/>
+        <result property="primarySkuid" column="primary_skuid"/>
+        <result property="isDerivative" column="is_derivative"/>
+        <result property="isValid" column="is_valid"/>
+        <result property="skuIntroduction" column="sku_introduction"/>
+        <result property="imageFile" column="image_file"/>
+        <result property="pdfFile" column="pdf_file"/>
+        <result property="videoFile" column="video_file"/>
+        <result property="url" column="url"/>
+        <result property="productAllinfo" column="product_allinfo"/>
+        <result property="viewFirst" column="view_first"/>
+        <result property="searchWeight" column="search_weight"/>
+        <result property="searchKeyword" column="search_keyword"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="isVisible" column="is_visible"/>
+        <result property="isShelved" column="is_shelved"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifyTime" column="modify_time"/>
+        <result property="totalHits" column="total_hits"/>
+        <result property="makerPlace" column="maker_place"/>
+        <result property="deliveryPeriod" column="delivery_period"/>
+        <result property="totalSales" column="total_sales"/>
+        <result property="enableStock" column="enable_stock"/>
+        <result property="lockedStock" column="locked_stock"/>
+        <result property="unicode" column="unicode"/>
+        <result property="makerCode" column="maker_code"/>
+        <result property="toolmallPrice" column="toolmall_price"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="basePrice" column="base_price"/>
+        <result property="taxRate" column="tax_rate"/>
+        <result property="length" column="length"/>
+        <result property="width" column="width"/>
+        <result property="height" column="height"/>
+        <result property="weight" column="weight"/>
+        <result property="largeType" column="large_type"/>
+        <result property="unitName" column="unit_name"/>
+        <result property="validityDays" column="validity_days"/>
+	</resultMap>
+
+    <select id="selectPageList" resultMap="RMPcProductSku" flushCache="false" useCache="true">
+        SELECT * FROM pc_product_sku
+       <include refid="findPagewhere"/>
+    </select>
+
+    <select id="selectPageCount" resultType="long" flushCache="false" useCache="true">
+        SELECT count(*) FROM pc_product_sku 
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.ljc.review.search.entity.PcProductSku" resultMap="RMPcProductSku">
+        SELECT * FROM pc_product_sku
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcProductSku" flushCache="false" useCache="true">
+        SELECT * FROM pc_product_sku
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcProductSku" flushCache="false" useCache="true">
+        SELECT * FROM pc_product_sku
+       <include refid="findPagewhere"/>
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcProductSku" flushCache="false" useCache="true">
+		SELECT *
+	    <![CDATA[
+		    FROM pc_product_sku 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.ljc.review.search.entity.PcProductSku" flushCache="true"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pc_product_sku (
+        	product_skuid ,
+        	product_spuid ,
+        	primary_skuid ,
+        	is_derivative ,
+        	is_valid ,
+        	sku_introduction ,
+        	image_file ,
+        	pdf_file ,
+        	video_file ,
+        	url ,
+        	product_allinfo ,
+        	view_first ,
+        	search_weight ,
+        	search_keyword ,
+        	is_deleted ,
+        	is_visible ,
+        	is_shelved ,
+        	total_hits ,
+        	maker_place ,
+        	delivery_period ,
+        	total_sales ,
+        	enable_stock ,
+        	locked_stock ,
+        	unicode ,
+        	maker_code ,
+        	toolmall_price ,
+        	market_price ,
+        	base_price ,
+        	tax_rate ,
+        	length ,
+        	width ,
+        	height ,
+        	weight ,
+        	large_type ,
+        	unit_name ,
+        ) VALUES (
+        	#{productSkuid} ,
+        	#{productSpuid} ,
+        	#{primarySkuid} ,
+        	#{isDerivative} ,
+        	#{isValid} ,
+        	#{skuIntroduction} ,
+        	#{imageFile} ,
+        	#{pdfFile} ,
+        	#{videoFile} ,
+        	#{url} ,
+        	#{productAllinfo} ,
+        	#{viewFirst} ,
+        	#{searchWeight} ,
+        	#{searchKeyword} ,
+        	#{isDeleted} ,
+        	#{isVisible} ,
+        	#{isShelved} ,
+        	#{totalHits} ,
+        	#{makerPlace} ,
+        	#{deliveryPeriod} ,
+        	#{totalSales} ,
+        	#{enableStock} ,
+        	#{lockedStock} ,
+        	#{unicode} ,
+        	#{makerCode} ,
+        	#{toolmallPrice} ,
+        	#{marketPrice} ,
+        	#{basePrice} ,
+        	#{taxRate} ,
+        	#{length} ,
+        	#{width} ,
+        	#{height} ,
+        	#{weight} ,
+        	#{largeType} ,
+        	#{unitName} ,
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" flushCache="true">
+        INSERT INTO pc_product_sku (
+        	product_skuid ,
+        	product_spuid ,
+        	primary_skuid ,
+        	is_derivative ,
+        	is_valid ,
+        	sku_introduction ,
+        	image_file ,
+        	pdf_file ,
+        	video_file ,
+        	url ,
+        	product_allinfo ,
+        	view_first ,
+        	search_weight ,
+        	search_keyword ,
+        	is_deleted ,
+        	is_visible ,
+        	is_shelved ,
+        	create_time ,
+        	modify_time ,
+        	total_hits ,
+        	maker_place ,
+        	delivery_period ,
+        	total_sales ,
+        	enable_stock ,
+        	locked_stock ,
+        	unicode ,
+        	maker_code ,
+        	toolmall_price ,
+        	market_price ,
+        	base_price ,
+        	tax_rate ,
+        	length ,
+        	width ,
+        	height ,
+        	weight ,
+        	large_type ,
+        	unit_name ,
+        	validity_days 
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.productSkuid} ,
+        
+        	#{item.productSpuid} ,
+        
+        	#{item.primarySkuid} ,
+        
+        	#{item.isDerivative} ,
+        
+        	#{item.isValid} ,
+        
+        	#{item.skuIntroduction} ,
+        
+        	#{item.imageFile} ,
+        
+        	#{item.pdfFile} ,
+        
+        	#{item.videoFile} ,
+        
+        	#{item.url} ,
+        
+        	#{item.productAllinfo} ,
+        
+        	#{item.viewFirst} ,
+        
+        	#{item.searchWeight} ,
+        
+        	#{item.searchKeyword} ,
+        
+        	#{item.isDeleted} ,
+        
+        	#{item.isVisible} ,
+        
+        	#{item.isShelved} ,
+        
+        	#{item.createTime} ,
+        
+        	#{item.modifyTime} ,
+        
+        	#{item.totalHits} ,
+        
+        	#{item.makerPlace} ,
+        
+        	#{item.deliveryPeriod} ,
+        
+        	#{item.totalSales} ,
+        
+        	#{item.enableStock} ,
+        
+        	#{item.lockedStock} ,
+        
+        	#{item.unicode} ,
+        
+        	#{item.makerCode} ,
+        
+        	#{item.toolmallPrice} ,
+        
+        	#{item.marketPrice} ,
+        
+        	#{item.basePrice} ,
+        
+        	#{item.taxRate} ,
+        
+        	#{item.length} ,
+        
+        	#{item.width} ,
+        
+        	#{item.height} ,
+        
+        	#{item.weight} ,
+        
+        	#{item.largeType} ,
+        
+        	#{item.unitName} ,
+        
+        	#{item.validityDays} 
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.ljc.review.search.entity.PcProductSku" flushCache="true">
+        UPDATE pc_product_sku
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+			<if test="productSkuid!=null">
+	        product_skuid = #{productSkuid} ,
+	        </if>
+			<if test="productSpuid!=null">
+	        product_spuid = #{productSpuid} ,
+	        </if>
+			<if test="primarySkuid!=null">
+	        primary_skuid = #{primarySkuid} ,
+	        </if>
+			<if test="isDerivative!=null">
+	        is_derivative = #{isDerivative} ,
+	        </if>
+			<if test="isValid!=null">
+	        is_valid = #{isValid} ,
+	        </if>
+	        <if test="skuIntroduction!=null and skuIntroduction!=''">
+	        sku_introduction = #{skuIntroduction} ,
+	         </if>
+	        <if test="imageFile!=null and imageFile!=''">
+	        image_file = #{imageFile} ,
+	         </if>
+	        <if test="pdfFile!=null and pdfFile!=''">
+	        pdf_file = #{pdfFile} ,
+	         </if>
+	        <if test="videoFile!=null and videoFile!=''">
+	        video_file = #{videoFile} ,
+	         </if>
+	        <if test="url!=null and url!=''">
+	        url = #{url} ,
+	         </if>
+	        <if test="productAllinfo!=null and productAllinfo!=''">
+	        product_allinfo = #{productAllinfo} ,
+	         </if>
+			<if test="viewFirst!=null">
+	        view_first = #{viewFirst} ,
+	        </if>
+	        <if test="searchWeight!=null and searchWeight!=''">
+	        search_weight = #{searchWeight} ,
+	         </if>
+	        <if test="searchKeyword!=null and searchKeyword!=''">
+	        search_keyword = #{searchKeyword} ,
+	         </if>
+			<if test="isDeleted!=null">
+	        is_deleted = #{isDeleted} ,
+	        </if>
+			<if test="isVisible!=null">
+	        is_visible = #{isVisible} ,
+	        </if>
+			<if test="isShelved!=null">
+	        is_shelved = #{isShelved} ,
+	        </if>
+			<if test="createTime!=null">
+	        create_time = #{createTime} ,
+	        </if>
+			<if test="modifyTime!=null">
+	        modify_time = #{modifyTime} ,
+	        </if>
+			<if test="totalHits!=null">
+	        total_hits = #{totalHits} ,
+	        </if>
+	        <if test="makerPlace!=null and makerPlace!=''">
+	        maker_place = #{makerPlace} ,
+	         </if>
+	        <if test="deliveryPeriod!=null and deliveryPeriod!=''">
+	        delivery_period = #{deliveryPeriod} ,
+	         </if>
+			<if test="totalSales!=null">
+	        total_sales = #{totalSales} ,
+	        </if>
+			<if test="enableStock!=null">
+	        enable_stock = #{enableStock} ,
+	        </if>
+			<if test="lockedStock!=null">
+	        locked_stock = #{lockedStock} ,
+	        </if>
+	        <if test="unicode!=null and unicode!=''">
+	        unicode = #{unicode} ,
+	         </if>
+	        <if test="makerCode!=null and makerCode!=''">
+	        maker_code = #{makerCode} ,
+	         </if>
+	        <if test="toolmallPrice!=null and toolmallPrice!=''">
+	        toolmall_price = #{toolmallPrice} ,
+	         </if>
+	        <if test="marketPrice!=null and marketPrice!=''">
+	        market_price = #{marketPrice} ,
+	         </if>
+	        <if test="basePrice!=null and basePrice!=''">
+	        base_price = #{basePrice} ,
+	         </if>
+	        <if test="taxRate!=null and taxRate!=''">
+	        tax_rate = #{taxRate} ,
+	         </if>
+	        <if test="length!=null and length!=''">
+	        length = #{length} ,
+	         </if>
+	        <if test="width!=null and width!=''">
+	        width = #{width} ,
+	         </if>
+	        <if test="height!=null and height!=''">
+	        height = #{height} ,
+	         </if>
+	        <if test="weight!=null and weight!=''">
+	        weight = #{weight} ,
+	         </if>
+	        <if test="largeType!=null and largeType!=''">
+	        large_type = #{largeType} ,
+	         </if>
+	        <if test="unitName!=null and unitName!=''">
+	        unit_name = #{unitName} ,
+	         </if>
+			<if test="validityDays!=null">
+	        validity_days = #{validityDays} 
+	        </if>
+	    </trim>    
+        WHERE 
+	       id = #{id} 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" flushCache="true">  
+       UPDATE pc_product_sku SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+#{id}       </foreach>  
+    </update>
+
+    <delete id="delete" flushCache="true">
+        DELETE FROM pc_product_sku WHERE
+        id = #{id} 
+    </delete>
+	
+	<delete id="deleteByIds" flushCache="true">
+        DELETE FROM pc_product_sku WHERE
+        id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			 <if test="id!=null">
+	         AND id = #{id} 
+	         </if>
+			 <if test="productSkuid!=null">
+	         AND product_skuid = #{productSkuid} 
+	         </if>
+			 <if test="productSpuid!=null">
+	         AND product_spuid = #{productSpuid} 
+	         </if>
+			 <if test="primarySkuid!=null">
+	         AND primary_skuid = #{primarySkuid} 
+	         </if>
+			 <if test="isDerivative!=null">
+	         AND is_derivative = #{isDerivative} 
+	         </if>
+			 <if test="isValid!=null">
+	         AND is_valid = #{isValid} 
+	         </if>
+	        <if test="skuIntroduction!=null and skuIntroduction!=''">
+	         AND sku_introduction = #{skuIntroduction} 
+	         </if>
+	        <if test="imageFile!=null and imageFile!=''">
+	         AND image_file = #{imageFile} 
+	         </if>
+	        <if test="pdfFile!=null and pdfFile!=''">
+	         AND pdf_file = #{pdfFile} 
+	         </if>
+	        <if test="videoFile!=null and videoFile!=''">
+	         AND video_file = #{videoFile} 
+	         </if>
+	        <if test="url!=null and url!=''">
+	         AND url = #{url} 
+	         </if>
+	        <if test="productAllinfo!=null and productAllinfo!=''">
+	         AND product_allinfo = #{productAllinfo} 
+	         </if>
+			 <if test="viewFirst!=null">
+	         AND view_first = #{viewFirst} 
+	         </if>
+	        <if test="searchWeight!=null and searchWeight!=''">
+	         AND search_weight = #{searchWeight} 
+	         </if>
+	        <if test="searchKeyword!=null and searchKeyword!=''">
+	         AND search_keyword = #{searchKeyword} 
+	         </if>
+			 <if test="isDeleted!=null">
+	         AND is_deleted = #{isDeleted} 
+	         </if>
+			 <if test="isVisible!=null">
+	         AND is_visible = #{isVisible} 
+	         </if>
+			 <if test="isShelved!=null">
+	         AND is_shelved = #{isShelved} 
+	         </if>
+			 <if test="createTime!=null">
+	         AND create_time = #{createTime} 
+	         </if>
+			 <if test="modifyTime!=null">
+	         AND modify_time = #{modifyTime} 
+	         </if>
+			 <if test="totalHits!=null">
+	         AND total_hits = #{totalHits} 
+	         </if>
+	        <if test="makerPlace!=null and makerPlace!=''">
+	         AND maker_place = #{makerPlace} 
+	         </if>
+	        <if test="deliveryPeriod!=null and deliveryPeriod!=''">
+	         AND delivery_period = #{deliveryPeriod} 
+	         </if>
+			 <if test="totalSales!=null">
+	         AND total_sales = #{totalSales} 
+	         </if>
+			 <if test="enableStock!=null">
+	         AND enable_stock = #{enableStock} 
+	         </if>
+			 <if test="lockedStock!=null">
+	         AND locked_stock = #{lockedStock} 
+	         </if>
+	        <if test="unicode!=null and unicode!=''">
+	         AND unicode = #{unicode} 
+	         </if>
+	        <if test="makerCode!=null and makerCode!=''">
+	         AND maker_code = #{makerCode} 
+	         </if>
+	        <if test="toolmallPrice!=null and toolmallPrice!=''">
+	         AND toolmall_price = #{toolmallPrice} 
+	         </if>
+	        <if test="marketPrice!=null and marketPrice!=''">
+	         AND market_price = #{marketPrice} 
+	         </if>
+	        <if test="basePrice!=null and basePrice!=''">
+	         AND base_price = #{basePrice} 
+	         </if>
+	        <if test="taxRate!=null and taxRate!=''">
+	         AND tax_rate = #{taxRate} 
+	         </if>
+	        <if test="length!=null and length!=''">
+	         AND length = #{length} 
+	         </if>
+	        <if test="width!=null and width!=''">
+	         AND width = #{width} 
+	         </if>
+	        <if test="height!=null and height!=''">
+	         AND height = #{height} 
+	         </if>
+	        <if test="weight!=null and weight!=''">
+	         AND weight = #{weight} 
+	         </if>
+	        <if test="largeType!=null and largeType!=''">
+	         AND large_type = #{largeType} 
+	         </if>
+	        <if test="unitName!=null and unitName!=''">
+	         AND unit_name = #{unitName} 
+	         </if>
+			 <if test="validityDays!=null">
+	         AND validity_days = #{validityDays} 
+	         </if>
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="imageFile!=null and imageFile!=''">
+			    AND image_file LIKE CONCAT('%','${imageFile}','%')
+	         </if>
+	        <if test="pdfFile!=null and pdfFile!=''">
+			    AND pdf_file LIKE CONCAT('%','${pdfFile}','%')
+	         </if>
+	        <if test="videoFile!=null and videoFile!=''">
+			    AND video_file LIKE CONCAT('%','${videoFile}','%')
+	         </if>
+	        <if test="url!=null and url!=''">
+			    AND url LIKE CONCAT('%','${url}','%')
+	         </if>
+	        <if test="productAllinfo!=null and productAllinfo!=''">
+			    AND product_allinfo LIKE CONCAT('%','${productAllinfo}','%')
+	         </if>
+	        <if test="searchKeyword!=null and searchKeyword!=''">
+			    AND search_keyword LIKE CONCAT('%','${searchKeyword}','%')
+	         </if>
+	        <if test="makerPlace!=null and makerPlace!=''">
+			    AND maker_place LIKE CONCAT('%','${makerPlace}','%')
+	         </if>
+	        <if test="unicode!=null and unicode!=''">
+			    AND unicode LIKE CONCAT('%','${unicode}','%')
+	         </if>
+	        <if test="makerCode!=null and makerCode!=''">
+			    AND maker_code LIKE CONCAT('%','${makerCode}','%')
+	         </if>
+	        <if test="unitName!=null and unitName!=''">
+			    AND unit_name LIKE CONCAT('%','${unitName}','%')
+	         </if>
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      				
+	       <if test="id!=null">
+				AND id = #{id}
+		   </if>
+	       <if test="productSkuid!=null">
+				AND product_skuid = #{productSkuid}
+		   </if>
+	       <if test="productSpuid!=null">
+				AND product_spuid = #{productSpuid}
+		   </if>
+	       <if test="primarySkuid!=null">
+				AND primary_skuid = #{primarySkuid}
+		   </if>
+	       <if test="isDerivative!=null">
+				AND is_derivative = #{isDerivative}
+		   </if>
+	       <if test="isValid!=null">
+				AND is_valid = #{isValid}
+		   </if>
+	       <if test="skuIntroduction!=null and skuIntroduction!=''">
+				AND sku_introduction = #{skuIntroduction}
+		   </if>
+	       <if test="imageFile!=null and imageFile!=''">
+				AND image_file = #{imageFile}
+		   </if>
+	       <if test="pdfFile!=null and pdfFile!=''">
+				AND pdf_file = #{pdfFile}
+		   </if>
+	       <if test="videoFile!=null and videoFile!=''">
+				AND video_file = #{videoFile}
+		   </if>
+	       <if test="url!=null and url!=''">
+				AND url = #{url}
+		   </if>
+	       <if test="productAllinfo!=null and productAllinfo!=''">
+				AND product_allinfo = #{productAllinfo}
+		   </if>
+	       <if test="viewFirst!=null">
+				AND view_first = #{viewFirst}
+		   </if>
+	       <if test="searchWeight!=null and searchWeight!=''">
+				AND search_weight = #{searchWeight}
+		   </if>
+	       <if test="searchKeyword!=null and searchKeyword!=''">
+				AND search_keyword = #{searchKeyword}
+		   </if>
+	       <if test="isDeleted!=null">
+				AND is_deleted = #{isDeleted}
+		   </if>
+	       <if test="isVisible!=null">
+				AND is_visible = #{isVisible}
+		   </if>
+	       <if test="isShelved!=null">
+				AND is_shelved = #{isShelved}
+		   </if>
+	       <if test="createTime!=null">
+				AND create_time BETWEEN #{createTimeBegin} AND #{createTimeEnd}
+		   </if>
+	       <if test="modifyTime!=null">
+				AND modify_time BETWEEN #{modifyTimeBegin} AND #{modifyTimeEnd}
+		   </if>
+	       <if test="totalHits!=null">
+				AND total_hits = #{totalHits}
+		   </if>
+	       <if test="makerPlace!=null and makerPlace!=''">
+				AND maker_place = #{makerPlace}
+		   </if>
+	       <if test="deliveryPeriod!=null and deliveryPeriod!=''">
+				AND delivery_period = #{deliveryPeriod}
+		   </if>
+	       <if test="totalSales!=null">
+				AND total_sales = #{totalSales}
+		   </if>
+	       <if test="enableStock!=null">
+				AND enable_stock = #{enableStock}
+		   </if>
+	       <if test="lockedStock!=null">
+				AND locked_stock = #{lockedStock}
+		   </if>
+	       <if test="unicode!=null and unicode!=''">
+				AND unicode = #{unicode}
+		   </if>
+	       <if test="makerCode!=null and makerCode!=''">
+				AND maker_code = #{makerCode}
+		   </if>
+	       <if test="toolmallPrice!=null and toolmallPrice!=''">
+				AND toolmall_price = #{toolmallPrice}
+		   </if>
+	       <if test="marketPrice!=null and marketPrice!=''">
+				AND market_price = #{marketPrice}
+		   </if>
+	       <if test="basePrice!=null and basePrice!=''">
+				AND base_price = #{basePrice}
+		   </if>
+	       <if test="taxRate!=null and taxRate!=''">
+				AND tax_rate = #{taxRate}
+		   </if>
+	       <if test="length!=null and length!=''">
+				AND length = #{length}
+		   </if>
+	       <if test="width!=null and width!=''">
+				AND width = #{width}
+		   </if>
+	       <if test="height!=null and height!=''">
+				AND height = #{height}
+		   </if>
+	       <if test="weight!=null and weight!=''">
+				AND weight = #{weight}
+		   </if>
+	       <if test="largeType!=null and largeType!=''">
+				AND large_type = #{largeType}
+		   </if>
+	       <if test="unitName!=null and unitName!=''">
+				AND unit_name = #{unitName}
+		   </if>
+	       <if test="validityDays!=null">
+				AND validity_days BETWEEN #{validityDaysBegin} AND #{validityDaysEnd}
+		   </if>
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+</mapper>
+

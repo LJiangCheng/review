@@ -11,7 +11,6 @@
     <modules>
         <module>review-message</module>
         <module>review-util</module>
-        <module>review-spiders</module>
         <module>review-web</module>
         <module>review-search</module>
         <module>review-basic</module>
