@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-2-26 16:32:30
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcProductSpuMapper">
+	<resultMap id="RMPcProductSpu" type="com.toolmall.business.product.bean.PcProductSpu">
+        <result property="productSpuid" column="product_spuid"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="relatedModule" column="related_module"/>
+        <result property="name" column="name"/>
+        <result property="brandId" column="brand_id"/>
+        <result property="merchantId" column="merchant_id"/>
+        <result property="freightTemplateId" column="freight_template_id"/>
+        <result property="purpose" column="purpose"/>
+        <result property="brief" column="brief"/>
+        <result property="memo" column="memo"/>
+        <result property="spuIntroduction" column="spu_introduction"/>
+        <result property="imageFile" column="image_file"/>
+        <result property="pdfFile" column="pdf_file"/>
+        <result property="videoFile" column="video_file"/>
+        <result property="seoTitle" column="seo_title"/>
+        <result property="seoKeyword" column="seo_keyword"/>
+        <result property="seoDescription" column="seo_description"/>
+        <result property="pageName" column="page_name"/>
+		<result property="seoUpdateFlag" column="seo_update_flag"/>
+	</resultMap>
+
+    <select id="selectPageList" resultMap="RMPcProductSpu"  >
+        SELECT * FROM pc_product_spu
+       <include refid="findPagewhere"/>
+    </select>
+
+    <select id="selectPageCount" resultType="long"  >
+        SELECT count(*) FROM pc_product_spu 
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcProductSpu" resultMap="RMPcProductSpu">
+        SELECT * FROM pc_product_spu
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcProductSpu"  >
+        SELECT * FROM pc_product_spu
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcProductSpu"  >
+        SELECT * FROM pc_product_spu
+       <include refid="findPagewhere"/>
+    </select>
+
+	<select id="getNoneUpdateSpu" resultType="com.toolmall.business.product.vo.SpuForSeoVO">
+		SELECT a.product_spuid AS productSpuid,a.name,a.page_name AS pageName,
+			   (SELECT c.category_name
+			   	FROM pc_product_category c JOIN pc_product_category_res_back b ON b.front_category_id = c.category_id
+			   	WHERE b.back_category_id = a.category_id AND c.is_deleted = 0 AND b.is_deleted = 0
+			   	ORDER BY c.create_time DESC LIMIT 1
+			   ) AS categoryName
+		FROM pc_product_spu a
+		where a.seo_update_flag = 0 AND a.is_deleted = 0
+	</select>
+	    
+    <select id="selectById" resultMap="RMPcProductSpu"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_product_spu 
+	        WHERE 
+		        product_spuid = #{id} AND is_deleted = 0
+	    ]]>
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcProductSpu"   useGeneratedKeys="true" keyColumn="product_spuid" keyProperty="productSpuid">
+        INSERT INTO pc_product_spu (
+        	category_id ,
+        	related_module ,
+        	name ,
+        	brand_id ,
+        	merchant_id ,
+        	freight_template_id,
+        	purpose ,
+        	brief ,
+        	memo ,
+        	spu_introduction ,
+        	image_file ,
+        	pdf_file ,
+        	video_file ,
+        	seo_title ,
+        	seo_keyword ,
+        	seo_description ,
+        	page_name,
+			seo_update_flag
+        ) VALUES (
+        	#{categoryId} ,
+        	#{relatedModule} ,
+        	#{name} ,
+        	#{brandId} ,
+        	#{merchantId} ,
+        	#{freightTemplateId} ,
+        	#{purpose} ,
+        	#{brief} ,
+        	#{memo} ,
+        	#{spuIntroduction} ,
+        	#{imageFile} ,
+        	#{pdfFile} ,
+        	#{videoFile} ,
+        	#{seoTitle} ,
+        	#{seoKeyword} ,
+        	#{seoDescription} ,
+        	#{pageName},
+			#{seoUpdateFlag}
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" >
+        INSERT INTO pc_product_spu (
+        	category_id ,
+        	related_module ,
+        	name ,
+        	brand_id ,
+        	merchant_id ,
+        	freight_template_id,
+        	purpose ,
+        	brief ,
+        	memo ,
+        	spu_introduction ,
+        	image_file ,
+        	pdf_file ,
+        	video_file ,
+        	seo_title ,
+        	seo_keyword ,
+        	seo_description ,
+        	page_name,
+		seo_update_flag
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.categoryId} ,
+        
+        	#{item.relatedModule} ,
+        
+        	#{item.name} ,
+        
+        	#{item.brandId} ,
+        
+        	#{item.merchantId} ,
+        	
+        	#{item.freightTemplateId} ,
+        
+        	#{item.purpose} ,
+        
+        	#{item.brief} ,
+        
+        	#{item.memo} ,
+        
+        	#{item.spuIntroduction} ,
+        
+        	#{item.imageFile} ,
+        
+        	#{item.pdfFile} ,
+        
+        	#{item.videoFile} ,
+        
+        	#{item.seoTitle} ,
+        
+        	#{item.seoKeyword} ,
+        
+        	#{item.seoDescription} ,
+        	
+        	#{item.pageName},
+			#{item.seoUpdateFlag}
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcProductSpu" >
+        UPDATE pc_product_spu
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+			<if test="categoryId!=null">
+	        category_id = #{categoryId} ,
+	        </if>
+			<if test="relatedModule!=null">
+	        related_module = #{relatedModule} ,
+	        </if>
+	        <if test="name!=null and name!=''">
+	        name = #{name} ,
+	         </if>
+			<if test="brandId!=null">
+	        brand_id = #{brandId} ,
+	        </if>
+			<if test="merchantId!=null">
+	        merchant_id = #{merchantId} ,
+	        </if>
+	        <if test="freightTemplateId!=null">
+	        freight_template_id = #{freightTemplateId} ,
+	        </if>
+	        <if test="purpose!=null and purpose!=''">
+	        purpose = #{purpose} ,
+	         </if>
+	        <if test="brief!=null and brief!=''">
+	        brief = #{brief} ,
+	         </if>
+	        <if test="memo!=null and memo!=''">
+	        memo = #{memo} ,
+	         </if>
+	        <if test="spuIntroduction!=null and spuIntroduction!=''">
+	        spu_introduction = #{spuIntroduction} ,
+	         </if>
+	        <if test="imageFile!=null and imageFile!=''">
+	        image_file = #{imageFile} ,
+	         </if>
+	        <if test="pdfFile!=null">
+	        pdf_file = #{pdfFile} ,
+			</if>
+	        <if test="videoFile!=null">
+	        video_file = #{videoFile} ,
+			</if>
+	        <if test="seoTitle!=null and seoTitle!=''">
+	        seo_title = #{seoTitle} ,
+			</if>
+	        <if test="seoKeyword!=null and seoKeyword!=''">
+	        seo_keyword = #{seoKeyword} ,
+			</if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+	        seo_description = #{seoDescription} ,
+			</if>
+	        <if test="pageName!=null and pageName!=''">
+	        page_name = #{pageName},
+	        </if>
+			<if test="seoUpdateFlag!=null and seoUpdateFlag!=''">
+				seo_update_flag = #{seoUpdateFlag}
+			</if>
+	    </trim>    
+        WHERE 
+	       product_spuid = #{productSpuid} 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" >  
+       UPDATE pc_product_spu SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+		#{id}
+	   </foreach>
+    </update>
+
+	<update id="batchUpdateSeo" parameterType="java.util.List">
+		UPDATE pc_product_spu
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="seo_title = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoTitle != null and i.seoTitle != ''">
+						WHEN product_spuid = #{i.productSpuid} THEN #{i.seoTitle}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="seo_keyword = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoKeyword != null and i.seoKeyword != ''">
+						WHEN product_spuid = #{i.productSpuid} THEN #{i.seoKeyword}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="seo_description = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoDescription != null and i.seoDescription != ''">
+						WHEN product_spuid = #{i.productSpuid} THEN #{i.seoDescription}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		WHERE product_spuid IN
+		<foreach collection="list" index="index" item="i" separator="," open="(" close=")">
+			#{i.productSpuid}
+		</foreach>
+	</update>
+
+    <delete id="delete" >
+        UPDATE pc_product_spu SET is_deleted = 1 WHERE
+        product_spuid = #{id} 
+    </delete>
+	
+	<delete id="deleteByIds" >
+        UPDATE pc_product_spu SET is_deleted = 1 WHERE
+        id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			 <if test="productSpuid!=null">
+	         AND product_spuid = #{productSpuid} 
+	         </if>
+			 <if test="categoryId!=null">
+	         AND category_id = #{categoryId} 
+	         </if>
+			 <if test="relatedModule!=null">
+	         AND related_module = #{relatedModule} 
+	         </if>
+	        <if test="name!=null and name!=''">
+	         AND name = #{name} 
+	         </if>
+			 <if test="brandId!=null">
+	         AND brand_id = #{brandId} 
+	         </if>
+			 <if test="merchantId!=null">
+	         AND merchant_id = #{merchantId} 
+	         </if>
+	        <if test="purpose!=null and purpose!=''">
+	         AND purpose = #{purpose} 
+	         </if>
+	        <if test="brief!=null and brief!=''">
+	         AND brief = #{brief} 
+	         </if>
+	        <if test="memo!=null and memo!=''">
+	         AND memo = #{memo} 
+	         </if>
+	        <if test="spuIntroduction!=null and spuIntroduction!=''">
+	         AND spu_introduction = #{spuIntroduction} 
+	         </if>
+	        <if test="imageFile!=null and imageFile!=''">
+	         AND image_file = #{imageFile} 
+	         </if>
+	        <if test="pdfFile!=null and pdfFile!=''">
+	         AND pdf_file = #{pdfFile} 
+	         </if>
+	        <if test="videoFile!=null and videoFile!=''">
+	         AND video_file = #{videoFile} 
+	         </if>
+	        <if test="seoTitle!=null and seoTitle!=''">
+	         AND seo_title = #{seoTitle} 
+	         </if>
+	        <if test="seoKeyword!=null and seoKeyword!=''">
+	         AND seo_keyword = #{seoKeyword} 
+	         </if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+	         AND seo_description = #{seoDescription} 
+	         </if>
+	         <if test="pageName!=null and pageName!=''">
+	         AND page_name = #{pageName} 
+	        </if>
+	        AND is_deleted = 0
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="name!=null and name!=''">
+			    AND name LIKE CONCAT('%','${name}','%')
+	         </if>
+	        <if test="purpose!=null and purpose!=''">
+			    AND purpose LIKE CONCAT('%','${purpose}','%')
+	         </if>
+	        <if test="brief!=null and brief!=''">
+			    AND brief LIKE CONCAT('%','${brief}','%')
+	         </if>
+	        <if test="memo!=null and memo!=''">
+			    AND memo LIKE CONCAT('%','${memo}','%')
+	         </if>
+	        <if test="spuIntroduction!=null and spuIntroduction!=''">
+			    AND spu_introduction LIKE CONCAT('%','${spuIntroduction}','%')
+	         </if>
+	        <if test="imageFile!=null and imageFile!=''">
+			    AND image_file LIKE CONCAT('%','${imageFile}','%')
+	         </if>
+	        <if test="pdfFile!=null and pdfFile!=''">
+			    AND pdf_file LIKE CONCAT('%','${pdfFile}','%')
+	         </if>
+	        <if test="videoFile!=null and videoFile!=''">
+			    AND video_file LIKE CONCAT('%','${videoFile}','%')
+	         </if>
+	        <if test="seoTitle!=null and seoTitle!=''">
+			    AND seo_title LIKE CONCAT('%','${seoTitle}','%')
+	         </if>
+	        <if test="seoKeyword!=null and seoKeyword!=''">
+			    AND seo_keyword LIKE CONCAT('%','${seoKeyword}','%')
+	         </if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+			    AND seo_description LIKE CONCAT('%','${seoDescription}','%')
+	         </if>
+	         AND is_deleted = 0
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      				
+	       <if test="productSpuid!=null">
+				AND product_spuid = #{productSpuid}
+		   </if>
+	       <if test="categoryId!=null">
+				AND category_id = #{categoryId}
+		   </if>
+	       <if test="relatedModule!=null">
+				AND related_module = #{relatedModule}
+		   </if>
+	       <if test="name!=null and name!=''">
+				AND name = #{name}
+		   </if>
+	       <if test="brandId!=null">
+				AND brand_id = #{brandId}
+		   </if>
+	       <if test="merchantId!=null">
+				AND merchant_id = #{merchantId}
+		   </if>
+	       <if test="purpose!=null and purpose!=''">
+				AND purpose = #{purpose}
+		   </if>
+	       <if test="brief!=null and brief!=''">
+				AND brief = #{brief}
+		   </if>
+	       <if test="memo!=null and memo!=''">
+				AND memo = #{memo}
+		   </if>
+	       <if test="spuIntroduction!=null and spuIntroduction!=''">
+				AND spu_introduction = #{spuIntroduction}
+		   </if>
+	       <if test="imageFile!=null and imageFile!=''">
+				AND image_file = #{imageFile}
+		   </if>
+	       <if test="pdfFile!=null and pdfFile!=''">
+				AND pdf_file = #{pdfFile}
+		   </if>
+	       <if test="videoFile!=null and videoFile!=''">
+				AND video_file = #{videoFile}
+		   </if>
+	       <if test="seoTitle!=null and seoTitle!=''">
+				AND seo_title = #{seoTitle}
+		   </if>
+	       <if test="seoKeyword!=null and seoKeyword!=''">
+				AND seo_keyword = #{seoKeyword}
+		   </if>
+	       <if test="seoDescription!=null and seoDescription!=''">
+				AND seo_description = #{seoDescription}
+		   </if>
+		   <if test="pageName!=null and pageName!=''">
+	         	AND page_name = #{pageName} 
+	       </if>
+	       AND is_deleted = 0
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+</mapper>
+

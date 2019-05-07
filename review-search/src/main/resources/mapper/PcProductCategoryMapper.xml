@@ -1,0 +1,888 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-2-26 16:32:21
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcProductCategoryMapper">
+	<resultMap id="RMPcProductCategory" type="com.toolmall.business.product.bean.PcProductCategory">
+        <result property="categoryId" column="category_id"/>
+        <result property="contentId" column="content_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="categoryDescription" column="category_description"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="categoryOrder" column="category_order"/>
+        <result property="categoryUrl" column="category_url"/>
+        <result property="urlFirst" column="url_first"/>
+        <result property="urlSecond" column="url_second"/>
+        <result property="isVisible" column="is_visible"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifyTime" column="modify_time"/>
+        <result property="categoryGrade" column="category_grade"/>
+        <result property="seoTitle" column="seo_title"/>
+        <result property="seoKeywords" column="seo_keywords"/>
+        <result property="seoDescription" column="seo_description"/>
+        <result property="contentNames" column="contentNames"/>
+        <result property="backCategoryNames" column="backCategoryNames"/>
+        <result property="pageName" column="page_name"/>
+        <result property="seoUpdateFlag" column="seo_update_flag"/>
+	</resultMap>
+	
+	<resultMap id="RMProductCategory" type="com.toolmall.business.product.back.ProductCategory">
+        <result property="id" column="category_id"/>
+        <result property="createDate" column="create_time"/>
+        <result property="modifyDate" column="modify_time"/>
+        <result property="orders" column="category_order"/>
+        <result property="grade" column="category_grade"/>
+        <result property="name" column="category_name"/>
+        <result property="seoDescription" column="seo_description"/>
+        <result property="seoKeywords" column="seo_keywords"/>
+        <result property="seoTitle" column="seo_title"/>
+        <result property="treePath" column="TREE_PATH"/>
+        <result property="parent" column="parent_id"/>
+        <result property="image" column="category_url"/>
+        <result property="isDeleted" column="IS_DELETED"/>
+		<result property="platformType" column="PLATFORM_TYPE"/>
+
+	</resultMap>
+	
+	<resultMap id="RMCategoryVO" type="com.toolmall.business.product.back.CategoryVO">
+		<result property="id" column="category_id"/>
+		<result property="name" column="category_name"/>
+		<result property="grade" column="category_grade"/>
+		<result property="parent" column="parent_id"/>
+		<result property="treePath" column="TREE_PATH"/>
+		<result property="image" column="category_url"/>
+		<result property="seoTitle" column="seo_title"/>
+		<result property="seoKeywords" column="seo_keywords"/>
+		<result property="seoDescription" column="seo_description"/>
+	</resultMap>
+	
+	<resultMap id="RMProductCategoryVO" type="com.toolmall.business.product.back.ProductCategoryVO">
+		<result property="id" column="category_id"/>
+		<result property="name" column="category_name"/>
+		<result property="grade" column="category_grade"/>
+		<result property="parent" column="parent_id"/>
+		<result property="treePath" column="TREE_PATH"/>
+		<result property="image" column="category_url"/>
+	</resultMap>
+	
+	<resultMap id="RMPcProductContent" type="com.toolmall.business.product.bean.PcProductContent">
+        <result property="contentId" column="content_id"/>
+        <result property="contentName" column="content_name"/>
+		<result property="contentDescription" column="content_description"/>
+        <result property="contentType" column="content_type"/>
+        <result property="contentPurpose" column="content_purpose"/>
+        <result property="beginTime" column="begin_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="contentOrder" column="content_order"/>
+        <result property="modifyTime" column="modify_time"/>
+        <result property="createTime" column="create_time"/>
+	</resultMap>
+
+    <select id="selectPageList" resultMap="RMPcProductCategory"  >
+        SELECT * FROM pc_product_category
+       <include refid="findPagewhere"/>
+    </select>
+
+    <select id="selectPageCount" resultType="long"  >
+        SELECT count(*) FROM pc_product_category 
+		<include refid="findPagewhere"/>    
+    </select>
+
+	<select id="getListByGrade" resultMap="RMProductCategoryVO" parameterType="java.lang.Integer">
+		SELECT * FROM pc_product_category
+		WHERE category_grade = #{grade} AND is_deleted = 0
+		ORDER BY category_order ASC
+	</select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcProductCategory" resultMap="RMPcProductCategory">
+        SELECT * FROM pc_product_category
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcProductCategory"  >
+        SELECT * FROM pc_product_category
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcProductCategory"  >
+        SELECT 
+        	*,
+        	(select GROUP_CONCAT(b.category_name) from pc_product_category_back b, pc_product_category_res_back c where a.category_id = c.front_category_id and b.category_id = c.back_category_id) backCategoryNames,
+        	(select GROUP_CONCAT(c.content_name) from pc_product_category_content b, pc_product_content c where a.category_id = b.category_id and b.content_id = c.content_id) contentNames
+        FROM pc_product_category a
+       <include refid="findPagewhere"/>
+       ORDER BY category_order is null, category_order
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcProductCategory"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_product_category 
+	        WHERE 
+		        category_id = #{id} AND is_deleted = 0
+	    ]]>
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcProductCategory"   useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO pc_product_category (
+        	content_id,
+        	category_name ,
+        	category_description ,
+        	parent_id ,
+        	category_order ,
+        	category_url ,
+        	url_first ,
+        	url_second,
+        	category_grade,
+        	seo_title,
+        	seo_keywords,
+        	seo_description,
+        	page_name,
+		seo_update_flag
+        ) VALUES (
+        	#{contentId},
+        	#{categoryName} ,
+        	#{categoryDescription} ,
+        	#{parentId} ,
+        	#{categoryOrder} ,
+        	#{categoryUrl} ,
+        	#{urlFirst} ,
+        	#{urlSecond},
+        	#{categoryGrade},
+        	#{seoTitle},
+        	#{seoKeywords},
+        	#{seoDescription},
+        	#{pageName},
+		#{seoUpdateFlag}
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" >
+        INSERT INTO pc_product_category (
+        	content_id,
+        	category_name ,
+        	category_description ,
+        	parent_id ,
+        	category_order ,
+        	category_url ,
+        	url_first ,
+        	url_second,
+        	category_grade,
+        	seo_title,
+        	seo_keywords,
+        	seo_description,
+        	page_name,
+		seo_update_flag
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.contentId},
+        	
+        	#{item.categoryName} ,
+        
+        	#{item.categoryDescription} ,
+        
+        	#{item.parentId} ,
+        
+        	#{item.categoryOrder} ,
+        
+        	#{item.categoryUrl} ,
+        
+        	#{item.urlFirst} ,
+        
+        	#{item.urlSecond},
+        	
+        	#{item.categoryGrade},
+        	
+        	#{item.seoTitle},
+        	
+        	#{item.seoKeywords},
+        	
+        	#{item.seoDescription},
+        	
+        	#{item.pageName},
+			#{item.seoUpdateFlag}
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcProductCategory" >
+        UPDATE pc_product_category
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+        	<if test="contentId!=null and contentId!=''">
+	        content_id = #{contentId} ,
+	         </if>
+	        <if test="categoryName!=null and categoryName!=''">
+	        category_name = #{categoryName} ,
+	         </if>
+	        <if test="categoryDescription!=null and categoryDescription!=''">
+	        category_description = #{categoryDescription} ,
+	         </if>
+			<if test="parentId!=null">
+	        parent_id = #{parentId} ,
+	        </if>
+			<if test="categoryOrder!=null">
+	        category_order = #{categoryOrder} ,
+	        </if>
+	        <if test="categoryUrl!=null and categoryUrl!=''">
+	        category_url = #{categoryUrl} ,
+	         </if>
+	        <if test="urlFirst!=null and urlFirst!=''">
+	        url_first = #{urlFirst} ,
+	         </if>
+	        <if test="urlSecond!=null and urlSecond!=''">
+	        url_second = #{urlSecond} ,
+	         </if>
+	        <if test="isVisible!=null and isVisible!=''">
+	        is_visible = #{isVisible} ,
+	         </if>
+			<if test="createTime!=null">
+	        create_time = #{createTime} ,
+	        </if>
+			<if test="modifyTime!=null">
+	        modify_time = #{modifyTime} ,
+	        </if>
+	        <if test="categoryGrade!=null">
+	        category_grade = #{categoryGrade} ,
+	        </if>
+	        <if test="seoTitle!=null and seoTitle!=''">
+	        seo_title = #{seoTitle} ,
+	        </if>
+	        <if test="seoKeywords!=null and seoKeywords!=''">
+	        seo_keywords = #{seoKeywords} ,
+	        </if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+	        seo_description = #{seoDescription} ,
+	        </if>
+	        <if test="pageName!=null and pageName!=''">
+	        page_name = #{pageName},
+	        </if>
+			<if test="seoUpdateFlag!=null and seoUpdateFlag!=''">
+				seo_update_flag = #{seoUpdateFlag}
+			</if>
+	    </trim>    
+        WHERE 
+	       category_id = #{categoryId} 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" >  
+       UPDATE pc_product_category SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+#{id}       </foreach>  
+    </update>
+
+	<update id="batchUpdateSeo" parameterType="java.util.List">
+		UPDATE pc_product_category
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="seo_title = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoTitle != null and i.seoTitle != ''">
+						WHEN category_id = #{i.categoryId} THEN #{i.seoTitle}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="seo_keywords = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoKeywords != null and i.seoKeywords != ''">
+						WHEN category_id = #{i.categoryId} THEN #{i.seoKeywords}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="seo_description = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoDescription != null and i.seoDescription != ''">
+						WHEN category_id = #{i.categoryId} THEN #{i.seoDescription}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		WHERE category_id IN
+		<foreach collection="list" index="index" item="i" separator="," open="(" close=")">
+			#{i.categoryId}
+		</foreach>
+	</update>
+
+    <delete id="delete" >
+        UPDATE pc_product_category SET is_deleted = 1 WHERE
+        category_id = #{id} 
+    </delete>
+	
+	<delete id="deleteByIds" >
+        UPDATE pc_product_category SET is_deleted = 1 WHERE
+        id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			<if test="contentId!=null and contentId!=''">
+	        AND EXISTS(SELECT 1 FROM pc_product_category_content x WHERE a.category_id = x.category_id AND x.content_id = #{contentId})
+	         </if>
+			 <if test="categoryId!=null">
+	         AND category_id = #{categoryId} 
+	         </if>
+	        <if test="categoryName!=null and categoryName!=''">
+	         AND category_name = #{categoryName} 
+	         </if>
+	        <if test="categoryDescription!=null and categoryDescription!=''">
+	         AND category_description = #{categoryDescription} 
+	         </if>
+			 <if test="parentId!=null">
+	         AND parent_id = #{parentId} 
+	         </if>
+			 <if test="categoryOrder!=null">
+	         AND category_order = #{categoryOrder} 
+	         </if>
+	        <if test="categoryUrl!=null and categoryUrl!=''">
+	         AND category_url = #{categoryUrl} 
+	         </if>
+	        <if test="urlFirst!=null and urlFirst!=''">
+	         AND url_first = #{urlFirst} 
+	         </if>
+	        <if test="urlSecond!=null and urlSecond!=''">
+	         AND url_second = #{urlSecond} 
+	         </if>
+	        <if test="isVisible!=null and isVisible!=''">
+	         AND is_visible = #{isVisible} 
+	         </if>
+			 <if test="createTime!=null">
+	         AND create_time = #{createTime} 
+	         </if>
+			 <if test="modifyTime!=null">
+	         AND modify_time = #{modifyTime} 
+	         </if>
+	         <if test="categoryGrade!=null">
+	         AND category_grade = #{categoryGrade} 
+	         </if>
+	         <if test="seoTitle!=null and seoTitle!=''">
+	         AND seo_title = #{seoTitle} 
+	         </if>
+	        <if test="seoKeywords!=null and seoKeywords!=''">
+	         AND seo_keywords = #{seoKeywords} 
+	        </if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+	         AND seo_description = #{seoDescription} 
+	        </if>
+	        <if test="pageName!=null and pageName!=''">
+	         AND page_name = #{pageName} 
+	        </if>
+			<if test="seoUpdateFlag!=null and seoUpdateFlag!=''">
+				AND seo_update_flag = #{seoUpdateFlag}
+			</if>
+	        AND is_deleted = 0
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="categoryName!=null and categoryName!=''">
+			    AND category_name LIKE CONCAT('%','${categoryName}','%')
+	         </if>
+	        <if test="categoryDescription!=null and categoryDescription!=''">
+			    AND category_description LIKE CONCAT('%','${categoryDescription}','%')
+	         </if>
+	         AND is_deleted = 0
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      	
+			<if test="contentId!=null and contentId!=''">
+	        	AND content_id = #{contentId}
+	         </if>			
+	       <if test="categoryId!=null">
+				AND category_id = #{categoryId}
+		   </if>
+	       <if test="categoryName!=null and categoryName!=''">
+				AND category_name = #{categoryName}
+		   </if>
+	       <if test="categoryDescription!=null and categoryDescription!=''">
+				AND category_description = #{categoryDescription}
+		   </if>
+	       <if test="parentId!=null">
+				AND parent_id = #{parentId}
+		   </if>
+	       <if test="categoryOrder!=null">
+				AND category_order = #{categoryOrder}
+		   </if>
+	       <if test="categoryUrl!=null and categoryUrl!=''">
+				AND category_url = #{categoryUrl}
+		   </if>
+	       <if test="urlFirst!=null and urlFirst!=''">
+				AND url_first = #{urlFirst}
+		   </if>
+	       <if test="urlSecond!=null and urlSecond!=''">
+				AND url_second = #{urlSecond}
+		   </if>
+	       <if test="isVisible!=null and isVisible!=''">
+				AND is_visible = #{isVisible}
+		   </if>
+	       <if test="createTime!=null">
+				AND create_time BETWEEN #{createTimeBegin} AND #{createTimeEnd}
+		   </if>
+	       <if test="modifyTime!=null">
+				AND modify_time BETWEEN #{modifyTimeBegin} AND #{modifyTimeEnd}
+		   </if>
+		   <if test="categoryGrade!=null">
+	         AND category_grade = #{categoryGrade} 
+	         </if>
+	         
+		   <if test="seoTitle!=null and seoTitle!=''">
+	         	AND seo_title = #{seoTitle} 
+	        </if>
+	        <if test="seoKeywords!=null and seoKeywords!=''">
+	         	AND seo_keywords = #{seoKeywords} 
+	        </if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+	         	AND seo_description = #{seoDescription} 
+	        </if>
+	        <if test="pageName!=null and pageName!=''">
+	         	AND page_name = #{pageName} 
+	        </if>
+			<if test="seoUpdateFlag!=null and seoUpdateFlag!=''">
+				AND seo_update_flag = #{seoUpdateFlag}
+			</if>
+	        AND is_deleted = 0
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+	<select id="selectByIdList" resultMap="RMPcProductCategory" parameterType="java.util.List">
+		SELECT * FROM pc_product_category a
+		<where>
+		 is_deleted = 0 AND 
+			category_id in
+			<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+		AND exists (select 1 from pc_product_category_content z where a.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+	</select>
+	
+	<select id="getThirdByGroupIdList" resultType="java.lang.Long">
+		<if test="firstList != null and firstList.size() > 0">
+			SELECT
+				c3.category_id
+			FROM
+				pc_product_category c1
+				LEFT JOIN pc_product_category c2 ON c1.category_id = c2.parent_id
+				LEFT JOIN pc_product_category c3 ON c2.category_id = c3.parent_id
+			WHERE
+				c1.category_grade = 0 AND c1.is_deleted = 0 AND c2.is_deleted = 0 AND c3.is_deleted = 0
+				AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				AND exists (select 1 from pc_product_category_content z where c2.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+	 			AND exists (select 1 from pc_product_category_content z where c3.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				AND c1.category_id IN
+				<foreach collection="firstList" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+				ORDER BY
+				c1.category_order ASC,
+				c2.category_order ASC,
+				c3.category_order ASC,
+				c3.category_id ASC
+				<if test="(secondList != null and secondList.size() > 0) or (thirdList != null and thirdList.size() > 0)">
+					UNION
+				</if>
+		</if>
+		<if test="secondList != null and secondList.size() > 0">
+			SELECT
+				c2.category_id
+			FROM
+				pc_product_category c1
+				LEFT JOIN pc_product_category c2 ON c1.category_id = c2.parent_id
+			WHERE
+				c1.category_grade = 1 AND c1.is_deleted = 0 AND c2.is_deleted = 0
+				AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				AND exists (select 1 from pc_product_category_content z where c2.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				AND c1.category_id IN
+				<foreach collection="secondList" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			ORDER BY
+			c1.category_order ASC,
+			c2.category_order ASC,
+			c2.category_id ASC
+			<if test="thirdList != null and thirdList.size() > 0">
+				UNION
+			</if>
+		</if>
+		<if test="thirdList != null and thirdList.size() > 0">
+			SELECT
+				category_id
+			FROM
+				pc_product_category c1
+			WHERE
+				category_grade = 2 AND is_deleted = 0
+				AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				AND category_id IN
+				<foreach collection="thirdList" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			ORDER BY
+				category_order ASC,
+				category_id ASC
+		</if>
+	</select>
+	
+	<select id="selectVOById" resultMap="RMCategoryVO" parameterType="java.lang.Long">
+		SELECT *, getParentCategory(category_id) as TREE_PATH FROM pc_product_category a WHERE category_id = #{id} AND is_deleted = 0
+		AND exists (select 1 from pc_product_category_content z where a.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+	</select>
+	
+	<select id="selectParentVOById" resultMap="RMCategoryVO" parameterType="java.lang.Long">
+		SELECT
+			c1.*
+		FROM
+			pc_product_category c1
+			LEFT JOIN pc_product_category c2 ON c1.category_id = c2.parent_id
+			LEFT JOIN pc_product_category c3 ON c2.category_id = c3.parent_id
+		WHERE c3.category_id = #{id} AND c1.is_deleted = 0 AND c2.is_deleted = 0 AND c3.is_deleted = 0
+			AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+			AND exists (select 1 from pc_product_category_content z where c2.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+ 			AND exists (select 1 from pc_product_category_content z where c3.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+	</select>
+	
+	<select id="getLv3ById" resultMap="RMCategoryVO" parameterType="java.lang.Long">
+		SELECT
+			c3.*
+		FROM
+			pc_product_category c1
+			LEFT JOIN pc_product_category c2 ON c1.category_id = c2.parent_id
+			LEFT JOIN pc_product_category c3 ON c2.category_id = c3.parent_id
+		WHERE
+			c1.category_id = #{categoryId} AND c1.is_deleted = 0 AND c2.is_deleted = 0 AND c3.is_deleted = 0
+			AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+			AND exists (select 1 from pc_product_category_content z where c2.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+ 			AND exists (select 1 from pc_product_category_content z where c3.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+		ORDER BY
+			c1.category_order,
+			c2.category_order,
+			c3.category_order
+	</select>
+	
+	<select id="getAllListByGrade" resultMap="RMCategoryVO" parameterType="java.lang.Integer">
+		SELECT
+			*,
+			getParentCategory(category_id) tree_path
+		FROM
+			pc_product_category c1
+		WHERE
+			category_grade = #{grade} AND is_deleted = 0
+			AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+		ORDER BY
+			parent_id ASC,
+			category_order ASC,
+			category_id ASC
+	</select>
+	
+	<select id="selectVOList" resultMap="RMProductCategoryVO">
+        SELECT
+            *
+        FROM
+            pc_product_category a
+        WHERE
+            category_id NOT IN ( 2878, 3043, 3044 ) AND is_deleted = 0 
+            and exists (select 1 from pc_product_category_content z where a.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+        ORDER BY
+            category_order ASC
+	</select>
+	
+	<select id="getQueryList" resultType="com.toolmall.business.product.back.SimpleCategoryVO" parameterType="java.lang.String">
+		SELECT
+			category_id ID,
+			category_name NAME,
+			parent_id PARENT
+		FROM
+			pc_product_category c1
+		WHERE
+			category_grade = 0 AND is_deleted = 0
+			AND category_name LIKE concat(concat('%',#{name}),'%')
+			AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+		ORDER BY
+			category_order ASC,
+			category_id ASC
+	</select>
+	
+	<select id="getCategoryContentList" resultMap="RMPcProductContent" parameterType="com.toolmall.business.product.bean.PcProductCategory">
+		SELECT
+			c.*
+		FROM
+			pc_product_category a, pc_product_category_content b, pc_product_content c
+		WHERE
+			a.category_id = b.category_id and b.content_id = c.content_id and a.category_id = #{categoryId} AND a.is_deleted = 0
+	</select>
+	
+	<select id="getBackCategoryIds" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		SELECT
+			c.back_category_id
+		FROM
+			pc_product_category a, pc_product_category_back b, pc_product_category_res_back c
+		WHERE
+			a.category_id = c.front_category_id and b.category_id = c.back_category_id and c.front_category_id = #{categoryId} AND a.is_deleted = 0 AND b.is_deleted = 0 AND c.is_deleted = 0
+	</select>
+
+	<select id="getBackCategoryIdsByFrontIds" resultType="java.lang.Integer" parameterType="java.util.List">
+		SELECT
+			c.back_category_id
+		FROM
+			pc_product_category a, pc_product_category_back b, pc_product_category_res_back c
+		WHERE
+			a.category_id = c.front_category_id and b.category_id = c.back_category_id
+			and c.front_category_id in
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+			AND a.is_deleted = 0 AND b.is_deleted = 0 AND c.is_deleted = 0
+	</select>
+	
+	<select id="getSimpleCategoryVOList" resultType="com.toolmall.business.product.back.SimpleCategoryVO" parameterType="java.util.List">
+		SELECT category_id as id , category_name as name FROM pc_product_category c1
+		WHERE is_deleted = 0
+		AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+		AND category_id IN
+		<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+		ORDER BY category_grade, category_order, category_id ASC
+	</select>
+	
+	<select id="getChildrenById" resultMap="RMProductCategory" parameterType="java.lang.Long">
+        SELECT
+          *
+        FROM
+            pc_product_category c1
+        WHERE
+            is_deleted = 0
+            AND parent_id = #{id}
+            AND category_id not in (2878, 3043, 3044)
+            AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+        ORDER BY
+            category_order ASC,
+            category_id ASC
+    </select>
+    
+    <select id="getChildrenByIdList" resultMap="RMProductCategory" parameterType="java.util.List">
+        SELECT
+          *
+        FROM pc_product_category c1
+        WHERE is_deleted = 0
+        AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+        AND parent_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY category_order ASC , category_id ASC
+    </select>
+    
+    <select id="getAllLv3Ids" resultType="java.lang.Long" parameterType="java.util.Map">
+		<choose>
+			<when test="grade == 0">
+				SELECT
+					c3.category_id
+				FROM
+					pc_product_category c1
+					LEFT JOIN pc_product_category c2 ON c1.category_id = c2.parent_id
+					LEFT JOIN pc_product_category c3 ON c2.category_id = c3.parent_id
+				WHERE
+					c1.category_grade = 0
+					AND c1.category_id = #{id}
+					AND c1.IS_DELETED = 0 AND c2.IS_DELETED = 0 AND c3.IS_DELETED = 0 
+					AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+					AND exists (select 1 from pc_product_category_content z where c2.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+		 			AND exists (select 1 from pc_product_category_content z where c3.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				ORDER BY
+					c1.category_order ASC,
+					c2.category_order ASC,
+					c3.category_order ASC,
+					c3.category_id ASC
+			</when>
+			<when test="grade == 1">
+				SELECT
+					c3.category_id
+				FROM
+					pc_product_category c2
+					LEFT JOIN pc_product_category c3 ON c2.category_id = c3.parent_id
+				WHERE
+					c2.category_grade = 1
+					AND c2.category_id = #{id}
+					AND c2.IS_DELETED = 0
+					AND c3.IS_DELETED = 0
+					AND exists (select 1 from pc_product_category_content z where c2.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+		 			AND exists (select 1 from pc_product_category_content z where c3.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				ORDER BY
+					c2.category_order ASC,
+					c3.category_order ASC,
+					c3.category_id ASC
+			</when>
+			<when test="grade == 2">
+				SELECT
+					c3.category_id
+				FROM
+					pc_product_category c3
+				WHERE
+					c3.category_grade = 2
+					AND c3.category_id = #{id}
+					AND c3.IS_DELETED = 0
+					AND exists (select 1 from pc_product_category_content z where c3.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				ORDER BY
+					c3.category_order ASC,
+					c3.category_id ASC
+			</when>
+		</choose>
+	</select>
+	
+	<select id="getLv3List" resultMap="RMProductCategory">
+		SELECT	* FROM pc_product_category c1
+		WHERE category_grade = 2 AND is_deleted = 0
+		AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+	</select>
+	
+	<select id="getByBrandId" resultType="com.toolmall.business.product.back.ProductCategoryVO" parameterType="java.lang.Long">
+		SELECT
+			*
+		FROM
+			(
+				SELECT
+					pc.category_id ID,
+					pc.category_name NAME,
+					pc.parent_id PARENT,
+					pc.category_order ORDERS
+				FROM
+					pc_product_spu p
+					JOIN pc_product_sku s ON p.product_spuid = s.product_spuid
+					JOIN pc_business_product pro ON s.product_skuid = pro.product_skuid
+					LEFT JOIN pc_product_category_back back ON p.category_id = back.category_id
+					LEFT JOIN pc_product_category_res_back z ON back.category_id = z.back_category_id
+					LEFT JOIN pc_product_category pc ON pc.category_id = z.front_category_id
+					LEFT JOIN pc_brand b ON b.ID = p.brand_id
+				WHERE
+					p.IS_DELETED = 0
+					AND s.IS_DELETED = 0
+					AND pc.IS_DELETED = 0
+					AND b.ID = #{brandId}
+					AND b.IS_DELETED = 0
+					AND b.NAME <![CDATA[ <> ]]> '其他'
+					AND exists (select 1 from pc_product_category_content z where pc.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+				GROUP BY
+					pc.category_id,
+					pc.category_name,
+					pc.parent_id,
+					pc.category_order
+			) c
+			ORDER BY c.ORDERS
+	</select>
+	
+	<select id="selectVOByIdList" resultMap="RMProductCategoryVO" parameterType="java.util.List">
+		SELECT
+			category_id,
+			category_name,
+			category_grade,
+			category_order,
+			parent_id,
+			getParentCategory(category_id) tree_path,
+			category_url
+		FROM
+			pc_product_category c1
+		WHERE
+			category_id IN
+			<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+			AND exists (select 1 from pc_product_category_content z where c1.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+			AND is_deleted = 0
+		ORDER BY category_order ASC
+	</select>
+	
+	<select id="getLv2ByBrandId" resultType="com.toolmall.business.product.back.SimpleCategoryVO">
+		SELECT
+			DISTINCT f.category_id ID,
+			f.category_name NAME,
+			f.category_grade GRADE,
+			f.parent_id PARENT,
+			f.category_order ORDERS
+		FROM
+			pc_product_spu a
+            JOIN pc_product_sku b ON a.product_spuid = b.product_spuid
+            JOIN pc_business_product e ON b.product_skuid = e.product_skuid
+            LEFT JOIN pc_brand c ON a.brand_id = c.id 
+            LEFT JOIN pc_product_category_back d ON a.category_id = d.category_id
+            LEFT JOIN pc_product_category_back f ON d.parent_id = f.category_id
+		WHERE
+			b.IS_DELETED = 0
+			AND d.IS_DELETED = 0
+			AND f.IS_DELETED = 0
+			AND c.IS_DELETED = 0 
+			AND c.NAME <![CDATA[ <> ]]> '其他' 
+			AND c.ID = #{brandId}
+			AND e.is_company = 1
+		ORDER BY f.category_order, f.category_id ASC
+	</select>
+	
+	<select id="getLv3ByBrandId" resultType="com.toolmall.business.product.back.SimpleCategoryVO">
+		SELECT
+			DISTINCT d.category_id ID,
+			d.category_name NAME,
+			d.category_grade GRADE,
+			d.parent_id PARENT,
+			d.category_order ORDERS
+		FROM
+			pc_product_spu a
+            JOIN pc_product_sku b ON a.product_spuid = b.product_spuid
+            JOIN pc_business_product e ON b.product_skuid = e.product_skuid
+            LEFT JOIN pc_brand c ON a.brand_id = c.id 
+            LEFT JOIN pc_product_category_back d ON a.category_id = d.category_id
+            LEFT JOIN pc_product_category_back f ON d.parent_id = f.category_id
+		WHERE
+			b.IS_DELETED = 0
+			AND d.IS_DELETED = 0
+			AND f.IS_DELETED = 0
+			AND c.IS_DELETED = 0
+			AND c.NAME <![CDATA[ <> ]]> '其他' 
+			AND c.ID = #{brandId}
+			AND e.is_company = 1
+		ORDER BY d.category_order, d.category_id ASC
+	</select>
+	
+	<select id="getAllCategoryIds" resultType="java.lang.Integer">
+		SELECT category_id FROM pc_product_category c where is_deleted = 0
+	</select>
+	
+	<select id="getSiblingList" resultMap="RMProductCategoryVO">
+        SELECT
+            *
+        FROM
+            pc_product_category a
+        WHERE
+            is_deleted = 0 
+            and exists (select 1 from pc_product_category_content z where a.category_id = z.category_id and z.content_id = 1 and z.is_deleted = 0)
+            and category_grade = #{grade} and category_id != #{categoryId}
+            <if test="parentId!=null">
+				AND parent_id = #{parentId}
+		   </if>
+        ORDER BY
+            category_order ASC
+	</select>
+	
+</mapper>
+

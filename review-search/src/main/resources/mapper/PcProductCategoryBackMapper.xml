@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-7-5 10:37:13
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcProductCategoryBackMapper">
+	<resultMap id="RMPcProductCategoryBack" type="com.toolmall.business.product.bean.PcProductCategoryBack">
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="categoryDescription" column="category_description"/>
+        <result property="parentId" column="parent_id"/>
+        <result property="categoryOrder" column="category_order"/>
+        <result property="categoryGrade" column="category_grade"/>
+		<result property="isLeaf" column="is_leaf"/>
+		<result property="isVisible" column="is_visible"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifyTime" column="modify_time"/>
+        <result property="contentIdAndCategoryNames" column="contentIdAndCategoryNames"/>
+	</resultMap>
+
+    <select id="selectPageList" resultMap="RMPcProductCategoryBack"  >
+        SELECT * FROM pc_product_category_back
+       <include refid="findPagewhere"/>
+    </select>
+
+    <select id="selectPageCount" resultType="long"  >
+        SELECT count(*) FROM pc_product_category_back 
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcProductCategoryBack" resultMap="RMPcProductCategoryBack">
+        SELECT * FROM pc_product_category_back
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcProductCategoryBack"  >
+        SELECT * FROM pc_product_category_back
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcProductCategoryBack"  >
+        SELECT * FROM pc_product_category_back
+       <include refid="findPagewhere"/>
+       ORDER BY category_order is null, category_order
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcProductCategoryBack"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_product_category_back 
+	        WHERE 
+		        category_id = #{id} 
+	    ]]>
+	</select>
+
+	<select id="getLeafCategoryList" resultMap="RMPcProductCategoryBack">
+		select * FROM pc_product_category_back WHERE is_leaf = 1 and is_deleted = 0
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcProductCategoryBack"   useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO pc_product_category_back (
+        	category_name ,
+        	category_description ,
+        	parent_id ,
+        	category_order ,
+        	category_grade ,
+        	is_leaf
+        ) VALUES (
+        	#{categoryName} ,
+        	#{categoryDescription} ,
+        	#{parentId} ,
+        	#{categoryOrder} ,
+        	#{categoryGrade} ,
+        	#{isLeaf}
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" >
+        INSERT INTO pc_product_category_back (
+        	category_name ,
+        	category_description ,
+        	parent_id ,
+        	category_order ,
+        	category_grade ,
+        	is_leaf ,
+        	create_time ,
+        	modify_time 
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.categoryName} ,
+        
+        	#{item.categoryDescription} ,
+        
+        	#{item.parentId} ,
+        
+        	#{item.categoryOrder} ,
+        
+        	#{item.categoryGrade} ,
+        
+        	#{item.isLeaf} ,
+        
+        	#{item.createTime} ,
+        
+        	#{item.modifyTime} 
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcProductCategoryBack" >
+        UPDATE pc_product_category_back
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+	        <if test="categoryName!=null and categoryName!=''">
+	        category_name = #{categoryName} ,
+	         </if>
+	        <if test="categoryDescription!=null and categoryDescription!=''">
+	        category_description = #{categoryDescription} ,
+	         </if>
+			<if test="parentId!=null">
+	        parent_id = #{parentId} ,
+	        </if>
+			<if test="categoryOrder!=null">
+	        category_order = #{categoryOrder} ,
+	        </if>
+			<if test="categoryGrade!=null">
+	        category_grade = #{categoryGrade} ,
+	        </if>
+			<if test="isLeaf!=null">
+	        is_leaf = #{isLeaf} ,
+	        </if>
+			<if test="isVisible!=null">
+	        is_visible = #{isVisible} ,
+	        </if>
+			<if test="createTime!=null">
+	        create_time = #{createTime} ,
+	        </if>
+			<if test="modifyTime!=null">
+	        modify_time = #{modifyTime} 
+	        </if>
+	    </trim>    
+        WHERE 
+	       category_id = #{categoryId} 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" >  
+       UPDATE pc_product_category_back SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+#{id}       </foreach>  
+    </update>
+
+    <delete id="delete" >
+        UPDATE pc_product_category_back SET is_deleted = 1 WHERE
+        category_id = #{id} 
+    </delete>
+	
+	<delete id="deleteByIds" >
+        UPDATE pc_product_category_back SET is_deleted = 1 WHERE
+        id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			 <if test="categoryId!=null">
+	         AND category_id = #{categoryId} 
+	         </if>
+	        <if test="categoryName!=null and categoryName!=''">
+	         AND category_name = #{categoryName} 
+	         </if>
+	        <if test="categoryDescription!=null and categoryDescription!=''">
+	         AND category_description = #{categoryDescription} 
+	         </if>
+			 <if test="parentId!=null">
+	         AND parent_id = #{parentId} 
+	         </if>
+			 <if test="categoryOrder!=null">
+	         AND category_order = #{categoryOrder} 
+	         </if>
+			 <if test="categoryGrade!=null">
+	         AND category_grade = #{categoryGrade} 
+	         </if>
+			 <if test="isLeaf!=null">
+	         AND is_leaf = #{isLeaf} 
+	         </if>
+			 <if test="isVisible!=null">
+	         AND is_visible = #{isVisible} 
+	         </if>
+			 <if test="createTime!=null">
+	         AND create_time = #{createTime} 
+	         </if>
+			 <if test="modifyTime!=null">
+	         AND modify_time = #{modifyTime} 
+	         </if>
+			 AND is_deleted = 0
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="categoryName!=null and categoryName!=''">
+			    AND category_name LIKE CONCAT('%','${categoryName}','%')
+	         </if>
+	        <if test="categoryDescription!=null and categoryDescription!=''">
+			    AND category_description LIKE CONCAT('%','${categoryDescription}','%')
+	         </if>
+	         AND is_deleted = 0
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      				
+	       <if test="categoryId!=null">
+				AND category_id = #{categoryId}
+		   </if>
+	       <if test="categoryName!=null and categoryName!=''">
+				AND category_name = #{categoryName}
+		   </if>
+	       <if test="categoryDescription!=null and categoryDescription!=''">
+				AND category_description = #{categoryDescription}
+		   </if>
+	       <if test="parentId!=null">
+				AND parent_id = #{parentId}
+		   </if>
+	       <if test="categoryOrder!=null">
+				AND category_order = #{categoryOrder}
+		   </if>
+	       <if test="categoryGrade!=null">
+				AND category_grade = #{categoryGrade}
+		   </if>
+	       <if test="isLeaf!=null">
+				AND is_leaf = #{isLeaf}
+		   </if>
+	       <if test="isVisible!=null">
+				AND is_visible = #{isVisible}
+		   </if>
+	       <if test="createTime!=null">
+				AND create_time BETWEEN #{createTimeBegin} AND #{createTimeEnd}
+		   </if>
+	       <if test="modifyTime!=null">
+				AND modify_time BETWEEN #{modifyTimeBegin} AND #{modifyTimeEnd}
+		   </if>
+		   AND is_deleted = 0
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+	<select id="getPcProductCategoryBackList" resultMap="RMPcProductCategoryBack"  >
+        SELECT
+			*,
+			(
+				SELECT
+					GROUP_CONCAT(
+						CONCAT(
+							z.content_id,
+							'=',
+							z.categoryNames
+						) SEPARATOR ';'
+					)
+				FROM
+					(
+						SELECT
+							a2.category_id,
+							d.content_id,
+							GROUP_CONCAT(b.category_name) categoryNames
+						FROM
+							pc_product_category_back a2,
+							pc_product_category b,
+							pc_product_category_res_back c,
+							pc_product_category_content d
+						WHERE
+							a2.category_id = c.back_category_id
+						AND b.category_id = c.front_category_id
+						AND b.category_id = d.category_id
+						GROUP BY
+							d.content_id,
+							a2.category_id
+						order by a2.category_order
+					) z
+				WHERE
+					a.category_id = z.category_id
+			) contentIdAndCategoryNames,
+			(
+				SELECT
+				COUNT(1)
+				FROM pc_product_spu h JOIN pc_product_sku g ON h.product_spuid = g.product_spuid JOIN pc_business_product i ON i.product_skuid = g.product_skuid
+				WHERE i.is_company = 1 AND  h.category_id = a.category_id
+			) productAmount
+		FROM
+			pc_product_category_back a
+       <include refid="findPagewhere"/>
+       ORDER BY category_order is null, category_order
+    </select>
+	
+</mapper>
+

@@ -1,0 +1,706 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-2-26 16:32:13
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcBrandMapper">
+	<resultMap id="RMPcBrand" type="com.toolmall.business.product.bean.PcBrand">
+        <result property="id" column="id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="modifyDate" column="modify_date"/>
+        <result property="orders" column="orders"/>
+        <result property="introduction" column="introduction"/>
+        <result property="logo" column="logo"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="url" column="url"/>
+        <result property="brief" column="brief"/>
+        <result property="firstPy" column="first_py"/>
+        <result property="appLogo" column="app_logo"/>
+        <result property="beginDate" column="begin_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="label" column="label"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="enName" column="en_name"/>
+        <result property="showInBrandWall" column="show_in_brand_wall"/>
+        <result property="seoTitle" column="seo_title"/>
+        <result property="seoKeywords" column="seo_keywords"/>
+        <result property="seoDescription" column="seo_description"/>
+        <result property="pageName" column="page_name"/>
+		<result property="seoUpdateFlag" column="seo_update_flag"/>
+	</resultMap>
+	
+	<resultMap id="RMBrandVO" type="com.toolmall.business.product.back.BrandVO">
+		<result property="id" column="id"/>
+		<result property="logo" column="logo"/>
+		<result property="name" column="name"/>
+		<result property="url" column="url"/>
+		<result property="brief" column="brief"/>
+		<result property="appLogo" column="app_logo"/>
+		<result property="enName" column="en_name"/>
+		<result property="introduction" column="introduction"/>
+	</resultMap>
+	
+	<resultMap id="RMSimpleBrandVO" type="com.toolmall.business.product.back.SimpleBrandVO">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="logo" column="logo"/>
+		<result property="url" column="url"/>
+		<result property="enName" column="en_name"/>
+	</resultMap>
+
+    <select id="selectPageList" resultMap="RMPcBrand">
+        SELECT *,(SELECT count(1) from pc_product_spu b JOIN pc_product_sku c ON b.product_spuid = c.product_spuid
+					JOIN pc_business_product d ON c.product_skuid = d.product_skuid WHERE d.is_company = 1 AND b.brand_id = a.id) productAmount
+		FROM pc_brand a
+       <include refid="findPagewhere"/>
+       ORDER BY orders is null,orders
+    </select>
+
+	<select id="selectVOList" resultMap="RMBrandVO">
+		SELECT
+		id,
+		logo,
+		name,
+		url,
+		brief,
+		app_logo,
+		en_name,
+		introduction
+		FROM
+		pc_brand
+		WHERE
+		IS_DELETED = 0
+	</select>
+
+	<select id="findByIgoreCaseName" parameterType="java.lang.String" resultType="java.lang.Long">
+		SELECT
+		id
+		FROM
+		pc_brand t
+		WHERE
+		(t.name = #{name} OR lower(t.en_name) = #{name})
+		AND (
+		t.is_Deleted IS NULL
+		OR t.is_Deleted != 1)
+	</select>
+
+	<select id="selectSimpleVOList" resultMap="RMSimpleBrandVO">
+		SELECT
+		id,
+		name,
+		en_name,
+		logo,
+		url
+		FROM
+		pc_brand
+		WHERE
+		IS_DELETED = 0
+	</select>
+
+    <select id="selectPageCount" resultType="long">
+        SELECT count(*) FROM pc_brand 
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcBrand" resultMap="RMPcBrand">
+        SELECT * FROM pc_brand
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcBrand">
+        SELECT * FROM pc_brand
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcBrand">
+        SELECT * FROM pc_brand
+       <include refid="findPagewhere"/>
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcBrand">
+		SELECT *
+	    <![CDATA[
+		    FROM pc_brand 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcBrand"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pc_brand (
+        	orders ,
+        	introduction ,
+        	logo ,
+        	name ,
+        	url ,
+        	brief ,
+        	first_py ,
+        	app_logo ,
+        	label ,
+        	en_name ,
+        	show_in_brand_wall ,
+        	seo_title,
+        	seo_keywords,
+        	seo_description,
+        	page_name,
+		seo_update_flag
+        ) VALUES (
+        	#{orders, jdbcType=INTEGER} ,
+        	#{introduction, jdbcType=VARCHAR} ,
+        	#{logo, jdbcType=VARCHAR} ,
+        	#{name} ,
+        	#{url, jdbcType=VARCHAR} ,
+        	#{brief, jdbcType=VARCHAR} ,
+        	#{firstPy, jdbcType=VARCHAR} ,
+        	#{appLogo, jdbcType=VARCHAR} ,
+        	#{label, jdbcType=INTEGER} ,
+        	#{enName, jdbcType=VARCHAR} ,
+        	#{showInBrandWall} ,
+        	#{seoTitle},
+        	#{seoKeywords},
+        	#{seoDescription},
+        	#{pageName},
+		#{seoUpdateFlag}
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List">
+        INSERT INTO pc_brand (
+        	create_date ,
+        	modify_date ,
+        	orders ,
+        	introduction ,
+        	logo ,
+        	name ,
+        	type ,
+        	url ,
+        	brief ,
+        	first_py ,
+        	app_logo ,
+        	begin_date ,
+        	end_date ,
+        	label ,
+        	is_deleted ,
+        	en_name ,
+        	show_in_brand_wall ,
+        	seo_title,
+        	seo_keywords,
+        	seo_description,
+        	page_name,
+		seo_update_flag
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.createDate} ,
+        	#{item.modifyDate} ,
+        	#{item.orders} ,
+        
+        	#{item.introduction} ,
+        
+        	#{item.logo} ,
+        
+        	#{item.name} ,
+        
+        	#{item.type} ,
+        
+        	#{item.url} ,
+        
+        	#{item.brief} ,
+        
+        	#{item.firstPy} ,
+        
+        	#{item.appLogo} ,
+        
+        	#{item.beginDate} ,
+        
+        	#{item.endDate} ,
+        
+        	#{item.label} ,
+        
+        	#{item.isDeleted} ,
+        
+        	#{item.enName} ,
+        
+        	#{item.showInBrandWall} ,
+        	
+        	#{item.seoTitle},
+        	
+        	#{item.seoKeywords},
+        	
+        	#{item.seoDescription},
+        	
+        	#{item.pageName},
+			#{item.seoUpdateFlag}
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcBrand">
+        UPDATE pc_brand
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+			<if test="createDate!=null">
+	        create_date = #{createDate} ,
+	        </if>
+			<if test="modifyDate!=null">
+	        modify_date = #{modifyDate} ,
+	        </if>
+			<if test="orders!=null">
+	        orders = #{orders} ,
+	        </if>
+	        <if test="introduction!=null and introduction!=''">
+	        introduction = #{introduction} ,
+	         </if>
+	        <if test="logo!=null and logo!=''">
+	        logo = #{logo} ,
+	         </if>
+	        <if test="name!=null and name!=''">
+	        name = #{name} ,
+	         </if>
+			<if test="type!=null">
+	        type = #{type} ,
+	        </if>
+	        <if test="url!=null and url!=''">
+	        url = #{url} ,
+	         </if>
+	        <if test="brief!=null and brief!=''">
+	        brief = #{brief} ,
+	         </if>
+	        <if test="firstPy!=null and firstPy!=''">
+	        first_py = #{firstPy} ,
+	         </if>
+	        <if test="appLogo!=null and appLogo!=''">
+	        app_logo = #{appLogo} ,
+	         </if>
+			<if test="beginDate!=null">
+	        begin_date = #{beginDate} ,
+	        </if>
+			<if test="endDate!=null">
+	        end_date = #{endDate} ,
+	        </if>
+			<if test="label!=null">
+	        label = #{label} ,
+	        </if>
+	        <if test="isDeleted!=null and isDeleted!=''">
+	        is_deleted = #{isDeleted} ,
+	         </if>
+	        <if test="enName!=null and enName!=''">
+	        en_name = #{enName} ,
+	         </if>
+	        <if test="showInBrandWall!=null">
+	        show_in_brand_wall = #{showInBrandWall} ,
+	         </if>
+	         <if test="seoTitle!=null and seoTitle!=''">
+	        seo_title = #{seoTitle} ,
+	        </if>
+	        <if test="seoKeywords!=null and seoKeywords!=''">
+	        seo_keywords = #{seoKeywords} ,
+	        </if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+	        seo_description = #{seoDescription} ,
+	        </if>
+	        <if test="pageName!=null and pageName!=''">
+	        page_name = #{pageName},
+	        </if>
+			<if test="seoUpdateFlag!=null and seoUpdateFlag!=''">
+				seo_update_flag = #{seoUpdateFlag}
+			</if>
+	    </trim>    
+        WHERE 
+	       id = #{id} 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List">  
+       UPDATE pc_brand SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+#{id}       </foreach>  
+    </update>
+
+	<update id="batchUpdateSeo" parameterType="java.util.List">
+		UPDATE pc_brand
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="seo_title = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoTitle != null and i.seoTitle != ''">
+						WHEN id = #{i.id} THEN #{i.seoTitle}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="seo_keywords = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoKeywords != null and i.seoKeywords != ''">
+						WHEN id = #{i.id} THEN #{i.seoKeywords}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="seo_description = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.seoDescription != null and i.seoDescription != ''">
+						WHEN id = #{i.id} THEN #{i.seoDescription}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		WHERE id IN
+		<foreach collection="list" index="index" item="i" separator="," open="(" close=")">
+			#{i.id}
+		</foreach>
+	</update>
+
+    <update id="delete">
+        UPDATE pc_brand set is_deleted = 1 WHERE id = #{id} 
+    </update>
+	
+	<update id="deleteByIds">
+         UPDATE pc_brand set is_deleted = 1 WHERE id
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </update>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			 <if test="id!=null">
+	         AND id = #{id} 
+	         </if>
+			 <if test="createDate!=null">
+	         AND create_date = #{createDate} 
+	         </if>
+			 <if test="modifyDate!=null">
+	         AND modify_date = #{modifyDate} 
+	         </if>
+			 <if test="orders!=null">
+	         AND orders = #{orders} 
+	         </if>
+	        <if test="introduction!=null and introduction!=''">
+	         AND introduction = #{introduction} 
+	         </if>
+	        <if test="logo!=null and logo!=''">
+	         AND logo = #{logo} 
+	         </if>
+	        <if test="name!=null and name!=''">
+	         AND name LIKE concat('%',#{name},'%')
+	         </if>
+			 <if test="type!=null">
+	         AND type = #{type} 
+	         </if>
+	        <if test="url!=null and url!=''">
+	         AND url = #{url} 
+	         </if>
+	        <if test="brief!=null and brief!=''">
+	         AND brief = #{brief} 
+	         </if>
+	        <if test="firstPy!=null and firstPy!=''">
+	         AND first_py = #{firstPy} 
+	         </if>
+	        <if test="appLogo!=null and appLogo!=''">
+	         AND app_logo = #{appLogo} 
+	         </if>
+			 <if test="beginDate!=null">
+	         AND begin_date = #{beginDate} 
+	         </if>
+			 <if test="endDate!=null">
+	         AND end_date = #{endDate} 
+	         </if>
+			 <if test="label!=null">
+	         AND label = #{label} 
+	         </if>
+	        <if test="enName!=null and enName!=''">
+	         AND en_name = #{enName} 
+	         </if>
+	        <if test="showInBrandWall!=null and showInBrandWall!=''">
+	         AND show_in_brand_wall = #{showInBrandWall} 
+	         </if>
+	         <if test="seoTitle!=null and seoTitle!=''">
+	         AND seo_title = #{seoTitle} 
+	         </if>
+	        <if test="seoKeywords!=null and seoKeywords!=''">
+	         AND seo_keywords = #{seoKeywords} 
+	        </if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+	         AND seo_description = #{seoDescription} 
+	        </if>
+	        <if test="pageName!=null and pageName!=''">
+	         AND page_name = #{pageName} 
+	        </if>
+			<if test="seoUpdateFlag!=null and seoUpdateFlag!=''">
+			 AND seo_update_flag = #{seoUpdateFlag}
+			</if>
+	        AND is_deleted = 0
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="logo!=null and logo!=''">
+			    AND logo LIKE CONCAT('%','${logo}','%')
+	         </if>
+	        <if test="name!=null and name!=''">
+			    AND name LIKE CONCAT('%','${name}','%')
+	         </if>
+	        <if test="url!=null and url!=''">
+			    AND url LIKE CONCAT('%','${url}','%')
+	         </if>
+	        <if test="brief!=null and brief!=''">
+			    AND brief LIKE CONCAT('%','${brief}','%')
+	         </if>
+	        <if test="firstPy!=null and firstPy!=''">
+			    AND first_py LIKE CONCAT('%','${firstPy}','%')
+	         </if>
+	        <if test="appLogo!=null and appLogo!=''">
+			    AND app_logo LIKE CONCAT('%','${appLogo}','%')
+	         </if>
+	        <if test="enName!=null and enName!=''">
+			    AND en_name LIKE CONCAT('%','${enName}','%')
+	         </if>
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      				
+	       <if test="id!=null">
+				AND id = #{id}
+		   </if>
+	       <if test="createDate!=null">
+				AND create_date BETWEEN #{createDateBegin} AND #{createDateEnd}
+		   </if>
+	       <if test="modifyDate!=null">
+				AND modify_date BETWEEN #{modifyDateBegin} AND #{modifyDateEnd}
+		   </if>
+	       <if test="orders!=null">
+				AND orders = #{orders}
+		   </if>
+	       <if test="introduction!=null and introduction!=''">
+				AND introduction = #{introduction}
+		   </if>
+	       <if test="logo!=null and logo!=''">
+				AND logo = #{logo}
+		   </if>
+	       <if test="name!=null and name!=''">
+				AND name = #{name}
+		   </if>
+	       <if test="type!=null">
+				AND type = #{type}
+		   </if>
+	       <if test="url!=null and url!=''">
+				AND url = #{url}
+		   </if>
+	       <if test="brief!=null and brief!=''">
+				AND brief = #{brief}
+		   </if>
+	       <if test="firstPy!=null and firstPy!=''">
+				AND first_py = #{firstPy}
+		   </if>
+	       <if test="appLogo!=null and appLogo!=''">
+				AND app_logo = #{appLogo}
+		   </if>
+	       <if test="beginDate!=null">
+				AND begin_date BETWEEN #{beginDateBegin} AND #{beginDateEnd}
+		   </if>
+	       <if test="endDate!=null">
+				AND end_date BETWEEN #{endDateBegin} AND #{endDateEnd}
+		   </if>
+	       <if test="label!=null">
+				AND label = #{label}
+		   </if>
+	       <if test="isDeleted!=null and isDeleted!=''">
+				AND is_deleted = #{isDeleted}
+		   </if>
+	       <if test="enName!=null and enName!=''">
+				AND en_name = #{enName}
+		   </if>
+	       <if test="showInBrandWall!=null and showInBrandWall!=''">
+				AND show_in_brand_wall = #{showInBrandWall}
+		   </if>
+		   <if test="seoTitle!=null and seoTitle!=''">
+	         	AND seo_title = #{seoTitle} 
+	        </if>
+	        <if test="seoKeywords!=null and seoKeywords!=''">
+	         	AND seo_keywords = #{seoKeywords} 
+	        </if>
+	        <if test="seoDescription!=null and seoDescription!=''">
+	         	AND seo_description = #{seoDescription} 
+	        </if>
+	        <if test="pageName!=null and pageName!=''">
+	         	AND page_name = #{pageName}
+	        </if>
+			<if test="seoUpdateFlag!=null and seoUpdateFlag!=''">
+				AND seo_update_flag = #{seoUpdateFlag}
+			</if>
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+	<select id="selectVOListByIds" resultMap="RMPcBrand" parameterType="java.util.List">
+		SELECT
+			*
+		FROM
+			pc_brand
+		WHERE
+			IS_DELETED = 0
+			<if test="list != null">
+			  AND id IN
+				<foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+	</select>
+	
+	<select id="selectVOById" resultMap="RMBrandVO" parameterType="java.lang.Long">
+		SELECT
+			id,
+			logo,
+			name,
+			url,
+			brief,
+			app_logo,
+			en_name,
+			introduction
+		FROM
+			pc_brand
+		WHERE
+			ID = #{id}
+			AND
+			IS_DELETED = 0
+	</select>
+	
+	<select id="selectSimpleVOById" resultMap="RMSimpleBrandVO" parameterType="java.lang.Long">
+		SELECT
+			id,
+			name,
+			url,
+			logo,
+			en_name
+		FROM
+			pc_brand
+		WHERE
+			ID = #{id} AND IS_DELETED = 0
+	</select>
+	
+	<select id="selectSimpleBrandListByGrade" resultMap="RMSimpleBrandVO">
+		SELECT
+			id,
+			name,
+			en_name,
+			logo,
+			url
+		FROM
+			pc_brand
+		WHERE
+			is_deleted = 0
+			AND id IN (
+				SELECT
+					DISTINCT brand_id
+				FROM
+					pc_product_spu a, pc_product_sku b, pc_business_product c
+				WHERE
+					a.product_spuid = b.product_spuid and b.product_skuid = c.product_skuid
+					AND a.category_id IN (
+						select back_category_id from pc_product_category_res_back where front_category_id in (
+						<include refid="getCategoryId">
+							<property name="categoryId" value="${categoryId}"/>
+							<property name="grade" value="${grade}"/>
+						</include>
+					))
+					AND b.is_deleted = 0
+					AND c.is_company = 1
+					AND a.brand_id IS NOT NULL
+			)
+		ORDER BY orders ASC
+	</select>
+	
+	<sql id="getCategoryId">
+		<choose>
+			<when test="grade == 0">
+				SELECT
+					c3.category_id
+				FROM
+					pc_product_category c1
+					LEFT JOIN pc_product_category c2 ON c1.category_id = c2.parent_id
+					LEFT JOIN pc_product_category c3 ON c2.category_id = c3.parent_id
+				WHERE
+					c1.category_grade = 0
+					AND c1.category_id = #{categoryId}
+					AND c1.IS_DELETED = 0 AND c2.IS_DELETED = 0 AND c3.IS_DELETED = 0
+			</when>
+			<when test="grade == 1">
+				SELECT
+					c3.category_id
+				FROM
+					pc_product_category c2
+					LEFT JOIN pc_product_category c3 ON c2.category_id = c3.parent_id
+				WHERE
+					c2.category_grade = 1
+					AND c2.category_id = #{categoryId}
+					AND c2.IS_DELETED = 0
+					AND c3.IS_DELETED = 0
+			</when>
+			<when test="grade == 2">
+				SELECT
+					c3.category_id
+				FROM
+					pc_product_category c3
+				WHERE
+					c3.category_grade = 2
+					AND c3.category_id = #{categoryId}
+					AND c3.IS_DELETED = 0
+			</when>
+		</choose>
+	</sql>
+	
+	<select id="selectByCategoryList" resultType="com.toolmall.business.product.back.SimpleBrandVOExtCategory" parameterType="java.util.List">
+		SELECT
+			bb.ID,
+			bb.NAME,
+			bb.EN_NAME AS enName,
+			bb.LOGO,
+			bb.URL,
+			r.PRODUCT_CATEGORY AS categoryId,
+			r.PARENT
+		FROM
+			(
+			SELECT
+				DISTINCT a.brand_id BRAND,
+				a.category_id PRODUCT_CATEGORY,
+				d.parent_id PARENT
+			FROM
+				pc_product_spu a
+	            JOIN pc_product_sku b ON a.product_spuid = b.product_spuid
+	            JOIN pc_business_product e ON b.product_skuid = e.product_skuid
+				LEFT JOIN pc_brand c ON a.brand_id = c.id
+				LEFT JOIN pc_product_category_back d ON a.category_id = d.category_id
+			WHERE
+				b.IS_DELETED = 0
+				AND d.IS_DELETED = 0
+				AND c.IS_DELETED = 0
+				AND c.NAME <![CDATA[ <> ]]> '其他'
+				AND e.is_company = 1
+				AND a.category_id IN
+				(SELECT back_category_id FROM pc_product_category_res_back WHERE is_deleted = 0 AND front_category_id IN
+				<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+				)
+			) r LEFT JOIN pc_brand bb ON r.BRAND = bb.ID
+		ORDER BY bb.orders ASC
+	</select>
+	
+</mapper>
+

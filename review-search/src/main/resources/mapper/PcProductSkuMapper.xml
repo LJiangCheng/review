@@ -1,0 +1,1273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-6-19 10:54:08
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcProductSkuMapper">
+	<resultMap id="RMPcProductSku" type="com.toolmall.business.product.bean.PcProductSku">
+        <result property="id" column="id"/>
+        <result property="productSkuid" column="product_skuid"/>
+        <result property="productSpuid" column="product_spuid"/>
+        <result property="primarySkuid" column="primary_skuid"/>
+        <result property="isDerivative" column="is_derivative"/>
+        <result property="isValid" column="is_valid"/>
+        <result property="skuIntroduction" column="sku_introduction"/>
+        <result property="imageFile" column="image_file"/>
+        <result property="pdfFile" column="pdf_file"/>
+        <result property="videoFile" column="video_file"/>
+        <result property="url" column="url"/>
+        <result property="productAllinfo" column="product_allinfo"/>
+        <result property="viewFirst" column="view_first"/>
+        <result property="searchWeight" column="search_weight"/>
+        <result property="searchKeyword" column="search_keyword"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="isVisible" column="is_visible"/>
+        <result property="isShelved" column="is_shelved"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifyTime" column="modify_time"/>
+        <result property="totalHits" column="total_hits"/>
+        <result property="makerPlace" column="maker_place"/>
+        <result property="deliveryPeriod" column="delivery_period"/>
+        <result property="totalSales" column="total_sales"/>
+        <result property="syncStock" column="sync_stock"/>
+        <result property="enableStock" column="enable_stock"/>
+        <result property="lockedStock" column="locked_stock"/>
+        <result property="unicode" column="unicode"/>
+        <result property="makerCode" column="maker_code"/>
+        <result property="toolmallPrice" column="toolmall_price"/>
+        <result property="marketPrice" column="market_price"/>
+        <result property="basePrice" column="base_price"/>
+        <result property="taxRate" column="tax_rate"/>
+        <result property="length" column="length"/>
+        <result property="width" column="width"/>
+        <result property="height" column="height"/>
+        <result property="weight" column="weight"/>
+        <result property="largeType" column="large_type"/>
+        <result property="unitName" column="unit_name"/>
+        <result property="validityDays" column="validity_days"/>
+	</resultMap>
+
+	<resultMap id="RMSimpleProductVO" type="com.toolmall.business.product.back.SimpleProductVO">
+		<result property="id" column="ID"/>
+		<result property="sn" column="SN"/>
+		<result property="unicode" column="UNICODE"/>
+		<result property="name" column="NAME"/>
+		<result property="price" column="PRICE"/>
+		<result property="marketPrice" column="MARKET_PRICE"/>
+		<result property="makerModel" column="MAKER_MODEL"/>
+		<result property="image" column="IMAGE"/>
+		<result property="unit" column="UNIT"/>
+		<result property="weight" column="WEIGHT"/>
+		<result property="stock" column="STOCK"/>
+		<result property="brief" column="BRIEF"/>
+		<result property="isList" column="IS_LIST"/>
+		<result property="categoryId" column="CATEGORY_ID"/>
+		<result property="categoryName" column="CATEGORY_NAME"/>
+		<result property="brandId" column="BRAND_ID"/>
+		<result property="brandName" column="BRAND_NAME"/>
+	</resultMap>
+
+	<sql id="simpleQueryVO">
+		a.ID, a.product_skuid AS sn, a.UNICODE, a.product_allinfo NAME, a.toolmall_price AS price, a.MARKET_PRICE, a.maker_code AS makerModel, a.image_file AS image, a.unit_name AS unit,
+		a.WEIGHT, a.enable_stock AS stock, c.is_company AS isList, e.category_id AS CATEGORY_ID,
+		e.category_name AS CATEGORY_NAME, d.ID AS BRAND_ID, d.NAME AS BRAND_NAME
+	</sql>
+
+	<select id="selectCategoryProductByIdList" resultMap="RMSimpleProductVO" parameterType="java.util.Map">
+		SELECT
+		<include refid="simpleQueryVO"/>
+		FROM
+		pc_product_sku a
+		JOIN pc_product_spu b ON a.product_spuid = b.product_spuid
+		JOIN pc_business_product c ON a.product_skuid = c.product_skuid
+		LEFT JOIN pc_brand d ON b.brand_id = d.id
+		LEFT JOIN pc_product_category_back e ON b.category_id = e.category_id
+		WHERE
+		a.IS_DELETED = 0
+		AND c.is_company = 1
+		AND d.IS_DELETED = 0
+		AND e.IS_DELETED = 0
+		<if test="list != null and list.size() > 0">
+			AND a.ID IN
+			<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		ORDER BY ID ASC
+	</select>
+
+	<select id="getProductVOById" resultMap="RMSimpleProductVO" parameterType="java.lang.Integer">
+		SELECT
+		<include refid="simpleQueryVO"/>
+		FROM
+		pc_product_sku a
+		JOIN pc_product_spu b ON a.product_spuid = b.product_spuid
+		JOIN pc_business_product c ON a.product_skuid = c.product_skuid
+		LEFT JOIN pc_brand d ON b.brand_id = d.id
+		LEFT JOIN pc_product_category_back e ON b.category_id = e.category_id
+		WHERE
+		a.IS_DELETED = 0
+		AND a.id = #{id}
+		AND c.is_company = 1
+		AND d.IS_DELETED = 0
+		AND e.IS_DELETED = 0
+	</select>
+
+	<select id="selectTodayListByIds" resultMap="RMSimpleProductVO" parameterType="java.util.Map">
+		SELECT
+		a.ID, a.product_skuid AS sn, a.UNICODE, a.product_allinfo NAME, a.toolmall_price AS price, a.MARKET_PRICE, a.maker_code AS makerModel,
+		(SELECT f.medium FROM pc_product_image f WHERE f.product_skuid = a.product_skuid ORDER BY f.orders ASC limit 1) AS image,
+		a.unit_name AS unit,a.WEIGHT, a.enable_stock AS stock, c.is_company AS isList, e.category_id AS CATEGORY_ID,
+		e.category_name AS CATEGORY_NAME, d.ID AS BRAND_ID, d.NAME AS BRAND_NAME
+		FROM
+		pc_product_sku a
+		JOIN pc_product_spu b ON a.product_spuid = b.product_spuid
+		JOIN pc_business_product c ON a.product_skuid = c.product_skuid
+		LEFT JOIN pc_brand d ON b.brand_id = d.id
+		LEFT JOIN pc_product_category_back e ON b.category_id = e.category_id
+		WHERE
+		a.IS_DELETED = 0
+		AND c.is_company = 1
+		AND d.IS_DELETED = 0
+		AND e.IS_DELETED = 0
+		<if test="list != null and list.size() > 0">
+			AND a.ID IN
+			<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+
+    <select id="selectPageList" resultMap="RMPcProductSku"  >
+        SELECT * FROM pc_product_sku
+       <include refid="findPagewhere"/>
+    </select>
+
+    <select id="selectPageCount" resultType="long"  >
+        SELECT count(*) FROM pc_product_sku 
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcProductSku" resultMap="RMPcProductSku">
+        SELECT * FROM pc_product_sku
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcProductSku"  >
+        SELECT * FROM pc_product_sku
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcProductSku"  >
+        SELECT * FROM pc_product_sku
+       <include refid="findPagewhere"/>
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcProductSku"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_product_sku 
+	        WHERE 
+		        id = #{id}  AND is_deleted = 0
+	    ]]>
+	</select>
+	
+	<select id="getBySkuId" resultMap="RMPcProductSku"  >
+		SELECT
+			a.*
+	    <![CDATA[
+		    FROM pc_product_sku a
+	        WHERE 
+		        a.product_skuid = #{id}  AND a.is_deleted = 0
+	    ]]>
+	</select>
+
+	<select id="batchGetBySkuids" resultMap="RMPcProductSku"  >
+		SELECT
+		a.*
+		FROM pc_product_sku a
+		WHERE
+			a.is_deleted = 0 AND a.product_skuid IN
+			<foreach collection="list" item="i" open="(" close=")" separator=",">
+				#{i}
+			</foreach>
+	</select>
+
+	<select id="getWithPropertyBySkuId" resultMap="RMPcProductSku"  >
+		SELECT
+		a.*,
+		(SELECT
+			GROUP_CONCAT(
+			d.property_name,
+			':',
+			b.value_name
+			SEPARATOR ','
+			)
+			FROM pc_product_sku_value b JOIN pc_property d ON b.property_id = d.property_id AND d.is_searching = 1
+			WHERE a.product_skuid = b.product_skuid AND b.is_deleted = 0
+		) AS property,
+		(SELECT
+			GROUP_CONCAT(
+			c.value_name
+			SEPARATOR ' '
+			)
+			FROM pc_product_sku_value c
+			WHERE a.product_skuid = c.product_skuid AND c.is_deleted = 0
+		) AS propertyValue
+		<![CDATA[
+		    FROM pc_product_sku a
+	        WHERE
+		        a.product_skuid = #{id}  AND a.is_deleted = 0
+	    ]]>
+	</select>
+
+	<select id="batchGetWithPropertyBySkuids" resultMap="RMPcProductSku"  >
+		SELECT
+		a.*,
+		(SELECT
+		GROUP_CONCAT(
+		d.property_name,
+		':',
+		b.value_name
+		SEPARATOR ','
+		)
+		FROM pc_product_sku_value b JOIN pc_property d ON b.property_id = d.property_id AND d.is_searching = 1
+		WHERE a.product_skuid = b.product_skuid AND b.is_deleted = 0
+		) AS property,
+		(SELECT
+		GROUP_CONCAT(
+		c.value_name
+		SEPARATOR ' '
+		)
+		FROM pc_product_sku_value c
+		WHERE a.product_skuid = c.product_skuid AND c.is_deleted = 0
+		) AS propertyValue
+		FROM pc_product_sku a
+		WHERE
+		a.is_deleted = 0
+			AND a.product_skuid IN
+			<foreach collection="list" item="i" separator="," open="(" close=")">
+				#{i}
+			</foreach>
+	</select>
+
+	<select id="getByUnicode" resultMap="RMPcProductSku"  >
+		SELECT *
+		<![CDATA[
+		    FROM pc_product_sku
+	        WHERE
+		        unicode = #{unicode} AND is_deleted = 0
+	    ]]>
+	</select>
+
+	<select id="getBySpuId" resultMap="RMPcProductSku"  >
+		select *
+		<![CDATA[
+		    FROM pc_product_sku
+	        WHERE
+		        product_spuid = #{spuId} AND is_deleted = 0
+	    ]]>
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcProductSku"   useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO pc_product_sku (
+        	product_skuid ,
+        	product_spuid ,
+        	primary_skuid ,
+        	is_derivative ,
+        	is_valid ,
+        	sku_introduction ,
+        	image_file ,
+        	pdf_file ,
+        	video_file ,
+        	url ,
+        	product_allinfo ,
+        	view_first ,
+        	search_weight ,
+        	search_keyword ,
+        	is_visible ,
+        	is_shelved ,
+        	total_hits ,
+        	maker_place ,
+        	delivery_period ,
+        	total_sales ,
+        	enable_stock ,
+        	locked_stock ,
+        	unicode ,
+        	maker_code ,
+        	toolmall_price ,
+        	market_price ,
+        	base_price ,
+        	tax_rate ,
+        	length ,
+        	width ,
+        	height ,
+        	weight ,
+        	large_type ,
+        	unit_name ,
+        	validity_days,
+			tax_classify_code,
+			tax_classify_name,
+			invoice_name,
+			invoice_spec
+        ) VALUES (
+        	#{productSkuid} ,
+        
+        	#{productSpuid} ,
+        
+        	#{primarySkuid} ,
+        
+        	#{isDerivative} ,
+        
+        	#{isValid} ,
+        
+        	#{skuIntroduction} ,
+        
+        	#{imageFile} ,
+        
+        	#{pdfFile} ,
+        
+        	#{videoFile} ,
+        
+        	#{url} ,
+        
+        	#{productAllinfo} ,
+        
+        	#{viewFirst} ,
+        
+        	#{searchWeight} ,
+        
+        	#{searchKeyword} ,
+        
+        	#{isVisible} ,
+        
+        	#{isShelved} ,
+        
+        	#{totalHits} ,
+        
+        	#{makerPlace} ,
+        
+        	#{deliveryPeriod} ,
+        
+        	#{totalSales} ,
+        
+        	#{enableStock} ,
+        
+        	#{lockedStock} ,
+        
+        	#{unicode} ,
+        
+        	#{makerCode} ,
+        
+        	#{toolmallPrice} ,
+        
+        	#{marketPrice} ,
+        
+        	#{basePrice} ,
+        
+        	#{taxRate} ,
+        
+        	#{length} ,
+        
+        	#{width} ,
+        
+        	#{height} ,
+        
+        	#{weight} ,
+        
+        	#{largeType} ,
+        
+        	#{unitName} ,
+        
+        	#{validityDays} ,
+			#{taxClassifyCode},
+			#{taxClassifyName},
+			#{invoiceName},
+			#{invoiceSpec}
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" >
+        INSERT INTO pc_product_sku (
+        	product_skuid ,
+        	product_spuid ,
+        	primary_skuid ,
+        	is_derivative ,
+        	is_valid ,
+        	sku_introduction ,
+        	image_file ,
+        	pdf_file ,
+        	video_file ,
+        	url ,
+        	product_allinfo ,
+        	view_first ,
+        	search_weight ,
+        	search_keyword ,
+        	is_visible ,
+        	is_shelved ,
+        	total_hits ,
+        	maker_place ,
+        	delivery_period ,
+        	total_sales ,
+        	enable_stock ,
+        	locked_stock ,
+        	unicode ,
+        	maker_code ,
+        	toolmall_price ,
+        	market_price ,
+        	base_price ,
+        	tax_rate ,
+        	length ,
+        	width ,
+        	height ,
+        	weight ,
+        	large_type ,
+        	unit_name ,
+        	validity_days,
+		tax_classify_code,
+		tax_classify_name,
+		invoice_name,
+		invoice_spec
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.productSkuid} ,
+        
+        	#{item.productSpuid} ,
+        
+        	#{item.primarySkuid} ,
+        
+        	#{item.isDerivative} ,
+        
+        	#{item.isValid} ,
+        
+        	#{item.skuIntroduction} ,
+        
+        	#{item.imageFile} ,
+        
+        	#{item.pdfFile} ,
+        
+        	#{item.videoFile} ,
+        
+        	#{item.url} ,
+        
+        	#{item.productAllinfo} ,
+        
+        	#{item.viewFirst} ,
+        
+        	#{item.searchWeight} ,
+        
+        	#{item.searchKeyword} ,
+        
+        	#{item.isVisible} ,
+        
+        	#{item.isShelved} ,
+        
+        	#{item.totalHits} ,
+        
+        	#{item.makerPlace} ,
+        
+        	#{item.deliveryPeriod} ,
+        
+        	#{item.totalSales} ,
+        
+        	#{item.enableStock} ,
+        
+        	#{item.lockedStock} ,
+        
+        	#{item.unicode} ,
+        
+        	#{item.makerCode} ,
+        
+        	#{item.toolmallPrice} ,
+        
+        	#{item.marketPrice} ,
+        
+        	#{item.basePrice} ,
+        
+        	#{item.taxRate} ,
+        
+        	#{item.length} ,
+        
+        	#{item.width} ,
+        
+        	#{item.height} ,
+        
+        	#{item.weight} ,
+        
+        	#{item.largeType} ,
+        
+        	#{item.unitName} ,
+        
+        	#{item.validityDays}  ,
+
+			#{validityDays} ,
+			#{taxClassifyCode},
+			#{taxClassifyName},
+			#{invoiceName},
+			#{invoiceSpec}
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcProductSku" >
+        UPDATE pc_product_sku
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+			<if test="productSkuid!=null">
+	        product_skuid = #{productSkuid} ,
+	        </if>
+			<if test="productSpuid!=null">
+	        product_spuid = #{productSpuid} ,
+	        </if>
+			<if test="primarySkuid!=null">
+	        primary_skuid = #{primarySkuid} ,
+	        </if>
+			<if test="isDerivative!=null">
+	        is_derivative = #{isDerivative} ,
+	        </if>
+			<if test="isValid!=null">
+	        is_valid = #{isValid} ,
+	        </if>
+	        <if test="skuIntroduction!=null and skuIntroduction!=''">
+	        sku_introduction = #{skuIntroduction} ,
+	         </if>
+	        <if test="imageFile!=null and imageFile!=''">
+	        image_file = #{imageFile} ,
+	         </if>
+	        <if test="pdfFile!=null">
+	        pdf_file = #{pdfFile} ,
+	         </if>
+	        <if test="videoFile!=null">
+	        video_file = #{videoFile} ,
+	         </if>
+	        <if test="url!=null and url!=''">
+	        url = #{url} ,
+	         </if>
+	        <if test="productAllinfo!=null and productAllinfo!=''">
+	        product_allinfo = #{productAllinfo} ,
+	         </if>
+			<if test="viewFirst!=null">
+	        view_first = #{viewFirst} ,
+	        </if>
+	        <if test="searchWeight!=null and searchWeight!=''">
+	        search_weight = #{searchWeight} ,
+	         </if>
+	        <if test="searchKeyword!=null and searchKeyword!=''">
+	        search_keyword = #{searchKeyword} ,
+	         </if>
+			<if test="isDeleted!=null">
+	        is_deleted = #{isDeleted} ,
+	        </if>
+			<if test="isVisible!=null">
+	        is_visible = #{isVisible} ,
+	        </if>
+			<if test="isShelved!=null">
+	        is_shelved = #{isShelved} ,
+	        </if>
+			<if test="createTime!=null">
+	        create_time = #{createTime} ,
+	        </if>
+			<if test="modifyTime!=null">
+	        modify_time = #{modifyTime} ,
+	        </if>
+			<if test="totalHits!=null">
+	        total_hits = #{totalHits} ,
+	        </if>
+	        <if test="makerPlace!=null and makerPlace!=''">
+	        maker_place = #{makerPlace} ,
+	         </if>
+	        <if test="deliveryPeriod!=null and deliveryPeriod!=''">
+	        delivery_period = #{deliveryPeriod} ,
+	         </if>
+			<if test="totalSales!=null">
+	        total_sales = #{totalSales} ,
+	        </if>
+			<if test="enableStock!=null">
+	        enable_stock = #{enableStock} ,
+	        </if>
+			<if test="lockedStock!=null">
+	        locked_stock = #{lockedStock} ,
+	        </if>
+	        <if test="unicode!=null and unicode!=''">
+	        unicode = #{unicode} ,
+	         </if>
+	        <if test="makerCode!=null and makerCode!=''">
+	        maker_code = #{makerCode} ,
+	         </if>
+	        <if test="toolmallPrice!=null and toolmallPrice!=''">
+	        toolmall_price = #{toolmallPrice} ,
+	         </if>
+	        <if test="marketPrice!=null and marketPrice!=''">
+	        market_price = #{marketPrice} ,
+	         </if>
+	        <if test="basePrice!=null and basePrice!=''">
+	        base_price = #{basePrice} ,
+	         </if>
+	        <if test="taxRate!=null and taxRate!=''">
+	        tax_rate = #{taxRate} ,
+	         </if>
+	        <if test="length!=null and length!=''">
+	        length = #{length} ,
+	         </if>
+	        <if test="width!=null and width!=''">
+	        width = #{width} ,
+	         </if>
+	        <if test="height!=null and height!=''">
+	        height = #{height} ,
+	         </if>
+	        <if test="weight!=null and weight!=''">
+	        weight = #{weight} ,
+	         </if>
+	        <if test="largeType!=null and largeType!=''">
+	        large_type = #{largeType} ,
+	         </if>
+	        <if test="unitName!=null and unitName!=''">
+	        unit_name = #{unitName} ,
+	         </if>
+			<if test="validityDays!=null">
+	        validity_days = #{validityDays} ,
+	        </if>
+			<if test="taxClassifyCode!=null">
+				tax_classify_code = #{taxClassifyCode},
+			</if>
+			<if test="taxClassifyName!=null">
+				tax_classify_name = #{taxClassifyName},
+			</if>
+			<if test="invoiceName!=null">
+				invoice_name = #{invoiceName},
+			</if>
+			<if test="invoiceSpec!=null">
+				invoice_spec = #{invoiceSpec}
+			</if>
+	    </trim>   
+	    <where>
+	    	<if test="id != null and id != ''">
+	    		and id = #{id} 
+	    	</if>
+	    	<if test="productSkuid != null and productSkuid != ''">
+	    		and product_skuid = #{productSkuid} 
+	    	</if>
+	    </where> 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" >  
+       UPDATE pc_product_sku SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+#{id}       </foreach>  
+    </update>
+
+    <delete id="delete" >
+        UPDATE pc_product_sku set is_deleted = 1 WHERE
+        product_skuid = #{productSkuid} 
+    </delete>
+	
+	<delete id="deleteByIds" >
+        UPDATE pc_product_sku set is_deleted = 1 WHERE
+        id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			 <if test="id!=null">
+	         AND id = #{id} 
+	         </if>
+			 <if test="productSkuid!=null">
+	         AND product_skuid = #{productSkuid} 
+	         </if>
+			 <if test="productSpuid!=null">
+	         AND product_spuid = #{productSpuid} 
+	         </if>
+			 <if test="primarySkuid!=null">
+	         AND primary_skuid = #{primarySkuid} 
+	         </if>
+			 <if test="isDerivative!=null">
+	         AND is_derivative = #{isDerivative} 
+	         </if>
+			 <if test="isValid!=null">
+	         AND is_valid = #{isValid} 
+	         </if>
+	        <if test="skuIntroduction!=null and skuIntroduction!=''">
+	         AND sku_introduction = #{skuIntroduction} 
+	         </if>
+	        <if test="imageFile!=null and imageFile!=''">
+	         AND image_file = #{imageFile} 
+	         </if>
+	        <if test="pdfFile!=null and pdfFile!=''">
+	         AND pdf_file = #{pdfFile} 
+	         </if>
+	        <if test="videoFile!=null and videoFile!=''">
+	         AND video_file = #{videoFile} 
+	         </if>
+	        <if test="url!=null and url!=''">
+	         AND url = #{url} 
+	         </if>
+	        <if test="productAllinfo!=null and productAllinfo!=''">
+	         AND product_allinfo = #{productAllinfo} 
+	         </if>
+			 <if test="viewFirst!=null">
+	         AND view_first = #{viewFirst} 
+	         </if>
+	        <if test="searchWeight!=null and searchWeight!=''">
+	         AND search_weight = #{searchWeight} 
+	         </if>
+	        <if test="searchKeyword!=null and searchKeyword!=''">
+	         AND search_keyword = #{searchKeyword} 
+	         </if>
+			 <if test="isVisible!=null">
+	         AND is_visible = #{isVisible} 
+	         </if>
+			 <if test="isShelved!=null">
+	         AND is_shelved = #{isShelved} 
+	         </if>
+			 <if test="createTime!=null">
+	         AND create_time = #{createTime} 
+	         </if>
+			 <if test="modifyTime!=null">
+	         AND modify_time = #{modifyTime} 
+	         </if>
+			 <if test="totalHits!=null">
+	         AND total_hits = #{totalHits} 
+	         </if>
+	        <if test="makerPlace!=null and makerPlace!=''">
+	         AND maker_place = #{makerPlace} 
+	         </if>
+	        <if test="deliveryPeriod!=null and deliveryPeriod!=''">
+	         AND delivery_period = #{deliveryPeriod} 
+	         </if>
+			 <if test="totalSales!=null">
+	         AND total_sales = #{totalSales} 
+	         </if>
+	         <if test="syncStock!=null">
+	         AND sync_stock = #{syncStock} 
+	         </if>
+			 <if test="enableStock!=null">
+	         AND enable_stock = #{enableStock} 
+	         </if>
+			 <if test="lockedStock!=null">
+	         AND locked_stock = #{lockedStock} 
+	         </if>
+	        <if test="unicode!=null and unicode!=''">
+	         AND unicode = #{unicode} 
+	         </if>
+	        <if test="makerCode!=null and makerCode!=''">
+	         AND maker_code = #{makerCode} 
+	         </if>
+	        <if test="toolmallPrice!=null and toolmallPrice!=''">
+	         AND toolmall_price = #{toolmallPrice} 
+	         </if>
+	        <if test="marketPrice!=null and marketPrice!=''">
+	         AND market_price = #{marketPrice} 
+	         </if>
+	        <if test="basePrice!=null and basePrice!=''">
+	         AND base_price = #{basePrice} 
+	         </if>
+	        <if test="taxRate!=null and taxRate!=''">
+	         AND tax_rate = #{taxRate} 
+	         </if>
+	        <if test="length!=null and length!=''">
+	         AND length = #{length} 
+	         </if>
+	        <if test="width!=null and width!=''">
+	         AND width = #{width} 
+	         </if>
+	        <if test="height!=null and height!=''">
+	         AND height = #{height} 
+	         </if>
+	        <if test="weight!=null and weight!=''">
+	         AND weight = #{weight} 
+	         </if>
+	        <if test="largeType!=null and largeType!=''">
+	         AND large_type = #{largeType} 
+	         </if>
+	        <if test="unitName!=null and unitName!=''">
+	         AND unit_name = #{unitName} 
+	         </if>
+			 <if test="validityDays!=null">
+	         AND validity_days = #{validityDays} 
+	         </if>
+	         AND is_deleted = 0
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="imageFile!=null and imageFile!=''">
+			    AND image_file LIKE CONCAT('%','${imageFile}','%')
+	         </if>
+	        <if test="pdfFile!=null and pdfFile!=''">
+			    AND pdf_file LIKE CONCAT('%','${pdfFile}','%')
+	         </if>
+	        <if test="videoFile!=null and videoFile!=''">
+			    AND video_file LIKE CONCAT('%','${videoFile}','%')
+	         </if>
+	        <if test="url!=null and url!=''">
+			    AND url LIKE CONCAT('%','${url}','%')
+	         </if>
+	        <if test="productAllinfo!=null and productAllinfo!=''">
+			    AND product_allinfo LIKE CONCAT('%','${productAllinfo}','%')
+	         </if>
+	        <if test="searchKeyword!=null and searchKeyword!=''">
+			    AND search_keyword LIKE CONCAT('%','${searchKeyword}','%')
+	         </if>
+	        <if test="makerPlace!=null and makerPlace!=''">
+			    AND maker_place LIKE CONCAT('%','${makerPlace}','%')
+	         </if>
+	        <if test="unicode!=null and unicode!=''">
+			    AND unicode LIKE CONCAT('%','${unicode}','%')
+	         </if>
+	        <if test="makerCode!=null and makerCode!=''">
+			    AND maker_code LIKE CONCAT('%','${makerCode}','%')
+	         </if>
+	        <if test="unitName!=null and unitName!=''">
+			    AND unit_name LIKE CONCAT('%','${unitName}','%')
+	         </if>
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      				
+	       <if test="id!=null">
+				AND id = #{id}
+		   </if>
+	       <if test="productSkuid!=null">
+				AND product_skuid = #{productSkuid}
+		   </if>
+	       <if test="productSpuid!=null">
+				AND product_spuid = #{productSpuid}
+		   </if>
+	       <if test="primarySkuid!=null">
+				AND primary_skuid = #{primarySkuid}
+		   </if>
+	       <if test="isDerivative!=null">
+				AND is_derivative = #{isDerivative}
+		   </if>
+	       <if test="isValid!=null">
+				AND is_valid = #{isValid}
+		   </if>
+	       <if test="skuIntroduction!=null and skuIntroduction!=''">
+				AND sku_introduction = #{skuIntroduction}
+		   </if>
+	       <if test="imageFile!=null and imageFile!=''">
+				AND image_file = #{imageFile}
+		   </if>
+	       <if test="pdfFile!=null and pdfFile!=''">
+				AND pdf_file = #{pdfFile}
+		   </if>
+	       <if test="videoFile!=null and videoFile!=''">
+				AND video_file = #{videoFile}
+		   </if>
+	       <if test="url!=null and url!=''">
+				AND url = #{url}
+		   </if>
+	       <if test="productAllinfo!=null and productAllinfo!=''">
+				AND product_allinfo = #{productAllinfo}
+		   </if>
+	       <if test="viewFirst!=null">
+				AND view_first = #{viewFirst}
+		   </if>
+	       <if test="searchWeight!=null and searchWeight!=''">
+				AND search_weight = #{searchWeight}
+		   </if>
+	       <if test="searchKeyword!=null and searchKeyword!=''">
+				AND search_keyword = #{searchKeyword}
+		   </if>
+	       <if test="isDeleted!=null">
+				AND is_deleted = #{isDeleted}
+		   </if>
+	       <if test="isVisible!=null">
+				AND is_visible = #{isVisible}
+		   </if>
+	       <if test="isShelved!=null">
+				AND is_shelved = #{isShelved}
+		   </if>
+	       <if test="createTime!=null">
+				AND create_time BETWEEN #{createTimeBegin} AND #{createTimeEnd}
+		   </if>
+	       <if test="modifyTime!=null">
+				AND modify_time BETWEEN #{modifyTimeBegin} AND #{modifyTimeEnd}
+		   </if>
+	       <if test="totalHits!=null">
+				AND total_hits = #{totalHits}
+		   </if>
+	       <if test="makerPlace!=null and makerPlace!=''">
+				AND maker_place = #{makerPlace}
+		   </if>
+	       <if test="deliveryPeriod!=null and deliveryPeriod!=''">
+				AND delivery_period = #{deliveryPeriod}
+		   </if>
+	       <if test="totalSales!=null">
+				AND total_sales = #{totalSales}
+		   </if>
+		   <if test="syncStock!=null">
+				AND sync_stock = #{syncStock}
+		   </if>
+	       <if test="enableStock!=null">
+				AND enable_stock = #{enableStock}
+		   </if>
+	       <if test="lockedStock!=null">
+				AND locked_stock = #{lockedStock}
+		   </if>
+	       <if test="unicode!=null and unicode!=''">
+				AND unicode = #{unicode}
+		   </if>
+	       <if test="makerCode!=null and makerCode!=''">
+				AND maker_code = #{makerCode}
+		   </if>
+	       <if test="toolmallPrice!=null and toolmallPrice!=''">
+				AND toolmall_price = #{toolmallPrice}
+		   </if>
+	       <if test="marketPrice!=null and marketPrice!=''">
+				AND market_price = #{marketPrice}
+		   </if>
+	       <if test="basePrice!=null and basePrice!=''">
+				AND base_price = #{basePrice}
+		   </if>
+	       <if test="taxRate!=null and taxRate!=''">
+				AND tax_rate = #{taxRate}
+		   </if>
+	       <if test="length!=null and length!=''">
+				AND length = #{length}
+		   </if>
+	       <if test="width!=null and width!=''">
+				AND width = #{width}
+		   </if>
+	       <if test="height!=null and height!=''">
+				AND height = #{height}
+		   </if>
+	       <if test="weight!=null and weight!=''">
+				AND weight = #{weight}
+		   </if>
+	       <if test="largeType!=null and largeType!=''">
+				AND large_type = #{largeType}
+		   </if>
+	       <if test="unitName!=null and unitName!=''">
+				AND unit_name = #{unitName}
+		   </if>
+	       <if test="validityDays!=null">
+				AND validity_days BETWEEN #{validityDaysBegin} AND #{validityDaysEnd}
+		   </if>
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+	<sql id="queryParam">
+		<if test="allProductVO.pcProductCategory != null and allProductVO.pcProductCategory.categoryId != null and allProductVO.pcProductCategory.categoryId != ''">
+			and a.category_id = #{allProductVO.pcProductCategory.categoryId}
+		</if>
+		<if test="allProductVO.pcBrand != null and allProductVO.pcBrand.id != null and allProductVO.pcBrand.id != ''">
+			and a.brand_id = #{allProductVO.pcBrand.id}
+		</if>
+		<if test="allProductVO.pcProductSpu!= null and allProductVO.pcProductSpu.name != null and allProductVO.pcProductSpu.name != ''">
+			and a.name LIKE concat('%',#{allProductVO.pcProductSpu.name},'%')
+		</if>
+		<if test="allProductVO.pcProductSku != null">
+			<if test="allProductVO.pcProductSku.productSkuid != null and allProductVO.pcProductSku.productSkuid != ''">
+				and b.product_skuid = #{allProductVO.pcProductSku.productSkuid}
+			</if>
+			<if test="allProductVO.pcProductSku.unicode != null and allProductVO.pcProductSku.unicode != ''">
+				and b.unicode = #{allProductVO.pcProductSku.unicode}
+			</if>
+			<if test="allProductVO.pcProductSku.makerCode != null and allProductVO.pcProductSku.makerCode != ''">
+				and b.maker_code = #{allProductVO.pcProductSku.makerCode}
+			</if>
+			<if test="allProductVO.pcProductSku.productAllinfo != null and allProductVO.pcProductSku.productAllinfo != ''">
+				and b.product_allinfo LIKE concat('%',#{allProductVO.pcProductSku.productAllinfo},'%')
+			</if>
+			<if test="allProductVO.pcProductSku.enableStock != null">
+				<if test="allProductVO.pcProductSku.enableStock > 0">
+					<![CDATA[
+						AND b.enable_stock > 0 AND b.enable_stock <= #{allProductVO.pcProductSku.enableStock}
+					]]>
+				</if>
+				<if test="allProductVO.pcProductSku.enableStock == 0">
+					<![CDATA[
+						AND b.enable_stock <= 0
+					]]>
+				</if>
+			</if>
+		</if>
+		<if test="allProductVO.pcBusinessProduct != null">
+			<if test="allProductVO.pcBusinessProduct.isCompany != null">
+				AND c.is_company = #{allProductVO.pcBusinessProduct.isCompany}
+			</if>
+		</if>
+	</sql>
+	
+	<select id="getAllProductList" resultType="com.toolmall.business.product.vo.AllProductVO"  >
+		SELECT
+			b.product_skuid AS "pcProductSku.productSkuid"
+		 FROM pc_product_spu a, pc_product_sku b,pc_business_product c
+		WHERE a.product_spuid = b.product_spuid AND b.product_skuid = c.product_skuid AND b.is_deleted = 0
+		<include refid="queryParam"></include>
+		ORDER BY b.create_time desc
+	</select>
+	
+	<select id="getAllProductCount" resultType="long"  >
+		SELECT
+			count(1)
+		 FROM pc_product_spu a, pc_product_sku b,pc_business_product c
+		WHERE a.product_spuid = b.product_spuid AND b.product_skuid = c.product_skuid AND b.is_deleted = 0
+		<include refid="queryParam"></include>
+	</select>
+
+	<select id="getAllUnicode" resultType="java.lang.String">
+		SELECT unicode FROM pc_product_sku WHERE is_deleted = '0'
+	</select>
+
+	<select id="getAllUnicodeShelved" resultType="java.lang.String">
+		SELECT a.unicode FROM pc_product_sku a JOIN pc_business_product b ON a.product_skuid = b.product_skuid
+		WHERE a.is_deleted = '0' AND b.is_deleted = '0' AND b.is_company = 1
+	</select>
+	
+	<select id="getProductExportCount" parameterType="java.util.Map" resultType="java.lang.Long">
+		SELECT 
+			COUNT(*)
+		  FROM pc_product_spu a
+		  	JOIN pc_product_sku b ON a.product_spuid = b.product_spuid
+		  	JOIN pc_business_product e ON b.product_skuid = e.product_skuid
+		  	LEFT JOIN pc_brand c ON a.brand_id = c.id
+		  	LEFT JOIN pc_product_category_back d ON a.category_id = d.category_id
+		WHERE a.is_deleted = 0
+		   AND b.is_deleted = 0
+		   AND c.is_deleted = 0
+		   AND d.is_deleted = 0
+		   AND e.is_deleted = 0
+		<if test="brandList != null and brandList.size() > 0">
+      		AND a.brand_id IN
+         	<foreach collection="brandList" item="item" index="index" open="(" separator="," close=")">
+         		#{item}
+          	</foreach>
+    	</if>
+    	<if test="categoryList != null and categoryList.size() > 0">
+      		AND a.category_id IN
+         	<foreach collection="categoryList" item="item" index="index" open="(" separator="," close=")">
+         		#{item}
+          	</foreach>
+    	</if>
+    	<if test="isCompany != null and isCompany != ''">
+    		AND e.is_company = #{isCompany}
+    	</if>
+	</select>
+	
+	<select id="getProductExportList" parameterType="java.util.Map" resultType="com.toolmall.business.product.vo.ProductExportVO">
+		SELECT 
+			b.id						id,
+			b.product_skuid 			productSkuid,
+			b.product_spuid				productSpuid,
+			b.unicode 					unicode,
+			b.product_allinfo			productAllinfo,
+			b.toolmall_price			toolmallPrice,
+			b.maker_code				makerCode,
+			b.unit_name					unitName,
+			e.is_company				isCompany,
+			c.name						brandName,
+			(SELECT
+			 	d3.category_name
+			  FROM pc_product_category_back d1, pc_product_category_back d2, pc_product_category_back d3
+			WHERE d1.parent_id = d2.category_id and d2.parent_id = d3.category_id and d1.category_id = a.category_id) categoryNameLV1,
+			(SELECT
+				d2.category_name
+			  FROM pc_product_category_back d1, pc_product_category_back d2
+			WHERE d1.parent_id = d2.category_id and d1.category_id = a.category_id) categoryNameLV2,
+			(SELECT
+				d1.category_name
+			  FROM pc_product_category_back d1
+			WHERE d1.category_id = a.category_id) categoryNameLV3,
+			b.view_first 				viewFirst,
+			<!-- b.sku_introduction			introduction, -->
+			a.category_id 				categoryId,
+			b.image_file 				imageFile
+		  FROM pc_product_spu a
+		  	JOIN pc_product_sku b ON a.product_spuid = b.product_spuid
+		  	JOIN pc_business_product e ON b.product_skuid = e.product_skuid
+		  	LEFT JOIN pc_brand c ON a.brand_id = c.id
+		  	LEFT JOIN pc_product_category_back d ON a.category_id = d.category_id
+		WHERE a.is_deleted = 0
+		   AND b.is_deleted = 0
+		   AND c.is_deleted = 0
+		   AND d.is_deleted = 0
+		   AND e.is_deleted = 0
+		<if test="brandList != null and brandList.size() > 0">
+      		AND a.brand_id IN
+         	<foreach collection="brandList" item="item" index="index" open="(" separator="," close=")">
+         		#{item}
+          	</foreach>
+    	</if>
+    	<if test="categoryList != null and categoryList.size() > 0">
+      		AND a.category_id IN
+         	<foreach collection="categoryList" item="item" index="index" open="(" separator="," close=")">
+         		#{item}
+          	</foreach>
+    	</if>
+    	<if test="isCompany != null and isCompany != ''">
+    		AND e.is_company = #{isCompany}
+    	</if>
+	</select>
+	
+	<select id="getParamList" resultType="com.toolmall.business.product.back.ProductParameterVO" >
+    	SELECT
+    		a.property_id as id,
+    		a.property_name as name,
+    		b.value_name as value
+    	FROM pc_property a, pc_product_sku_value b, pc_product_sku d
+    	WHERE a.property_id = b.property_id AND b.product_skuid = d.product_skuid
+    		AND d.id = #{productId} AND a.category_id = #{categoryId}
+    		AND a.is_deleted = 0
+			AND b.is_deleted = 0
+			AND d.is_deleted = 0
+    </select>
+
+	<!--批量更新销量-->
+	<update id="batchUpdateSales" parameterType="java.util.List">
+		UPDATE pc_product_sku
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="total_sales = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.unicode != null and i.unicode != ''">
+						when unicode=#{i.unicode} then #{i.sales}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		WHERE unicode IN
+		<foreach collection="list" item="i" separator="," open="(" close=")">
+			#{i.unicode}
+		</foreach>
+	</update>
+
+	<select id="exchangeUnicodeToId" resultType="com.toolmall.business.product.vo.SkuSalesVO" parameterType="java.util.List">
+		SELECT
+		a.id,a.unicode,a.total_sales AS sales
+		FROM pc_product_sku a JOIN pc_business_product b ON a.product_skuid = b.product_skuid
+		<where>
+			b.is_company = 1
+			AND a.is_deleted = 0
+			AND b.is_deleted = 0
+			<if test="list != null and list.size() > 0">
+				AND a.unicode IN
+				<foreach collection="list" item="i" open="(" close=")" separator="," index="index">
+					#{i.unicode}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<update id="batchUpdateErpPrice" parameterType="java.util.List">
+		UPDATE pc_product_sku
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="market_price = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.unicode != null and i.unicode != ''">
+						when unicode=#{i.unicode} then #{i.marketPrice}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="base_price = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.unicode != null and i.unicode != ''">
+						when unicode=#{i.unicode} then #{i.basePrice}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="maker_code = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.makerCode != null and i.makerCode != ''">
+						when unicode=#{i.unicode} then #{i.makerCode}
+					</if>
+				</foreach>
+			</trim>
+			<trim prefix="weight = case" suffix="end,">
+				<foreach collection="list" item="i" index="index">
+					<if test="i.weight != null and i.weight != ''">
+						when unicode=#{i.unicode} then #{i.weight}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		WHERE unicode IN
+		<foreach collection="list" item="i" separator="," open="(" close=")">
+			#{i.unicode}
+		</foreach>
+	</update>
+	
+	<select id="getPushErpList" resultType="com.toolmall.business.product.vo.PushErpVO">
+		SELECT
+			a.product_skuid		skuId,
+			a.unicode			unicode,
+			a.product_allinfo	skuName,
+			a.toolmall_price	toolmallPrice,
+			a.image_file		image,
+			a.maker_code		makerCode,
+			b.product_spuid		spuId,
+			b.category_id		categoryId,
+			b.name				spuName,
+			(case when a.is_deleted = 1 then 0 WHEN c.is_company = 1 then 1 else 2 end) status,
+			0					stock
+		FROM pc_product_sku a
+			JOIN pc_product_spu b ON a.product_spuid = b.product_spuid
+			JOIN pc_business_product c ON a.product_skuid = c.product_skuid
+		WHERE a.is_push_erp = 0 or a.is_push_erp is null
+	</select>
+	
+	<update id="updatePushErp" parameterType="java.util.List">  
+       UPDATE pc_product_sku SET is_push_erp = 1 WHERE product_skuid in
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+			#{id}       
+		</foreach>  
+    </update>
+    
+    <select id="getBusinessProductList" resultMap="RMPcProductSku">
+		SELECT
+			a.id,
+			a.product_spuid,
+			a.product_skuid,
+			a.unicode
+		FROM pc_product_sku a
+			JOIN pc_product_spu b ON a.product_spuid = b.product_spuid
+			JOIN pc_business_product c ON a.product_skuid = c.product_skuid
+		WHERE a.is_deleted = 0 and b.is_deleted = 0 and c.is_deleted = 0
+	</select>
+	
+	<update id="updateSyncStock" parameterType="com.toolmall.business.product.bean.PcProductSku">
+		update pc_product_sku set sync_stock = #{syncStock} where id = #{id}
+	</update>
+	
+	<update id="batchUpdateSyncStock" parameterType="java.util.List">
+		update pc_product_sku
+		<trim prefix="set" suffixOverrides=",">
+			<trim prefix="sync_stock = case" suffix="end,">
+				<foreach collection="list" item="item">
+					<if test="item.syncStock != null">
+						when id=#{item.id} then #{item.syncStock}
+					</if>
+				</foreach>
+			</trim>
+		</trim>
+		where id in
+		<foreach collection="list" item="item" open="(" separator="," close=")">  
+			#{item.id}       
+		</foreach>
+	</update>
+    
+</mapper>
+

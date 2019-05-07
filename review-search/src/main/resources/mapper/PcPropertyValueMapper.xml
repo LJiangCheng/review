@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-2-26 16:32:31
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcPropertyValueMapper">
+	<resultMap id="RMPcPropertyValue" type="com.toolmall.business.product.bean.PcPropertyValue">
+        <result property="valueId" column="value_id"/>
+        <result property="valueName" column="value_name"/>
+        <result property="propertyId" column="property_id"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="productSkuid" column="product_skuid"/>
+        <result property="valueStatus" column="value_status"/>
+        <result property="valueOrder" column="value_order"/>
+        <result property="createTime" column="create_time"/>
+        <result property="valueFile" column="value_file"/>
+	</resultMap>
+
+    <select id="selectPageList" resultMap="RMPcPropertyValue"  >
+        SELECT * FROM pc_property_value
+       <include refid="findPagewhere"/>
+        ORDER BY value_order ASC, value_name
+    </select>
+
+    <select id="selectPageCount" resultType="long"  >
+        SELECT count(*) FROM pc_property_value 
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcPropertyValue" resultMap="RMPcPropertyValue">
+        SELECT * FROM pc_property_value
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcPropertyValue"  >
+        SELECT * FROM pc_property_value
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcPropertyValue"  >
+        SELECT * FROM pc_property_value
+       <include refid="findPagewhere"/>
+	   ORDER BY value_order ASC, value_name
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcPropertyValue"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_property_value 
+	        WHERE 
+		        value_id = #{id}
+	    ]]>
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcPropertyValue"   useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pc_property_value (
+        	value_id ,
+        	value_name ,
+        	property_id ,
+        	category_id ,
+        	product_skuid ,
+        	value_status ,
+        	value_order ,
+        	value_file 
+        ) VALUES (
+        	#{valueId} ,
+        	#{valueName} ,
+        	#{propertyId} ,
+        	#{categoryId} ,
+        	#{productSkuid} ,
+        	#{valueStatus} ,
+        	#{valueOrder} ,
+        	#{valueFile} 
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" >
+        INSERT INTO pc_property_value (
+        	value_id ,
+        	value_name ,
+        	property_id ,
+        	category_id ,
+        	product_skuid ,
+        	value_status ,
+        	value_order ,
+        	create_time ,
+        	value_file 
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.valueId} ,
+        
+        	#{item.valueName} ,
+        
+        	#{item.propertyId} ,
+        
+        	#{item.categoryId} ,
+        
+        	#{item.productSkuid} ,
+        
+        	#{item.valueStatus} ,
+        
+        	#{item.valueOrder} ,
+        
+        	#{item.createTime} ,
+        
+        	#{item.valueFile} 
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcPropertyValue" >
+        UPDATE pc_property_value
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+	        <if test="valueName!=null and valueName!=''">
+	        value_name = #{valueName} ,
+	         </if>
+			<if test="propertyId!=null">
+	        property_id = #{propertyId} ,
+	        </if>
+			<if test="categoryId!=null">
+	        category_id = #{categoryId} ,
+	        </if>
+			<if test="productSkuid!=null">
+	        product_skuid = #{productSkuid} ,
+	        </if>
+			<if test="valueStatus!=null">
+	        value_status = #{valueStatus} ,
+	        </if>
+			<if test="valueOrder!=null">
+	        value_order = #{valueOrder} ,
+	        </if>
+			<if test="createTime!=null">
+	        create_time = #{createTime} ,
+	        </if>
+	        <if test="valueFile!=null and valueFile!=''">
+	        value_file = #{valueFile} 
+	         </if>
+	    </trim>    
+        WHERE
+		value_id = #{valueId}
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" >  
+       UPDATE pc_property_value SET state = '0' WHERE value_id IN
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+#{valueId}       </foreach>
+    </update>
+
+    <delete id="delete" >
+        DELETE FROM pc_property_value WHERE
+        value_id = #{valueId}
+    </delete>
+	
+	<delete id="deleteByIds" >
+        DELETE FROM pc_property_value WHERE
+		value_id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+			#{item}
+		</foreach>
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>
+			 <if test="valueId!=null">
+	         AND value_id = #{valueId} 
+	         </if>
+	        <if test="valueName!=null and valueName!=''">
+	         AND value_name = #{valueName} 
+	         </if>
+			 <if test="propertyId!=null">
+	         AND property_id = #{propertyId} 
+	         </if>
+			 <if test="categoryId!=null">
+	         AND category_id = #{categoryId} 
+	         </if>
+			 <if test="productSkuid!=null">
+	         AND product_skuid = #{productSkuid} 
+	         </if>
+			 <if test="valueStatus!=null">
+	         AND value_status = #{valueStatus} 
+	         </if>
+			 <if test="valueOrder!=null">
+	         AND value_order = #{valueOrder} 
+	         </if>
+			 <if test="createTime!=null">
+	         AND create_time = #{createTime} 
+	         </if>
+	        <if test="valueFile!=null and valueFile!=''">
+	         AND value_file = #{valueFile} 
+	         </if>
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="valueName!=null and valueName!=''">
+			    AND value_name LIKE CONCAT('%','${valueName}','%')
+	         </if>
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>
+	       <if test="valueId!=null">
+				AND value_id = #{valueId}
+		   </if>
+	       <if test="valueName!=null and valueName!=''">
+				AND value_name = #{valueName}
+		   </if>
+	       <if test="propertyId!=null">
+				AND property_id = #{propertyId}
+		   </if>
+	       <if test="categoryId!=null">
+				AND category_id = #{categoryId}
+		   </if>
+	       <if test="productSkuid!=null">
+				AND product_skuid = #{productSkuid}
+		   </if>
+	       <if test="valueStatus!=null">
+				AND value_status = #{valueStatus}
+		   </if>
+	       <if test="valueOrder!=null">
+				AND value_order = #{valueOrder}
+		   </if>
+	       <if test="createTime!=null">
+				AND create_time BETWEEN #{createTimeBegin} AND #{createTimeEnd}
+		   </if>
+	       <if test="valueFile!=null and valueFile!=''">
+				AND value_file = #{valueFile}
+		   </if>
+		</where>
+	</sql>
+	
+</mapper>
+

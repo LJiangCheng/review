@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-2-26 16:32:30
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcPropertyMapper">
+	<resultMap id="RMPcProperty" type="com.toolmall.business.product.bean.PcProperty">
+        <result property="propertyId" column="property_id"/>
+        <result property="propertyName" column="property_name"/>
+        <result property="propertyFrontName" column="property_front_name"/>
+        <result property="classifyId" column="classify_id"/>
+        <result property="groupId" column="group_id"/>
+        <result property="isAlias" column="is_alias"/>
+        <result property="isEnumerable" column="is_enumerable"/>
+        <result property="isWritable" column="is_writable"/>
+        <result property="isKeyvalue" column="is_keyvalue"/>
+        <result property="isSales" column="is_sales"/>
+        <result property="isSearching" column="is_searching"/>
+        <result property="isMust" column="is_must"/>
+        <result property="isMultiple" column="is_multiple"/>
+		<result property="isHidden" column="is_hidden"/>
+        <result property="propertyStatus" column="property_status"/>
+        <result property="propertyOrder" column="property_order"/>
+        <result property="createTime" column="create_time"/>
+		<result property="oldDataId" column="oldDataId"/>
+		<result property="categoryId" column="category_id"/>
+		<result property="categoryName" column="category_name"/>
+		<result property="classifyName" column="classify_name"/>
+		<result property="groupName" column="group_name"/>
+	</resultMap>
+
+	<sql id="pcPropertyJoins">
+		LEFT JOIN pc_product_category_back b ON a.category_id = b.category_id
+		LEFT JOIN pc_property_classify c ON a.classify_id = c.classify_id
+		LEFT JOIN pc_property_group d on a.group_id = d.group_id
+	</sql>
+
+    <select id="selectPageList" resultMap="RMPcProperty"  >
+        SELECT a.*,b.category_name,c.classify_name,d.group_name FROM pc_property a
+		<include refid="pcPropertyJoins"/>
+        <include refid="findPagewhere"/>
+		ORDER BY a.property_order ASC, a.property_name
+    </select>
+
+    <select id="selectPageCount" resultType="long"  >
+        SELECT count(*) FROM pc_property a
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcProperty" resultMap="RMPcProperty">
+		SELECT a.*,b.category_name,c.classify_name,d.group_name FROM pc_property a
+		<include refid="pcPropertyJoins"/>
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcProperty" resultType="com.toolmall.business.product.bean.PcProperty"  >
+		SELECT a.*,b.category_name,c.classify_name,d.group_name FROM pc_property a
+		<include refid="pcPropertyJoins"/>
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcProperty"  >
+		SELECT a.*,b.category_name,c.classify_name,d.group_name FROM pc_property a
+		<include refid="pcPropertyJoins"/>
+       <include refid="findPagewhere"/>
+       ORDER BY a.property_order ASC, a.property_name
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcProperty" resultType="com.toolmall.business.product.bean.PcProperty"  >
+		SELECT a.*,b.category_name,c.classify_name,d.group_name FROM pc_property a
+		<include refid="pcPropertyJoins"/>
+	        WHERE 
+		        property_id = #{id} 
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcProperty"   useGeneratedKeys="true" keyColumn="property_id" keyProperty="propertyId">
+        INSERT INTO pc_property (
+			property_id,
+        	property_name ,
+        	property_front_name ,
+        	classify_id ,
+        	group_id ,
+        	is_alias ,
+        	is_enumerable ,
+        	is_writable ,
+        	is_keyvalue ,
+        	is_sales ,
+        	is_searching ,
+        	is_must ,
+        	is_multiple ,
+		    is_hidden,
+        	property_status ,
+        	property_order ,
+			oldDataId,
+			category_id
+        ) VALUES (
+			#{propertyId},
+        	#{propertyName} ,
+        	#{propertyFrontName} ,
+        	#{classifyId} ,
+        	#{groupId} ,
+        	#{isAlias} ,
+        	#{isEnumerable} ,
+        	#{isWritable} ,
+        	#{isKeyvalue} ,
+        	#{isSales} ,
+        	#{isSearching} ,
+        	#{isMust} ,
+        	#{isMultiple} ,
+			#{isHidden},
+        	#{propertyStatus} ,
+        	#{propertyOrder} ,
+			#{oldDataId},
+			#{categoryId}
+        )
+		<selectKey resultType="int" keyProperty="propertyId" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" >
+        INSERT INTO pc_property (
+        	property_name ,
+        	property_front_name ,
+        	classify_id ,
+        	group_id ,
+        	is_alias ,
+        	is_enumerable ,
+        	is_writable ,
+        	is_keyvalue ,
+        	is_sales ,
+        	is_searching ,
+        	is_must ,
+        	is_multiple ,
+		is_hidden,
+        	property_status ,
+        	property_order ,
+        	create_time ,
+			oldDataId,
+			category_id
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.propertyName} ,
+        
+        	#{item.propertyFrontName} ,
+        
+        	#{item.classifyId} ,
+        
+        	#{item.groupId} ,
+        
+        	#{item.isAlias} ,
+        
+        	#{item.isEnumerable} ,
+        
+        	#{item.isWritable} ,
+        
+        	#{item.isKeyvalue} ,
+        
+        	#{item.isSales} ,
+        
+        	#{item.isSearching} ,
+        
+        	#{item.isMust} ,
+        
+        	#{item.isMultiple} ,
+
+			#{item.isHidden},
+        
+        	#{item.propertyStatus} ,
+        
+        	#{item.propertyOrder} ,
+        
+        	#{item.createTime} ,
+			#{item.oldDataId},
+			#{item.categoryId}
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcProperty" >
+        UPDATE pc_property
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+	        <if test="propertyName!=null and propertyName!=''">
+	        property_name = #{propertyName} ,
+	         </if>
+	        <if test="propertyFrontName!=null and propertyFrontName!=''">
+	        property_front_name = #{propertyFrontName} ,
+	         </if>
+			<if test="classifyId!=null">
+	        classify_id = #{classifyId} ,
+	        </if>
+			<if test="groupId!=null">
+	        group_id = #{groupId} ,
+	        </if>
+	        <if test="isAlias!=null">
+	        is_alias = #{isAlias} ,
+	         </if>
+	        <if test="isEnumerable!=null">
+	        is_enumerable = #{isEnumerable} ,
+	         </if>
+	        <if test="isWritable!=null">
+	        is_writable = #{isWritable} ,
+	         </if>
+	        <if test="isKeyvalue!=null">
+	        is_keyvalue = #{isKeyvalue} ,
+	         </if>
+	        <if test="isSales!=null">
+	        is_sales = #{isSales} ,
+	         </if>
+	        <if test="isSearching!=null">
+	        is_searching = #{isSearching} ,
+	         </if>
+	        <if test="isMust!=null">
+	        is_must = #{isMust} ,
+	         </if>
+	        <if test="isMultiple!=null">
+	        is_multiple = #{isMultiple} ,
+	         </if>
+			<if test="isHidden!=null">
+				is_hidden = #{isHidden} ,
+			</if>
+			<if test="propertyStatus!=null">
+	        property_status = #{propertyStatus} ,
+	        </if>
+			<if test="propertyOrder!=null">
+	        property_order = #{propertyOrder} ,
+	        </if>
+			<if test="createTime!=null">
+	        create_time = #{createTime} ,
+	        </if>
+			<if test="oldDataId!=null">
+				oldDataId = #{oldDataId} ,
+			</if>
+			<if test="categoryId!=null">
+				category_id = #{categoryId}
+			</if>
+	    </trim>    
+        WHERE 
+	       property_id = #{propertyId} 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" >  
+       UPDATE pc_property SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+	   		#{id}
+	   </foreach>
+    </update>
+
+    <delete id="delete" >
+        DELETE FROM pc_property WHERE
+        property_id = #{id} 
+    </delete>
+	
+	<delete id="deleteByIds" >
+        DELETE FROM pc_property WHERE
+        id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			 <if test="propertyId!=null">
+	         AND property_id = #{propertyId} 
+	         </if>
+	        <if test="propertyName!=null and propertyName!=''">
+	         AND property_name = #{propertyName} 
+	         </if>
+	        <if test="propertyFrontName!=null and propertyFrontName!=''">
+	         AND property_front_name = #{propertyFrontName} 
+	         </if>
+			 <if test="classifyId!=null">
+	         AND a.classify_id = #{classifyId}
+	         </if>
+			 <if test="groupId!=null">
+	         AND group_id = #{groupId} 
+	         </if>
+	        <if test="isAlias!=null">
+	         AND is_alias = #{isAlias} 
+	         </if>
+	        <if test="isEnumerable!=null">
+	         AND is_enumerable = #{isEnumerable} 
+	         </if>
+	        <if test="isWritable!=null">
+	         AND is_writable = #{isWritable} 
+	         </if>
+	        <if test="isKeyvalue!=null">
+	         AND is_keyvalue = #{isKeyvalue} 
+	         </if>
+	        <if test="isSales!=null">
+	         AND is_sales = #{isSales} 
+	         </if>
+	        <if test="isSearching!=null">
+	         AND is_searching = #{isSearching} 
+	         </if>
+	        <if test="isMust!=null">
+	         AND is_must = #{isMust} 
+	         </if>
+	        <if test="isMultiple!=null">
+	         AND is_multiple = #{isMultiple} 
+	         </if>
+			<if test="isHidden!=null">
+				AND is_hidden = #{isHidden}
+			</if>
+			 <if test="propertyStatus!=null">
+	         AND property_status = #{propertyStatus} 
+	         </if>
+			 <if test="propertyOrder!=null">
+	         AND property_order = #{propertyOrder} 
+	         </if>
+			 <if test="createTime!=null">
+	         AND create_time = #{createTime} 
+	         </if>
+			<if test="oldDataId != null">
+				AND oldDataId = #{oldDataId}
+			</if>
+			<if test="categoryId != null">
+				AND a.category_id = #{categoryId}
+			</if>
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="propertyName!=null and propertyName!=''">
+			    AND property_name LIKE CONCAT('%','${propertyName}','%')
+	         </if>
+	        <if test="propertyFrontName!=null and propertyFrontName!=''">
+			    AND property_front_name LIKE CONCAT('%','${propertyFrontName}','%')
+	         </if>
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      				
+	       <if test="propertyId!=null">
+				AND property_id = #{propertyId}
+		   </if>
+	       <if test="propertyName!=null and propertyName!=''">
+				AND property_name = #{propertyName}
+		   </if>
+	       <if test="propertyFrontName!=null and propertyFrontName!=''">
+				AND property_front_name = #{propertyFrontName}
+		   </if>
+	       <if test="classifyId!=null">
+				AND a.classify_id = #{classifyId}
+		   </if>
+	       <if test="groupId!=null">
+				AND group_id = #{groupId}
+		   </if>
+	       <if test="isAlias!=null">
+				AND is_alias = #{isAlias}
+		   </if>
+	       <if test="isEnumerable!=null">
+				AND is_enumerable = #{isEnumerable}
+		   </if>
+	       <if test="isWritable!=null">
+				AND is_writable = #{isWritable}
+		   </if>
+	       <if test="isKeyvalue!=null">
+				AND is_keyvalue = #{isKeyvalue}
+		   </if>
+	       <if test="isSales!=null">
+				AND is_sales = #{isSales}
+		   </if>
+	       <if test="isSearching!=null">
+				AND is_searching = #{isSearching}
+		   </if>
+	       <if test="isMust!=null">
+				AND is_must = #{isMust}
+		   </if>
+	       <if test="isMultiple!=null">
+				AND is_multiple = #{isMultiple}
+		   </if>
+			<if test="isHidden!=null">
+				AND is_hidden = #{isHidden}
+			</if>
+	       <if test="propertyStatus!=null">
+				AND property_status = #{propertyStatus}
+		   </if>
+	       <if test="propertyOrder!=null">
+				AND property_order = #{propertyOrder}
+		   </if>
+	       <if test="createTime!=null">
+				AND create_time BETWEEN #{createTimeBegin} AND #{createTimeEnd}
+		   </if>
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+	
+	
+	<select id="selectAttributeList" resultType="com.toolmall.business.product.back.Attribute" parameterType="java.util.Map">
+		SELECT
+			property_id ID,
+			property_name NAME
+		FROM
+			pc_property
+		WHERE
+			IS_DELETED = 0 AND is_searching = 1
+			AND category_id IN (select back_category_id from pc_product_category_res_back where front_category_id = #{categoryId} and is_deleted = 0)
+		ORDER BY
+			property_order ASC
+	</select>
+	
+	<select id="selectAttrValueList" resultType="com.toolmall.business.product.back.AttributeValue" parameterType="java.util.Map">
+		SELECT
+			pav.property_id AS attrId,
+			pav.value_name AS attrValue
+		FROM
+			pc_product_sku_value pav
+			LEFT JOIN pc_product_sku p ON p.product_skuid = pav.product_skuid
+			LEFT JOIN pc_business_product q ON q.product_skuid = pav.product_skuid
+		WHERE
+			p.IS_DELETED = 0 AND q.is_company = 1 AND pav.is_deleted = 0
+			<if test="attrIdList != null and attrIdList.size() > 0">
+				AND pav.property_id IN
+				<foreach collection="attrIdList" item="item" index="index" open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+		GROUP BY
+			pav.value_name, pav.property_id
+		ORDER BY
+			pav.property_id
+	</select>
+	
+	<select id="selectProductIdList" resultType="java.lang.Long" parameterType="java.util.Map">
+		<if test="list != null and list.size() > 0">
+			<foreach collection="list" item="item" index="index" separator="UNION" >
+				SELECT b.id FROM pc_product_sku_value a, pc_product_sku b  WHERE a.product_skuid = b.product_skuid and a.property_id = #{item.attrId} AND a.value_name = #{item.attrValue}
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="getAttrList" resultType="com.toolmall.business.product.back.ProductAttributeVO" >
+    	SELECT
+    		a.property_id as id,
+    		a.property_name as name,
+    		b.value_name as value
+    	FROM pc_property a, pc_product_sku_value b, pc_product_sku c
+    	WHERE a.property_id = b.property_id AND b.product_skuid = c.product_skuid AND c.id = #{productId} AND a.category_id IN (select back_category_id from pc_product_category_res_back where front_category_id = #{categoryId} and is_deleted = 0) AND a.is_searching = 1
+    	AND a.is_deleted = 0
+    	AND b.is_deleted = 0
+    	AND c.is_deleted = 0
+    	order by a.property_order, a.property_name
+    </select>
+    
+    <select id="getParamList" resultType="com.toolmall.business.product.back.ProductParameterVO" >
+    	SELECT
+    		a.property_id as id,
+    		a.property_name as name,
+    		b.value_name as value,
+    		c.classify_id as groupId,
+    		c.classify_name as groupName
+    	FROM pc_property a JOIN pc_product_sku_value b ON a.property_id = b.property_id
+    		JOIN pc_product_sku d ON b.product_skuid = d.product_skuid
+        LEFT JOIN pc_property_classify c ON a.classify_id = c.classify_id AND c.is_deleted = 0
+    	WHERE d.id = #{productId} AND a.category_id IN (select back_category_id from pc_product_category_res_back where front_category_id = #{categoryId} and is_deleted = 0) AND a.is_keyvalue = 1
+    		AND b.value_name != ''
+    		AND a.is_deleted = 0
+	    	AND b.is_deleted = 0
+	    	AND d.is_deleted = 0
+	    order by a.property_order, a.property_name
+    </select>
+    
+    <select id="getSpecList" resultType="com.toolmall.business.product.back.ProductSpecificationVO" >
+    	SELECT
+    		a.property_id as id,
+    		a.property_name as name,
+    		b.value_name as value
+    	FROM pc_property a, pc_product_sku_value b, pc_product_sku c
+    	WHERE a.property_id = b.property_id AND b.product_skuid = c.product_skuid AND c.id = #{productId} AND a.is_sales = 1
+    		AND a.is_deleted = 0
+	    	AND b.is_deleted = 0
+	    	AND c.is_deleted = 0
+	   	order by a.property_order, a.property_name
+    </select>
+    
+    <select id="getSpecListNew" resultType="java.util.HashMap" >
+    	SELECT
+    		c.unicode as "id",
+    		a.property_name as "propertyName",
+    		d.value_name as "valueName"
+    	FROM pc_property a, pc_product_sku_value b, pc_product_sku c, pc_property_value d
+    	WHERE a.property_id = b.property_id AND b.product_skuid = c.product_skuid AND b.value_id = d.value_id
+    		AND c.product_spuid = #{spuId} AND a.is_sales = 1
+    		AND a.is_deleted = 0
+	    	AND b.is_deleted = 0
+	    	AND c.is_deleted = 0
+	    	AND d.is_deleted = 0
+	    order by a.property_order, a.property_name
+    </select>
+	
+</mapper>
+

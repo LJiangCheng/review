@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-2-26 16:32:22
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcProductImageMapper">
+	<resultMap id="RMPcProductImage" type="com.toolmall.business.product.bean.PcProductImage">
+        <result property="id" column="id"/>
+        <result property="productSkuid" column="product_skuid"/>
+        <result property="productSpuid" column="product_spuid"/>
+        <result property="imageType" column="image_type"/>
+        <result property="large" column="large"/>
+        <result property="medium" column="medium"/>
+        <result property="orders" column="orders"/>
+        <result property="source" column="source"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="title" column="title"/>
+        <result property="medium400" column="medium_400"/>
+	</resultMap>
+	
+	<resultMap id="RMProductImageVO" type="com.toolmall.business.product.back.ProductImageVO">
+		<result property="title" column="TITLE"/>
+		<result property="thumbnail" column="THUMBNAIL"/>
+		<result property="medium" column="MEDIUM"/>
+		<result property="medium400" column="MEDIUM_400"/>
+		<result property="large" column="LARGE"/>
+		<result property="source" column="SOURCE"/>
+	</resultMap>
+
+    <select id="selectPageList" resultMap="RMPcProductImage"  >
+        SELECT * FROM pc_product_image
+       <include refid="findPagewhere"/>
+    </select>
+
+    <select id="selectPageCount" resultType="long"  >
+        SELECT count(*) FROM pc_product_image 
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcProductImage" resultMap="RMPcProductImage">
+        SELECT * FROM pc_product_image
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcProductImage"  >
+        SELECT * FROM pc_product_image
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcProductImage"  >
+        SELECT * FROM pc_product_image
+       <include refid="findPagewhere"/>
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcProductImage"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_product_image 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+	
+	<select id="selectBySkuid" resultMap="RMPcProductImage"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_product_image 
+	        WHERE 
+		        product_skuid = #{skuId} 
+		 	ORDER BY orders
+	    ]]>
+	</select>
+	
+	<select id="selectBySpuid" resultMap="RMPcProductImage"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_product_image 
+	        WHERE 
+		        product_spuid = #{spuId} 
+		    ORDER BY orders
+	    ]]>
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcProductImage"   useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pc_product_image (
+        	product_skuid ,
+        	product_spuid ,
+        	image_type ,
+        	large ,
+        	medium ,
+        	orders ,
+        	source ,
+        	thumbnail ,
+        	title ,
+        	medium_400 
+        ) VALUES (
+        	#{productSkuid} ,
+        	#{productSpuid} ,
+        	#{imageType} ,
+        	#{large} ,
+        	#{medium} ,
+        	#{orders} ,
+        	#{source} ,
+        	#{thumbnail} ,
+        	#{title} ,
+        	#{medium400} 
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" >
+        INSERT INTO pc_product_image (
+        	product_skuid ,
+        	product_spuid ,
+        	image_type ,
+        	large ,
+        	medium ,
+        	orders ,
+        	source ,
+        	thumbnail ,
+        	title ,
+        	medium_400 
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+        	#{item.productSkuid} ,
+        
+        	#{item.productSpuid} ,
+        
+        	#{item.imageType} ,
+        
+        	#{item.large} ,
+        
+        	#{item.medium} ,
+        
+        	#{item.orders} ,
+        
+        	#{item.source} ,
+        
+        	#{item.thumbnail} ,
+        
+        	#{item.title} ,
+        
+        	#{item.medium400} 
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcProductImage" >
+        UPDATE pc_product_image
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+			<if test="productSkuid!=null">
+	        product_skuid = #{productSkuid} ,
+	        </if>
+			<if test="productSpuid!=null">
+	        product_spuid = #{productSpuid} ,
+	        </if>
+	        <if test="imageType!=null and imageType!=''">
+	        image_type = #{imageType} ,
+	         </if>
+	        <if test="large!=null and large!=''">
+	        large = #{large} ,
+	         </if>
+	        <if test="medium!=null and medium!=''">
+	        medium = #{medium} ,
+	         </if>
+			<if test="orders!=null">
+	        orders = #{orders} ,
+	        </if>
+	        <if test="source!=null and source!=''">
+	        source = #{source} ,
+	         </if>
+	        <if test="thumbnail!=null and thumbnail!=''">
+	        thumbnail = #{thumbnail} ,
+	         </if>
+	        <if test="title!=null and title!=''">
+	        title = #{title} ,
+	         </if>
+	        <if test="medium400!=null and medium400!=''">
+	        medium_400 = #{medium400} 
+	         </if>
+	    </trim>    
+        WHERE 
+	       id = #{id} 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" >  
+       UPDATE pc_product_image SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+#{id}       </foreach>  
+    </update>
+
+    <delete id="delete" >
+        DELETE FROM pc_product_image WHERE
+        id = #{id} 
+    </delete>
+	
+	<delete id="deleteByIds" >
+        DELETE FROM pc_product_image WHERE
+        id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </delete>
+    
+    <delete id="deleteBySkuId" >
+        DELETE FROM pc_product_image WHERE
+        product_skuid = #{skuId} 
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			 <if test="id!=null">
+	         AND id = #{id} 
+	         </if>
+			 <if test="productSkuid!=null">
+	         AND product_skuid = #{productSkuid} 
+	         </if>
+			 <if test="productSpuid!=null">
+	         AND product_spuid = #{productSpuid} 
+	         </if>
+	        <if test="imageType!=null and imageType!=''">
+	         AND image_type = #{imageType} 
+	         </if>
+	        <if test="large!=null and large!=''">
+	         AND large = #{large} 
+	         </if>
+	        <if test="medium!=null and medium!=''">
+	         AND medium = #{medium} 
+	         </if>
+			 <if test="orders!=null">
+	         AND orders = #{orders} 
+	         </if>
+	        <if test="source!=null and source!=''">
+	         AND source = #{source} 
+	         </if>
+	        <if test="thumbnail!=null and thumbnail!=''">
+	         AND thumbnail = #{thumbnail} 
+	         </if>
+	        <if test="title!=null and title!=''">
+	         AND title = #{title} 
+	         </if>
+	        <if test="medium400!=null and medium400!=''">
+	         AND medium_400 = #{medium400} 
+	         </if>
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="large!=null and large!=''">
+			    AND large LIKE CONCAT('%','${large}','%')
+	         </if>
+	        <if test="medium!=null and medium!=''">
+			    AND medium LIKE CONCAT('%','${medium}','%')
+	         </if>
+	        <if test="source!=null and source!=''">
+			    AND source LIKE CONCAT('%','${source}','%')
+	         </if>
+	        <if test="thumbnail!=null and thumbnail!=''">
+			    AND thumbnail LIKE CONCAT('%','${thumbnail}','%')
+	         </if>
+	        <if test="title!=null and title!=''">
+			    AND title LIKE CONCAT('%','${title}','%')
+	         </if>
+	        <if test="medium400!=null and medium400!=''">
+			    AND medium_400 LIKE CONCAT('%','${medium400}','%')
+	         </if>
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      				
+	       <if test="id!=null">
+				AND id = #{id}
+		   </if>
+	       <if test="productSkuid!=null">
+				AND product_skuid = #{productSkuid}
+		   </if>
+	       <if test="productSpuid!=null">
+				AND product_spuid = #{productSpuid}
+		   </if>
+	       <if test="imageType!=null and imageType!=''">
+				AND image_type = #{imageType}
+		   </if>
+	       <if test="large!=null and large!=''">
+				AND large = #{large}
+		   </if>
+	       <if test="medium!=null and medium!=''">
+				AND medium = #{medium}
+		   </if>
+	       <if test="orders!=null">
+				AND orders = #{orders}
+		   </if>
+	       <if test="source!=null and source!=''">
+				AND source = #{source}
+		   </if>
+	       <if test="thumbnail!=null and thumbnail!=''">
+				AND thumbnail = #{thumbnail}
+		   </if>
+	       <if test="title!=null and title!=''">
+				AND title = #{title}
+		   </if>
+	       <if test="medium400!=null and medium400!=''">
+				AND medium_400 = #{medium400}
+		   </if>
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+	<select id="selectVOListByProductId" resultMap="RMProductImageVO" parameterType="java.lang.Long">
+		SELECT
+			a.title,
+			a.thumbnail,
+			a.medium,
+			a.medium_400,
+			a.large,
+			a.source
+		FROM
+			pc_product_image a, pc_product_sku b
+		WHERE a.product_skuid = b.product_skuid
+			AND b.id = #{productId}
+		ORDER BY a.orders ASC
+	</select>
+	
+	<select id="selectVOListBySpuId" resultMap="RMProductImageVO" parameterType="java.lang.Integer">
+		SELECT
+			a.title,
+			a.thumbnail,
+			a.medium,
+			a.medium_400,
+			a.large,
+			a.source
+		FROM
+			pc_product_image a, pc_product_spu b
+		WHERE a.product_spuid = b.product_spuid
+			AND b.product_spuid = #{spuId}
+		ORDER BY a.orders ASC
+	</select>
+	
+</mapper>
+

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+//====================================================================
+// Project Name：巨星科技-土猫网最新Mybatis 架构版本    @Author Royal
+// date:  2018-6-19 10:19:49
+//====================================================================
+!-->
+<mapper namespace="com.toolmall.business.product.dao.PcBusinessProductMapper">
+	<resultMap id="RMPcBusinessProduct" type="com.toolmall.business.product.bean.PcBusinessProduct">
+        <result property="productSkuid" column="product_skuid"/>
+        <result property="unicode" column="unicode"/>
+        <result property="showName" column="show_name"/>
+        <result property="isCompany" column="is_company"/>
+        <result property="isFreeShipping" column="is_free_shipping"/>
+        <result property="productIntroduction" column="product_introduction"/>
+        <result property="productFile" column="product_file"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="tag" column="tag"/>
+	</resultMap>
+
+    <select id="selectPageList" resultMap="RMPcBusinessProduct"  >
+        SELECT * FROM pc_business_product
+       <include refid="findPagewhere"/>
+    </select>
+
+    <select id="selectPageCount" resultType="long"  >
+        SELECT count(*) FROM pc_business_product 
+		<include refid="findPagewhere"/>    
+    </select>
+    
+    <select id="search" parameterType="com.toolmall.business.product.bean.PcBusinessProduct" resultMap="RMPcBusinessProduct">
+        SELECT * FROM pc_business_product
+        <include refid="searchWhere"/>
+    </select>
+	
+	<select id="selectOne" resultMap="RMPcBusinessProduct"  >
+        SELECT * FROM pc_business_product
+       <include refid="findPagewhere"/>
+    </select>
+	
+	<select id="selectList" resultMap="RMPcBusinessProduct"  >
+        SELECT * FROM pc_business_product
+       <include refid="findPagewhere"/>
+    </select>
+	    
+    <select id="selectById" resultMap="RMPcBusinessProduct"  >
+		SELECT *
+	    <![CDATA[
+		    FROM pc_business_product 
+	        WHERE 
+		        product_skuid = #{id} AND is_deleted = 0
+	    ]]>
+	</select>
+	
+    <!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+    <insert id="insert" parameterType="com.toolmall.business.product.bean.PcBusinessProduct"   useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pc_business_product (
+        	product_skuid, 
+        	unicode ,
+        	show_name ,
+        	is_company ,
+        	is_free_shipping ,
+        	product_introduction ,
+        	product_file ,
+        	tag 
+        ) VALUES (
+        	#{productSkuid} ,
+        	#{unicode} ,
+        	#{showName} ,
+        	#{isCompany} ,
+        	#{isFreeShipping} ,
+        	#{productIntroduction} ,
+        	#{productFile} ,
+        	#{tag} 
+        )
+	
+	<!--
+		oracle: order="BEFORE" SELECT sequenceName.nextval AS ID FROM DUAL 
+		DB2: order="BEFORE"" values nextval for sequenceName
+		<selectKey resultType="java.lang.Long" order="BEFORE" keyProperty="userId">
+			SELECT sequenceName.nextval AS ID FROM DUAL 
+        </selectKey>
+	-->
+	</insert>
+    
+	<insert id="insertByBatch" parameterType="java.util.List" >
+        INSERT INTO pc_business_product (
+        	product_skuid, 
+        	unicode ,
+        	show_name ,
+        	is_company ,
+        	is_free_shipping ,
+        	product_introduction ,
+        	product_file ,
+        	tag 
+        )VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+		(
+			#{item.productSkuid} ,
+		
+        	#{item.unicode} ,
+        
+        	#{item.showName} ,
+        
+        	#{item.isCompany} ,
+        	
+        	#{item.isFreeShipping} ,
+        
+        	#{item.productIntroduction} ,
+        
+        	#{item.productFile} ,
+        
+        	#{item.tag} 
+        )
+        </foreach>
+    </insert>
+	
+	<update id="update" parameterType="com.toolmall.business.product.bean.PcBusinessProduct" >
+        UPDATE pc_business_product
+        <trim prefix="SET" prefixOverrides="," suffixOverrides=",">
+	        <if test="unicode!=null and unicode!=''">
+	        unicode = #{unicode} ,
+	         </if>
+	        <if test="showName!=null and showName!=''">
+	        show_name = #{showName} ,
+	         </if>
+			<if test="isCompany!=null">
+	        is_company = #{isCompany} ,
+	        </if>
+	        <if test="isFreeShipping!=null">
+	        is_free_shipping = #{isFreeShipping} ,
+	        </if>
+	        <if test="productIntroduction!=null and productIntroduction!=''">
+	        product_introduction = #{productIntroduction} ,
+	         </if>
+	        <if test="productFile!=null and productFile!=''">
+	        product_file = #{productFile} ,
+	         </if>
+			<if test="isDefault!=null">
+	        is_default = #{isDefault} ,
+	        </if>
+	        <if test="tag!=null and tag!=''">
+	        tag = #{tag} 
+	         </if>
+	    </trim>    
+        WHERE 
+	       product_skuid = #{productSkuid} 
+	</update>
+
+	<update id="updateList" parameterType="java.util.List" >  
+       UPDATE pc_business_product SET state = '0' WHERE id IN  
+       <foreach collection="list" item="id" open="(" separator="," close=")">  
+#{id}       </foreach>  
+    </update>
+
+    <delete id="delete" >
+        DELETE FROM pc_business_product WHERE
+        product_skuid = #{id} 
+    </delete>
+	
+	<delete id="deleteByIds" >
+        DELETE FROM pc_business_product WHERE
+        id IN
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
+#{item}        </foreach>
+    </delete>
+	
+	<sql id="findPagewhere">
+		<where>	      
+			 <if test="productSkuid!=null">
+	         AND product_skuid = #{productSkuid} 
+	         </if>
+	        <if test="unicode!=null and unicode!=''">
+	         AND unicode = #{unicode} 
+	         </if>
+	        <if test="showName!=null and showName!=''">
+	         AND show_name = #{showName} 
+	         </if>
+			 <if test="isCompany!=null">
+	         AND is_company = #{isCompany} 
+	         </if>
+	        <if test="productIntroduction!=null and productIntroduction!=''">
+	         AND product_introduction = #{productIntroduction} 
+	         </if>
+	        <if test="productFile!=null and productFile!=''">
+	         AND product_file = #{productFile} 
+	         </if>
+			 <if test="isDefault!=null">
+	         AND is_default = #{isDefault} 
+	         </if>
+	        <if test="tag!=null and tag!=''">
+	         AND tag = #{tag} 
+	         </if>
+		</where>
+	</sql>
+	
+    <sql id="searchWhere">
+		<where>	      
+	        <if test="unicode!=null and unicode!=''">
+			    AND unicode LIKE CONCAT('%','${unicode}','%')
+	         </if>
+	        <if test="showName!=null and showName!=''">
+			    AND show_name LIKE CONCAT('%','${showName}','%')
+	         </if>
+	        <if test="tag!=null and tag!=''">
+			    AND tag LIKE CONCAT('%','${tag}','%')
+	         </if>
+		</where>
+	</sql>
+	
+	<sql id="findDatewhere">
+		<where>	      				
+	       <if test="productSkuid!=null">
+				AND product_skuid = #{productSkuid}
+		   </if>
+	       <if test="unicode!=null and unicode!=''">
+				AND unicode = #{unicode}
+		   </if>
+	       <if test="showName!=null and showName!=''">
+				AND show_name = #{showName}
+		   </if>
+	       <if test="isCompany!=null">
+				AND is_company = #{isCompany}
+		   </if>
+	       <if test="productIntroduction!=null and productIntroduction!=''">
+				AND product_introduction = #{productIntroduction}
+		   </if>
+	       <if test="productFile!=null and productFile!=''">
+				AND product_file = #{productFile}
+		   </if>
+	       <if test="isDefault!=null">
+				AND is_default = #{isDefault}
+		   </if>
+	       <if test="tag!=null and tag!=''">
+				AND tag = #{tag}
+		   </if>
+		</where>
+	</sql>
+	
+	<!-- 调用存储过程
+	<select id="selectUserByProvinceAndCity" resultMap="BaseResultMap"  
+        statementType="CALLABLE">  带 井号
+        {CALL user_selectUserByCity_sp({provinceId,mode=IN,jdbcType=INTEGER},{cityId,mode=IN,jdbcType=INTEGER},{pageIndex,mode=IN,jdbcType=INTEGER},{pageSize,mode=IN,jdbcType=INTEGER})}  
+    </select>  
+	-->
+	
+</mapper>
+
