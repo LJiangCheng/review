@@ -1,5 +1,7 @@
 package com.ljc.review.search.entity.vo;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.math.BigDecimal;
 
 public class SkuToElasticSearchVO {
@@ -12,6 +14,15 @@ public class SkuToElasticSearchVO {
     private String property;
     private String unit;
     private String unicode;
+    private String makerModelLiteral;
+
+    public String getMakerModelLiteral() {
+        return makerModelLiteral;
+    }
+
+    public void setMakerModelLiteral(String makerModelLiteral) {
+        this.makerModelLiteral = makerModelLiteral;
+    }
 
     public String getUnicode() {
         return unicode;
@@ -43,6 +54,7 @@ public class SkuToElasticSearchVO {
 
     public void setMakerModel(String makerModel) {
         this.makerModel = makerModel;
+        this.makerModelLiteral = makerModel;
     }
 
     public BigDecimal getPrice() {
