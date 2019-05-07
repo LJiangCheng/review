@@ -29,13 +29,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void pushAllProductToES() {
         List<SkuToElasticSearchVO> productList = new ArrayList<>();
-        int count = skuMapper.countAllProduct();
+        /*int count = skuMapper.countAllProduct();
         int page = count / 1000 == 0 ? count / 1000 : count / 1000 + 1;
         for (int i = 0; i < page; i++) {
             List<SkuToElasticSearchVO> productByPage = skuMapper.getProductByPage(i * 1000, 1000);
             LOGGER.info("第" + (i + 1) + "页数据获取成功，共" + productByPage.size() + "条！");
             productList.addAll(productByPage);
-        }
+        }*/
+        productList.addAll(skuMapper.getProductByPage(0, 100));
         LOGGER.info("商品数据获取成功，共" + productList.size() + "条！");
         IndexRequest request;
         for (SkuToElasticSearchVO vo : productList) {
