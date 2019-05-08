@@ -1,9 +1,11 @@
 package com.ljc.review.search.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import com.ljc.review.search.entity.vo.SkuToElasticSearchVO;
 import com.ljc.review.search.repository.PcProductSkuMapper;
 import com.ljc.review.search.service.spec.ProductService;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
@@ -29,23 +31,27 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void pushAllProductToES() {
         List<SkuToElasticSearchVO> productList = new ArrayList<>();
-        /*int count = skuMapper.countAllProduct();
+        int count = skuMapper.countAllProduct();
         int page = count / 1000 == 0 ? count / 1000 : count / 1000 + 1;
         for (int i = 0; i < page; i++) {
             List<SkuToElasticSearchVO> productByPage = skuMapper.getProductByPage(i * 1000, 1000);
             LOGGER.info("第" + (i + 1) + "页数据获取成功，共" + productByPage.size() + "条！");
             productList.addAll(productByPage);
-        }*/
-        productList.addAll(skuMapper.getProductByPage(0, 100));
+        }
+        //productList.addAll(skuMapper.getProductByPage(0, 3000));
         LOGGER.info("商品数据获取成功，共" + productList.size() + "条！");
-        IndexRequest request;
-        for (SkuToElasticSearchVO vo : productList) {
-            request = new IndexRequest("data", "product", vo.getUnicode());
-            request.source(JSON.toJSONString(vo), XContentType.JSON);
+        List<List<SkuToElasticSearchVO>> partition = Lists.partition(productList, 10000);
+        for (int i = 0; i < partition.size(); i++) {
+            List<SkuToElasticSearchVO> part = partition.get(i);
+            BulkRequest request = new BulkRequest();
+            for (SkuToElasticSearchVO vo : part) {
+                request.add(new IndexRequest("data", "product", vo.getUnicode()).source(JSON.toJSONString(vo), XContentType.JSON));
+            }
             try {
-                client.index(request);
+                client.bulk(request);
+                LOGGER.info("第" + (i + 1) + "批商品索引异常！");
             } catch (IOException e) {
-                LOGGER.error("=======>商品" + vo.getUnicode() + "索引异常！");
+                LOGGER.error("=======>第" + (i + 1) + "批商品索引异常！");
             }
         }
         LOGGER.info("索引成功！");
