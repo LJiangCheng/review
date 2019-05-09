@@ -32,15 +32,14 @@ public class ProductServiceImpl implements ProductService {
     public void pushAllProductToES() {
         List<SkuToElasticSearchVO> productList = new ArrayList<>();
         int count = skuMapper.countAllProduct();
-        int page = count / 1000 == 0 ? count / 1000 : count / 1000 + 1;
+        int page = count / 3000 == 0 ? count / 3000 : count / 3000 + 1;
         for (int i = 0; i < page; i++) {
-            List<SkuToElasticSearchVO> productByPage = skuMapper.getProductByPage(i * 1000, 1000);
+            List<SkuToElasticSearchVO> productByPage = skuMapper.getProductByPage(i * 3000, 3000);
             LOGGER.info("第" + (i + 1) + "页数据获取成功，共" + productByPage.size() + "条！");
             productList.addAll(productByPage);
         }
-        //productList.addAll(skuMapper.getProductByPage(0, 3000));
         LOGGER.info("商品数据获取成功，共" + productList.size() + "条！");
-        List<List<SkuToElasticSearchVO>> partition = Lists.partition(productList, 10000);
+        List<List<SkuToElasticSearchVO>> partition = Lists.partition(productList, 3000);
         for (int i = 0; i < partition.size(); i++) {
             List<SkuToElasticSearchVO> part = partition.get(i);
             BulkRequest request = new BulkRequest();
@@ -49,9 +48,9 @@ public class ProductServiceImpl implements ProductService {
             }
             try {
                 client.bulk(request);
-                LOGGER.info("第" + (i + 1) + "批商品索引异常！");
+                LOGGER.info("第" + (i + 1) + "批商品索引成功！");
             } catch (IOException e) {
-                LOGGER.error("=======>第" + (i + 1) + "批商品索引异常！");
+                LOGGER.error("=======>第" + (i + 1) + "批商品索引异常！", e);
             }
         }
         LOGGER.info("索引成功！");
