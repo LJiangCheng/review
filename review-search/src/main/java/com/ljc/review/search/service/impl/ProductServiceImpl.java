@@ -7,6 +7,7 @@ import com.ljc.review.search.repository.PcProductSkuMapper;
 import com.ljc.review.search.service.spec.ProductService;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.slf4j.Logger;
@@ -44,10 +45,10 @@ public class ProductServiceImpl implements ProductService {
             List<SkuToElasticSearchVO> part = partition.get(i);
             BulkRequest request = new BulkRequest();
             for (SkuToElasticSearchVO vo : part) {
-                request.add(new IndexRequest("data", "product", vo.getUnicode()).source(JSON.toJSONString(vo), XContentType.JSON));
+                request.add(new IndexRequest("products").id(vo.getUnicode()).source(JSON.toJSONString(vo), XContentType.JSON));
             }
             try {
-                client.bulk(request);
+                client.bulk(request, RequestOptions.DEFAULT);
                 LOGGER.info("第" + (i + 1) + "批商品索引成功！");
             } catch (IOException e) {
                 LOGGER.error("=======>第" + (i + 1) + "批商品索引异常！", e);
