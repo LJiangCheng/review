@@ -3,6 +3,8 @@ package com.ljc.review.search.entity.vo;
 import com.alibaba.fastjson.annotation.JSONField;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SkuToElasticSearchVO {
 
@@ -13,8 +15,76 @@ public class SkuToElasticSearchVO {
     private String productName;
     private String property;
     private String unit;
-    private String unicode;
+    private String code;
     private String makerModelLiteral;
+    private String image;
+    private String url;
+    private Integer source;
+    private List<Double> tags = new ArrayList<>();
+
+    @JSONField(serialize = false)
+    private Integer brandId;
+    @JSONField(serialize = false)
+    private Integer categoryId;
+
+    public SkuToElasticSearchVO() {
+    }
+
+    public Integer getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(Integer brandId) {
+        this.brandId = brandId;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Integer getSource() {
+        return source;
+    }
+
+    public void setSource(Integer source) {
+        this.source = source;
+    }
+
+    public List<Double> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Double> tags) {
+        this.tags = tags;
+    }
 
     public String getMakerModelLiteral() {
         return makerModelLiteral;
@@ -25,11 +95,11 @@ public class SkuToElasticSearchVO {
     }
 
     public String getUnicode() {
-        return unicode;
+        return code;
     }
 
-    public void setUnicode(String unicode) {
-        this.unicode = unicode;
+    public void setUnicode(String code) {
+        this.code = code;
     }
 
     public String getBrandName() {

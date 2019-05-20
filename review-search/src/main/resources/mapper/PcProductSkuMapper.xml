@@ -54,7 +54,8 @@
 	</select>
 
 	<select id="getProductByPage" resultType="com.ljc.review.search.entity.vo.SkuToElasticSearchVO">
-		select a.unicode as unicode,a.product_allinfo as productName,a.maker_code as makerModel,a.unit_name as unit,a.toolmall_price as price,d.category_name as categoryName,c.name as brandName,
+		select a.unicode as code,a.product_allinfo as productName,a.maker_code as makerModel,a.unit_name as unit,a.toolmall_price as price,d.category_name as categoryName,c.name as brandName,
+			   a.image_file AS image,c.id AS brandId,d.category_id AS categoryId,
 			   ( SELECT
 				  GROUP_CONCAT(
 					o.value_name

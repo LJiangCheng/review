@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -45,6 +47,10 @@ public class ProductServiceImpl implements ProductService {
             List<SkuToElasticSearchVO> part = partition.get(i);
             BulkRequest request = new BulkRequest();
             for (SkuToElasticSearchVO vo : part) {
+                if (vo.getCategoryId() != null) {
+                    vo.setTags(Collections.singletonList(vo.getCategoryId().doubleValue()));
+                }
+                vo.setSource(0);
                 request.add(new IndexRequest("products").id(vo.getUnicode()).source(JSON.toJSONString(vo), XContentType.JSON));
             }
             try {
