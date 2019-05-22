@@ -1,0 +1,53 @@
+#1.一个涵盖了B端核心需求的搜索示例
+GET /products/_search
+{
+  "from": 0,
+  "size": 10,
+  "query": {
+    "function_score": {
+      "query": {
+        "bool": {
+          "must": {
+            "match": {
+              "productName": {
+                "query": "手电钻",
+                "operator": "and"
+              }
+            }
+          },
+          "should": [
+            {
+              "match": {
+                "categoryName": {
+                  "query": "起子机",
+                  "boost": 1
+                }
+              }
+            },
+            {
+              "term": {
+                "brandName": "博世"
+              }
+            }
+          ],
+          "minimum_should_match": 0,
+          "boost": 1
+        }
+      },
+      "script_score": {
+        "script": {
+          "source": "doc['source'].value"
+        }
+      },
+      "boost_mode": "sum"
+    }
+  },
+  "script_fields": {
+    "_source": {
+      "script": "params._source"
+    },
+    "myscore": {
+      "script": "doc['price'].value"
+    }
+  }
+}
