@@ -20,6 +20,10 @@ public class BaseResult<T> {
         return new BaseResult<>(true, "", data);
     }
 
+    public static BaseResult success(Object data, String message) {
+        return new BaseResult<>(true, message, data);
+    }
+
     public static BaseResult error(String message) {
         return new BaseResult<>(false, message, null);
     }
