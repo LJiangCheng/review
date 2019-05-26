@@ -3,6 +3,7 @@ GET /products/_search
 {
   "from": 0,
   "size": 10,
+  "_source": [ "productName", "categoryName", "brandName" ],
   "query": {
     "function_score": {
       "query": {
@@ -43,11 +44,8 @@ GET /products/_search
     }
   },
   "script_fields": {
-    "_source": {
-      "script": "params._source"
-    },
-    "myscore": {
+    "myprice": {
       "script": "doc['price'].value"
     }
   }
-}
+}}

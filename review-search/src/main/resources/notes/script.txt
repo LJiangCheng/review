@@ -1,0 +1,26 @@
+#1.除动态提交的script之外，也可读取es固定文件中的script。为了和动态提交的语法有区别，调用固定文件的写法如下：
+# curl 127.0.0.1:9200/logstash-2015.06.29/_search -d '{
+    "aggs" : {
+        "clientip_subnet_top10" : {
+            "terms" : {
+                "script" : {
+                    "file" : "getvalue",
+                    "lang" : "groovy",
+                    "params" : {
+                        "fieldname": "clientip.keyword",
+                        "pattern": "^((?:\d{1,3}\.?){3})\.\d{1,3}$"
+                    }
+                }
+            }
+        }
+    }
+}'
+上例要求在 ES 集群的所有数据节点上，都保存有一个 /etc/elasticsearch/scripts/getvalue.groovy 文件，并且该脚本文件可以接收 fieldname 和 pattern 两个变量。
+试举例如下：
+#!/usr/bin/env groovy
+matcher = ( doc[fieldname].value =~ /${pattern}/ )
+if (matcher.matches()) {
+    matcher[0][1]
+}
+注意：ES 进程默认每分钟扫描一次 /etc/elasticsearch/scripts/ 目录，并尝试加载该目录下所有文件作为 script。所以，不要在该目录内做文件编辑等工作，不要分发
+.svn等目录到生成环境，这些临时或者隐藏文件都会被 ES 进程加载然后报错。
