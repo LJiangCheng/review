@@ -3,7 +3,14 @@ GET /products/_search
 {
   "from": 0,
   "size": 10,
-  "_source": [ "productName", "categoryName", "brandName" ],
+  "_source": [
+    "productName",
+    "categoryName",
+    "brandName",
+    "property",
+    "makerModel",
+    "price"
+  ],
   "query": {
     "function_score": {
       "query": {
@@ -19,8 +26,16 @@ GET /products/_search
           "should": [
             {
               "match": {
-                "categoryName": {
-                  "query": "起子机",
+                "makerModel": {
+                  "query": "",
+                  "boost": 3
+                }
+              }
+            },
+            {
+              "match":{
+                "property":{
+                  "query":"",
                   "boost": 1
                 }
               }
@@ -35,11 +50,25 @@ GET /products/_search
           "boost": 1
         }
       },
-      "script_score": {
-        "script": {
-          "source": "doc['source'].value"
+      "functions": [
+        {
+          "filter": {
+            "match": {
+               "source":{
+                 "query": 0,
+                 "boost": 1
+               }
+            }
+          },
+          "script_score": {
+            "script": {
+              "source": "doc['source'].value",
+              "lang": "painless"
+            }
+          }
         }
-      },
+      ],
+      "score_mode": "multiply",
       "boost_mode": "sum"
     }
   },
@@ -48,4 +77,4 @@ GET /products/_search
       "script": "doc['price'].value"
     }
   }
-}}
+}
