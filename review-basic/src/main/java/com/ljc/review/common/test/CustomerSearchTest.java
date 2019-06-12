@@ -25,12 +25,12 @@ public class CustomerSearchTest {
 
     @Test
     public void md5() {
-        for(int i=1;i<=1000;i++) {
-            long l = System.currentTimeMillis();
-            MD5.md5(i + "");
-            long l1 = System.currentTimeMillis();
-            LOGGER.info(l1 - l + "ms");
+        long l = System.currentTimeMillis();
+        for(int i=1;i<=100000;i++) {
+            MD5.md5(i + "qwerqweruoipuashjfasjoiujflkjfasidfjpoajlfjoiweljdf按甲方给拉科技佛圣诞节佛附件为了减肥螺丝刀是的两款发动机是佛甲方搜索搜到多多多多多");
         }
+        long l1 = System.currentTimeMillis();
+        LOGGER.info(l1 - l + "ms");
     }
 
 }
