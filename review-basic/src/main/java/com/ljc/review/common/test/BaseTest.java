@@ -21,6 +21,23 @@ public class BaseTest {
     }
 
     @Test
+    public void math() {
+        int max = 5;
+        System.out.println(Math.log10(2)/max);
+        System.out.println(Math.log10(31)/max);
+        System.out.println(Math.log10(137)/max);
+        System.out.println(Math.log10(540)/max);
+        System.out.println(Math.log10(1800)/max);
+        System.out.println(Math.log10(5600)/max);
+        System.out.println(Math.log10(10089)/max);
+        System.out.println(Math.log10(56995)/max);
+        System.out.println(Math.log10(98888)/max);
+        System.out.println(Math.log10(298888)/max);
+        System.out.println(Math.log10(798888)/max);
+        System.out.println(Math.log10(998888)/max);
+    }
+
+    @Test
     public void keywordProcess() throws Exception {
         File file = new File("C:\\Users\\toolmall\\Desktop\\B端本地词库.txt");
         BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
