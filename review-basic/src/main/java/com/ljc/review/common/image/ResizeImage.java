@@ -14,16 +14,6 @@ import java.io.IOException;
 
 public class ResizeImage {
 
-    public static File drawImage(Image image, String filePath, int w, int h, int x, int y, ImageObserver observer) throws IOException {
-        BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        bufferedImage.getGraphics().drawImage(image.getScaledInstance(w, h, Image.SCALE_SMOOTH), x, y, observer);
-        File file = new File(filePath);
-        // 获取文件扩展名
-        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
-        ImageIO.write(bufferedImage, ext, file);
-        return file;
-    }
-
     @Test
     public void testResize() throws IOException {
         String sourcePath = "E:\\resize\\d3a608b0fb.jpg";
@@ -62,6 +52,16 @@ public class ResizeImage {
             drawImage(image, targetPath, i * 200, i * 200, 0, 0, null);
         }
         System.out.println("success!");
+    }
+
+    private static File drawImage(Image image, String filePath, int w, int h, int x, int y, ImageObserver observer) throws IOException {
+        BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        bufferedImage.getGraphics().drawImage(image.getScaledInstance(w, h, Image.SCALE_SMOOTH), x, y, observer);
+        File file = new File(filePath);
+        // 获取文件扩展名
+        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
+        ImageIO.write(bufferedImage, ext, file);
+        return file;
     }
 
 }
