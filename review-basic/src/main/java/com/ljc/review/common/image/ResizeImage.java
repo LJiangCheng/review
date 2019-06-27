@@ -24,16 +24,17 @@ public class ResizeImage {
         resize(byteArr);
     }
 
-    /**
-     * 方式1：直接构建BufferedImage
-     */
-    private void resize(byte[] byteArr) throws IOException {
-        BufferedImage image = ImageIO.read(new ByteArrayInputStream(byteArr));
-        for (int i = 1; i < 8; i++) {
-            String targetPath = "E:\\resize\\" + i * 250 + ".jpg";
-            drawImage(image, targetPath, i * 250, i * 250, 0, 0, null);
-        }
-        System.out.println("success!");
+    private static File drawImage(Image image, String filePath, int w, int h, int x, int y, ImageObserver observer) throws IOException {
+        BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        Graphics graphics = bufferedImage.getGraphics();
+        //image.getScaledInstance(w, h, Image.SCALE_SMOOTH)：根据不同的压缩策略缩放图片
+        graphics.drawImage(image.getScaledInstance(w, h, Image.SCALE_SMOOTH), x, y, observer);
+        graphics.dispose();
+        File file = new File(filePath);
+        // 获取文件扩展名
+        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
+        ImageIO.write(bufferedImage, ext, file);
+        return file;
     }
 
     /**
@@ -54,14 +55,18 @@ public class ResizeImage {
         System.out.println("success!");
     }
 
-    private static File drawImage(Image image, String filePath, int w, int h, int x, int y, ImageObserver observer) throws IOException {
-        BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        bufferedImage.getGraphics().drawImage(image.getScaledInstance(w, h, Image.SCALE_SMOOTH), x, y, observer);
-        File file = new File(filePath);
-        // 获取文件扩展名
-        String ext = filePath.substring(filePath.lastIndexOf(".") + 1);
-        ImageIO.write(bufferedImage, ext, file);
-        return file;
+    /**
+     * 方式1：直接构建BufferedImage
+     */
+    private void resize(byte[] byteArr) throws IOException {
+        BufferedImage image = ImageIO.read(new ByteArrayInputStream(byteArr));
+        System.out.println("原图宽：" + image.getWidth());
+        System.out.println("原图高：" + image.getHeight());
+        for (int i = 1; i < 8; i++) {
+            String targetPath = "E:\\resize\\" + i * 250 + ".jpg";
+            drawImage(image, targetPath, i * 250, i * 250, 0, 0, null);
+        }
+        System.out.println("success!");
     }
 
 }

@@ -1,9 +1,5 @@
 package com.ljc.review.common.test;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ljc.util.MD5;
-import com.ljc.util.OkHttpUtils;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +7,7 @@ public class CustomerSearchTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerSearchTest.class);
 
-    @Test
+    /*@Test
     public void push() {
         for (int i = 1; i <= 5000; i++) {
             long l1 = System.currentTimeMillis();
@@ -31,7 +27,7 @@ public class CustomerSearchTest {
         }
         long l1 = System.currentTimeMillis();
         LOGGER.info(l1 - l + "ms");
-    }
+    }*/
 
 }
 
