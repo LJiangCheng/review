@@ -46,6 +46,11 @@
 			<version>4.12</version>
 		</dependency>
 		<dependency>
+			<groupId>com.eclipsesource.j2v8</groupId>
+			<artifactId>j2v8_win32_x86_64</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
