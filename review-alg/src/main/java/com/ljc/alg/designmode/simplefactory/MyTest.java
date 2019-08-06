@@ -9,7 +9,10 @@ public class MyTest {
         ShapeDrawing roundDrawing = ShapeDrawing.create("round");
         roundDrawing.draw();
         roundDrawing.erase();
-        ShapeDrawing.create("");
+        ShapeDrawing squareDrawing = ShapeDrawing.create("square");
+        squareDrawing.draw();
+        squareDrawing.erase();
+        ShapeDrawing.create("sanjiaoxing");
     }
 
 }

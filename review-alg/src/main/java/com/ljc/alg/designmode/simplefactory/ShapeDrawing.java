@@ -15,7 +15,7 @@ public interface ShapeDrawing {
         } else if ("square".equals(drawingName)) {
             shapeDrawing = new SquareDrawing();
         } else {
-            throw SysException.instance("不支持的类型！");
+            throw SysException.instance("不支持的类型:" + drawingName);
         }
         return shapeDrawing;
     }
