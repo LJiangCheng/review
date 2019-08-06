@@ -1,6 +1,6 @@
-package com.ljc.alg.designmode.factorymethod;
+package com.ljc.alg.design.creational.factorymethod.factory;
 
-import com.ljc.alg.designmode.factorymethod.inter.ReaderFactory;
+import com.ljc.alg.design.creational.factorymethod.impl.JpgImageReader;
 
 public class JpgReaderFactory implements ReaderFactory {
 

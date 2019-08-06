@@ -1,4 +1,4 @@
-package com.ljc.alg.designmode;
+package com.ljc.alg.design;
 
 public class SysException extends RuntimeException {
 

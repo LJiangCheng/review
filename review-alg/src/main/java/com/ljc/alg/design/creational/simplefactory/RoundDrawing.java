@@ -1,4 +1,6 @@
-package com.ljc.alg.designmode.simplefactory;
+package com.ljc.alg.design.creational.simplefactory;
+
+import com.ljc.alg.design.creational.simplefactory.inter.ShapeDrawing;
 
 public class RoundDrawing implements ShapeDrawing {
 

@@ -1,4 +1,4 @@
-package com.ljc.alg.designmode.factorymethod.inter;
+package com.ljc.alg.design.creational.factorymethod.inter;
 
 public interface ImageReader {
 

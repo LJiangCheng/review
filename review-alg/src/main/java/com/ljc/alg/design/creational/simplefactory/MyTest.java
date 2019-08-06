@@ -1,5 +1,6 @@
-package com.ljc.alg.designmode.simplefactory;
+package com.ljc.alg.design.creational.simplefactory;
 
+import com.ljc.alg.design.creational.simplefactory.inter.ShapeDrawing;
 import org.junit.Test;
 
 public class MyTest {

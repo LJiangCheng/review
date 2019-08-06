@@ -1,6 +1,8 @@
-package com.ljc.alg.designmode.simplefactory;
+package com.ljc.alg.design.creational.simplefactory.inter;
 
-import com.ljc.alg.designmode.SysException;
+import com.ljc.alg.design.SysException;
+import com.ljc.alg.design.creational.simplefactory.RoundDrawing;
+import com.ljc.alg.design.creational.simplefactory.SquareDrawing;
 
 public interface ShapeDrawing {
 
