@@ -1,4 +1,4 @@
-package com.ljc.review.common.image;
+package com.ljc.review.common.image.resize;
 
 import org.junit.Test;
 
@@ -13,16 +13,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class ResizeImage {
-
-    @Test
-    public void testResize() throws IOException {
-        String sourcePath = "E:\\resize\\d3a608b0fb.jpg";
-        File file = new File(sourcePath);
-        FileInputStream fis = new FileInputStream(file);
-        byte[] byteArr = new byte[327091];
-        fis.read(byteArr);
-        resize(byteArr);
-    }
 
     private static File drawImage(Image image, String filePath, int w, int h, int x, int y, ImageObserver observer) throws IOException {
         BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
@@ -40,7 +30,7 @@ public class ResizeImage {
     /**
      * 方式2：从ImageIcon重新画出BufferedImage
      */
-    private void resizeOne(byte[] byteArr) throws IOException {
+    public static void resizeOne(byte[] byteArr) throws IOException {
         ImageIcon imageIcon = new ImageIcon(byteArr);
         //Image image = imageIcon.getImage();
         BufferedImage image = new BufferedImage(imageIcon.getIconWidth(), imageIcon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
@@ -58,7 +48,7 @@ public class ResizeImage {
     /**
      * 方式1：直接构建BufferedImage
      */
-    private void resize(byte[] byteArr) throws IOException {
+    public static void resize(byte[] byteArr) throws IOException {
         BufferedImage image = ImageIO.read(new ByteArrayInputStream(byteArr));
         System.out.println("原图宽：" + image.getWidth());
         System.out.println("原图高：" + image.getHeight());
