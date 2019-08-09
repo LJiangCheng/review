@@ -3,8 +3,6 @@ package com.ljc.review.common.image.watermark;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.FileImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -78,10 +76,9 @@ public class ImageUtil {
      */
 
     public void writeImage (ImageData Img, File dstFile, int Quality) {
-
         int width = Img.getWidth();
         int height = Img.getHeight();
-        BufferedImage bf = null;
+        BufferedImage bf;
         String ext = FilenameUtils.getExtension(dstFile.getName());
 
         if (ext.equalsIgnoreCase("jpg")) {
@@ -95,9 +92,7 @@ public class ImageUtil {
                 }
             }
             try {
-                File file = dstFile;
-                ImageIO.write(bf, ext, file);
-
+                ImageIO.write(bf, ext, dstFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -107,7 +102,6 @@ public class ImageUtil {
     /**
      * Read JPG format image and return a BufferedImage .
      */
-
     public static BufferedImage toBufferedImage(Image image) {
         if (image instanceof BufferedImage) {
             return (BufferedImage) image;

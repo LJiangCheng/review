@@ -21,7 +21,7 @@ public class TestImage {
         File srcFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\400.jpg");
         //目标文件
         File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\500.jpg");
-        ImageProcessor.imageAddWaterMark(srcFile, waterMarkFile, destFile, 1, 0.3F, 95);
+        ImageProcessor.imageAddWaterMark(srcFile, waterMarkFile, destFile, 1, 0.3F, 100);
     }
 
     /**

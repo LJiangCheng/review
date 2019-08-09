@@ -20,7 +20,6 @@ public class Compressor {
     public void JpgCompressor (ImageData Img, File dstImgDir, int Quality) {
         ImageOutputStream imageOutputStream = null;
         try {
-
             int width = Img.getWidth();
             int height = Img.getHeight();
             BufferedImage bf = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -39,16 +38,16 @@ public class Compressor {
             imageWriteParam.setCompressionQuality((float)Quality / (float)100.0);
             imageWriter.write(null, new IIOImage(bf, null, null), imageWriteParam);
             imageOutputStream.flush();
-            //imageOutputStream.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally{
-            //IOUtils.closeQuietly(imageOutputStream);
-            try {
-                imageOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (imageOutputStream != null) {
+                try {
+                    imageOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
