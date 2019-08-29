@@ -12,5 +12,4 @@ server:
       max-threads: 1000
       max-connections: 1000
       min-spare-threads: 20
-      max-http-header-size: 65536
       uri-encoding: UTF-8
