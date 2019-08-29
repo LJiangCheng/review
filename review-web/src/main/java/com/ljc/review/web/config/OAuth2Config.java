@@ -16,12 +16,14 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
-//配置资源服务器和授权服务器
 @Configuration
-public class OAuth2ServerConfig {
+public class OAuth2Config {
 
     private static final String DEMO_RESOURCE_ID = "order";
 
+    /**
+     * 资源服务器
+     */
     @Configuration
     @EnableResourceServer
     protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
@@ -33,7 +35,6 @@ public class OAuth2ServerConfig {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            // @formatter:off
             http
                     // Since we want the protected resources to be accessible in the UI as well we need
                     // session creation to be allowed (it's disabled by default in 2.0.6)
@@ -46,11 +47,13 @@ public class OAuth2ServerConfig {
                     .authorizeRequests()
 //                    .antMatchers("/product/**").access("#oauth2.hasScope('select') and hasRole('ROLE_USER')")
                     .antMatchers("/order/**").authenticated();//配置order访问控制，必须认证过后才可以访问
-            // @formatter:on
         }
     }
 
 
+    /**
+     * 授权服务器
+     */
     @Configuration
     @EnableAuthorizationServer
     protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
