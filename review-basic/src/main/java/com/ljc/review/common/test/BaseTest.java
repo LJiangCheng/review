@@ -77,8 +77,11 @@ public class BaseTest {
 
     @Test
     public void t1() {
-        Map<String, Object> map = new HashMap<>();
-        map.remove("dddd");
+        String s = "rememberMe=YFJDQLAHQh57qR1EClE7yWVguZlrtyhuhFdOnZcSSj173whOR0u7jVbsi4ldlwhepVlV3IluElYQTsl4rgAbrwb6uwjJxC9wgOu+3VT1Xk/Pd6LUEztvjo98PqxKWBZS4c+d+hLiYMqxSdZZfAAoQigzB7F/D5ipbofN/qM90r0mnjlLl1AsW8L6qIC6otAQKqk1sB9HrdDyLUs+Ke3TeUTULIy4e5jfI1lXvDdaj7vTtNty/vnd2WsSB3u1E3A+9znTSUr/Ti1Eei3FMSOI6mgAe2BPpazW8RtHv62nhWSZena+sCCleMCVl/s5Vxh+YOpAP6V3kH9lpdV3A4MwcG2d50T9n9DPSNhmTmYTHJtBwlz/sRsMLvxLZGVH4t9MmkYsYbJGvONqZgPDXheB8Z+15yqhM6m/02yMBBkJkgIaJv5RchvclSApDt2xzFHncQ24zDMshpMmKroARwNDTjWCkTilcS7YRJHUSiqZCQhTdg64QQiMEjHn7pl03QJ+AAedl9V3U3D3y0hIm0mvMQWHD544xITPmDMQlw77aZikHZyUmB2j7vH+DHQJbrK8XEbecyYDzje2J1zXhnIYvyN2SSUS07OPtkTtRa9UkthmrSPztjeabnOrKv3JZBUAzoeR/2zzekniajBe58WzgVD02Qntj0kNm7/aALzZ9PPIoUPo0t5HzWT55krhg1lZLH+no9C7LiTA4RvOzeO3sanbkmH1MEPY6Hbf3k020log6hu/YUaPH2XlooMTme04qMtJ36bdHFMIVy7ish/mMlbyyC+6wjkX22dNG/n5sTtGDVwXMv6FPQlJQR4F8rzk; Hm_lvt_82116c626a8d504a5c0675073362ef6f=1566350005,1566436486,1566536140,1566782243; search_history=fdec40b660584da0b2428cfff62e99ed; JSESSIONID=81DF18CE227D3426951F937DB45D7A0A";
+        String[] split = s.split(";");
+        for (String ss : split) {
+            System.out.println(ss);
+        }
     }
 
     @Test
