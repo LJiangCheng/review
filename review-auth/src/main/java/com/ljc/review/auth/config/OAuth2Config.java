@@ -1,4 +1,4 @@
-package com.ljc.review.web.config;
+package com.ljc.review.auth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
