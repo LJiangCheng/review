@@ -7,7 +7,9 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.nio.Buffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BaseTest {
 
@@ -75,9 +77,8 @@ public class BaseTest {
 
     @Test
     public void t1() {
-        Double i = 4.9999;
-        Double j = 5.00;
-        System.out.println((int)(i/j));
+        Map<String, Object> map = new HashMap<>();
+        map.remove("dddd");
     }
 
     @Test
@@ -85,6 +86,16 @@ public class BaseTest {
         BigDecimal i = new BigDecimal("1.4");
         BigDecimal j = new BigDecimal("1.2");
         System.out.println(i.multiply(j));
+    }
+
+    @Test
+    public void t3() {
+        int n = 0;
+        String[] ss = new String[n];
+        for(int i=0;i<n;i++) {
+            System.out.println("111");
+        }
+        System.out.println("222");
     }
 
     public String removeRepet(String key) {
