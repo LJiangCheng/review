@@ -1,0 +1,5 @@
+SpringSecurity默认登录方式为表单登录，路径为/login，登录成功后将JSESSIONID写入Cookie返回给前端浏览器以记录登录状态
+这种方式比较简单，但更适用于前后端不分离的项目，对于前后端分离的Restful接口并不适用
+为了更深入地理解SpringSecurity，本项目尝试更改默认登录方式，在不使用Oauth2的情况下将SpringSecurity改造为基于Token的登录方式
+注：Oauth2是一个开放标准，允许用户授权第三方移动应用访问他们存储在另外的服务提供者上的信息，而不需要将用户名和密码
+    提供给第三方移动应用或分享他们数据的所有内容。SpringSecurity Oauth2是Spring对这个标准的实现

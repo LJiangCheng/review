@@ -1,4 +1,4 @@
-package com.ljc.review.web.utils;
+package web.utils;
 
 public class BaseResult<T> {
 
@@ -48,24 +48,20 @@ public class BaseResult<T> {
         return result;
     }
 
-    public static BaseResult success() {
-        return result(true, null, "");
-    }
-
     public static BaseResult success(Object data) {
         return result(true, data, "");
     }
 
-    public static BaseResult success(Object data, String message) {
-        return result(true, data, message);
+    public static BaseResult error(String errorMsg) {
+        return result(false, null, errorMsg);
     }
 
     public static BaseResult error() {
         return result(false, null, "");
     }
 
-    public static BaseResult error(String errorMsg) {
-        return result(false, null, errorMsg);
+    public static BaseResult success() {
+        return result(true, null, "");
     }
 
     /**

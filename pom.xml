@@ -16,6 +16,7 @@
         <module>review-basic</module>
         <module>review-auth</module>
         <module>review-alg</module>
+        <module>spring-security</module>
     </modules>
 
     <parent>
