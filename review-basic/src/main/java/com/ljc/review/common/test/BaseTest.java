@@ -101,6 +101,12 @@ public class BaseTest {
         System.out.println("222");
     }
 
+    @Test
+    public void t4() {
+        String sp = "";
+
+    }
+
     public String removeRepet(String key) {
         StringBuilder sb = new StringBuilder();
         int len = key.length();
