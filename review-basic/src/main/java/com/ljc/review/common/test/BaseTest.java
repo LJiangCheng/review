@@ -6,10 +6,7 @@ import org.springframework.util.StringUtils;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.Buffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BaseTest {
 
@@ -54,6 +51,9 @@ public class BaseTest {
                 noRepeteList.add(word);
             }
         }
+        //大纲
+        //这是我第27次从十月一日的早晨醒来，时间依然是八点整。曾经无数次幻想的场景变成了现实，我重复的过上了十一假期。
+        //
         //输出到文件
         File noRepeteFile = new File("C:\\Users\\toolmall\\Desktop\\无重复字符词.txt");
         noRepeteFile.createNewFile();
@@ -68,11 +68,20 @@ public class BaseTest {
         bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(repeteFile), "UTF-8"));
         for (String w : repeteList) {
             bw.write(w);
-            bw.flush();
-            bw.newLine();
+            //bw.flush();
+            //bw.newLine();
         }
         br.close();
         bw.close();
+    }
+
+    @Test
+    public void replaceAllTest() {
+        System.out.print("输入:");
+        Scanner scan = new Scanner(System.in);
+        String src = scan.nextLine();
+        String reg = scan.nextLine();
+        System.out.println(src.replaceAll(reg, "hello"));
     }
 
     @Test
@@ -86,19 +95,14 @@ public class BaseTest {
 
     @Test
     public void t2() {
-        BigDecimal i = new BigDecimal("1.4");
-        BigDecimal j = new BigDecimal("1.2");
-        System.out.println(i.multiply(j));
+        List<String> list = new ArrayList<>();
+        list.addAll(null);
     }
 
     @Test
     public void t3() {
-        int n = 0;
-        String[] ss = new String[n];
-        for(int i=0;i<n;i++) {
-            System.out.println("111");
-        }
-        System.out.println("222");
+        String src = "12111\n21233";
+        System.out.println(src.replaceAll("\\n", " "));
     }
 
     @Test
