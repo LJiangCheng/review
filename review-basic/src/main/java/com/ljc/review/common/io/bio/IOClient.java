@@ -15,8 +15,7 @@ public class IOClient {
             new Thread(() -> {
                 try {
                     Socket socket = new Socket("127.0.0.1", 3333);
-                    int n = 0;
-                    while (n++ < 2) {
+                    while (true) {
                         try {
                             socket.getOutputStream().write(("Thread" + j + ": hello world").getBytes());
                             Thread.sleep(2000);
