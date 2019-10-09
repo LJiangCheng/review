@@ -17,13 +17,12 @@ public class IOClient {
                     Socket socket = new Socket("127.0.0.1", 3333);
                     while (true) {
                         try {
-                            socket.getOutputStream().write(("Thread" + j + ": hello world").getBytes());
-                            Thread.sleep(1000);
+                            socket.getOutputStream().write(("Sender" + j + ": hello world" + System.currentTimeMillis() / (1000)).getBytes());
+                            Thread.sleep(2000);
                         } catch (Exception e) {
                         }
                     }
-                } catch (IOException e) {
-                }
+                } catch (IOException e) {/* ... */}
             }).start();
         }
     }
