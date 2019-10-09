@@ -10,7 +10,7 @@ public class IOClient {
 
     public static void main(String[] args) {
         //并发模拟
-        for(int i=1;i<6;i++) {
+        for(int i=1;i<3;i++) {
             int j = i;
             new Thread(() -> {
                 try {
@@ -18,7 +18,7 @@ public class IOClient {
                     while (true) {
                         try {
                             socket.getOutputStream().write(("Thread" + j + ": hello world").getBytes());
-                            Thread.sleep(2000);
+                            Thread.sleep(1000);
                         } catch (Exception e) {
                         }
                     }

@@ -1,9 +1,0 @@
-
-1.NIO核心组件
-    1).Buffer：传统IO面向流且阻塞，NIO面向缓冲区且非阻塞
-    2).Channel：NIO通过Channel进行读写，Channel是双向的，可读也可写，而流的读写是单向的。无论读写，Channel只能和Buffer交互
-    3).Selector：选择器用于使用单个线程处理多个通道
-
-2.Netty
-    1).Java原生NioApi的问题
-        a.

@@ -13,83 +13,63 @@ import java.util.Set;
 
 /**
  * JavaApi的原生NIO服务端
- * 只使用两个线程，一个接受连接请求，一个读取数据传输
- * 可以读取来自IOClient的信息
  */
 public class NIOServer {
 
     public static void main(String[] args) throws IOException {
-        // 1.serverSelector负责轮询是否有新的连接，服务端监测到新的连接之后，不再创建一个新的线程，
-        // 而是直接将新连接绑定到clientSelector上，这样就不用IO模型中1w个while循环在死等
+        //1.serverSelector负责轮询是否有新的连接，服务端监测到新的连接之后注册到selector上，下次轮询时处理数据读取
         Selector serverSelector = Selector.open();
-        // 2. clientSelector负责轮询连接是否有数据可读
-        Selector clientSelector = Selector.open();
-
-        new Thread(() -> {
-            try {
-                // 对应IO编程中服务端启动
-                ServerSocketChannel listenerChannel = ServerSocketChannel.open();
-                listenerChannel.socket().bind(new InetSocketAddress(3333));
-                listenerChannel.configureBlocking(false);
-                listenerChannel.register(serverSelector, SelectionKey.OP_ACCEPT);
-
-                while (true) {
-                    // 监测是否有新的连接，这里的1指的是阻塞的时间为1ms
-                    if (serverSelector.select(1) > 0) {
-                        Set<SelectionKey> set = serverSelector.selectedKeys();
-                        Iterator<SelectionKey> keyIterator = set.iterator();
-                        while (keyIterator.hasNext()) {
-                            SelectionKey key = keyIterator.next();
-                            if (key.isAcceptable()) {
-                                try {
-                                    //每来一个新连接，不需要创建一个线程，而是直接注册到clientSelector
-                                    SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept();
-                                    clientChannel.configureBlocking(false);
-                                    clientChannel.register(clientSelector, SelectionKey.OP_READ);
-                                } finally {
-                                    keyIterator.remove();
-                                }
+        try {
+            // 对应IO编程中服务端启动
+            ServerSocketChannel listenerChannel = ServerSocketChannel.open();
+            listenerChannel.socket().bind(new InetSocketAddress(3333));
+            listenerChannel.configureBlocking(false);
+            //将通道注册到选择器上，并注册操作为："接收"
+            listenerChannel.register(serverSelector, SelectionKey.OP_ACCEPT);
+            while (true) {
+                int n;
+                //监测是否有新的事件，如：新的通道连接、通道状态变化等； timeout:监听的阻塞等待时间ms； 返回值：事件数
+                //即查询获取“准备就绪”的注册过的操作
+                if ((n = serverSelector.select(10000)) > 0) {
+                    System.out.println(n);
+                    //获取准备就绪的事件集合
+                    //The selected-key set is the set of keys such that each key's channel was detected to be ready for
+                    //at least one of the operations identified in the key's interest set during a prior selection operation
+                    //The selected-key set is always a subset of the key set.
+                    Set<SelectionKey> set = serverSelector.selectedKeys();
+                    Iterator<SelectionKey> keyIterator = set.iterator();
+                    while (keyIterator.hasNext()) {
+                        SelectionKey key = keyIterator.next();
+                        if (key.isAcceptable()) {
+                            try {
+                                //新通道：注册到Selector上，操作为：读取
+                                SocketChannel clientChannel = ((ServerSocketChannel) key.channel()).accept();
+                                clientChannel.configureBlocking(false);
+                                clientChannel.register(serverSelector, SelectionKey.OP_READ);
+                            } finally {
+                                //事件处理完成之后从selected-key set中移除，否则会重复处理导致异常
+                                keyIterator.remove();
+                            }
+                        } else if (key.isReadable()) {
+                            //"读就绪"状态的通道
+                            try {
+                                SocketChannel clientChannel = (SocketChannel) key.channel();
+                                ByteBuffer byteBuffer = ByteBuffer.allocate(2048);
+                                //面向Buffer
+                                clientChannel.read(byteBuffer);
+                                byteBuffer.flip();
+                                System.out.println(Charset.defaultCharset().newDecoder().decode(byteBuffer).toString());
+                            } finally {
+                                //处理完从待处理集合中移除事件（通道所对应的的SelectionKey依然存在于key set中，触发选择后又会加入selected-key set）
+                                keyIterator.remove();
                             }
                         }
                     }
                 }
-            } catch (IOException ignored) {
             }
-        }).start();
-
-        new Thread(() -> {
-            try {
-                while (true) {
-                    //批量轮询是否有哪些连接有数据可读，这里的1指的是阻塞的时间为1ms
-                    if (clientSelector.select(1) > 0) {
-                        Set<SelectionKey> set = clientSelector.selectedKeys();
-                        Iterator<SelectionKey> keyIterator = set.iterator();
-
-                        while (keyIterator.hasNext()) {
-                            SelectionKey key = keyIterator.next();
-
-                            if (key.isReadable()) {
-                                try {
-                                    SocketChannel clientChannel = (SocketChannel) key.channel();
-                                    ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
-                                    // (3) 面向 Buffer
-                                    clientChannel.read(byteBuffer);
-                                    byteBuffer.flip();
-                                    System.out.println(
-                                            Charset.defaultCharset().newDecoder().decode(byteBuffer).toString());
-                                } finally {
-                                    keyIterator.remove();
-                                    key.interestOps(SelectionKey.OP_READ);
-                                }
-                            }
-
-                        }
-                    }
-                }
-            } catch (IOException ignored) {
-            }
-        }).start();
-
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
