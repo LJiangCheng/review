@@ -21,7 +21,7 @@ public class Acceptor implements Runnable{
         try {
             SocketChannel channel = serverSocket.accept();
             if (channel != null) {
-                //注册读写
+                //注册读写 PS：只需要注册就行，当有事件发生时(如读、写就绪)，选择器会获得通知并分发事件进行后续操作
                 new Handler(selector, channel);
             }
         } catch (IOException ex) { /* ... */ }
