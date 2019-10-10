@@ -31,7 +31,7 @@ public class IOServer {
                             byte[] data = new byte[1024];
                             InputStream inputStream = socket.getInputStream();
                             // 按字节流方式读取数据
-                            while ((len = inputStream.read(data)) != -1) {
+                            while ((len = inputStream.read(data)) != -1) {  //只要IOClient的传输没有停止，while方法就会继续。服务端线程只能和客户端一一对应
                                 System.out.println(new String(data, 0, len));
                             }
                         } catch (IOException e) {
