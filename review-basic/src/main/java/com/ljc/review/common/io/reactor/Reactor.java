@@ -5,7 +5,6 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -16,11 +15,10 @@ import java.util.Set;
 public class Reactor implements Runnable {
 
     private final Selector selector;
-    private final ServerSocketChannel serverSocket;
 
     Reactor(int port) throws IOException { //Reactor初始化
         selector = Selector.open();
-        serverSocket = ServerSocketChannel.open();
+        ServerSocketChannel serverSocket = ServerSocketChannel.open();
         serverSocket.socket().bind(new InetSocketAddress(port));
         //非阻塞
         serverSocket.configureBlocking(false);
@@ -28,14 +26,14 @@ public class Reactor implements Runnable {
         //分步处理，第一步，接收accept事件
         SelectionKey sk = serverSocket.register(selector, SelectionKey.OP_ACCEPT);
         //绑定回调处理对象
-        sk.attach(this.new Acceptor());
+        sk.attach(new Acceptor(selector, serverSocket));
     }
 
     @Override
     public void run() {
         try {
             while (!Thread.interrupted()) {
-                if (selector.select() > 0) {
+                if (selector.select(10) > 0) {
                     Set selected = selector.selectedKeys();
                     Iterator it = selected.iterator();
                     while (it.hasNext()) {
@@ -57,18 +55,5 @@ public class Reactor implements Runnable {
         }
     }
 
-    //连接事件就绪，处理连接事件。主要任务：构建handler在获取到和client相关的SocketChannel之后绑定到相应的handler上
-    class Acceptor implements Runnable {
-        @Override
-        public void run() {
-            try {
-                SocketChannel channel = serverSocket.accept();
-                if (channel != null) {
-                    //注册读写
-                    new Handler(selector, channel);
-                }
-            } catch (IOException ex) { /* ... */ }
-        }
-    }
 }
 

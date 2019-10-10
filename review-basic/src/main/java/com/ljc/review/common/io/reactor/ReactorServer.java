@@ -6,7 +6,7 @@ public class ReactorServer {
 
     public static void main(String[] args) throws IOException {
         Reactor reactor = new Reactor(3333);
-        new Thread(reactor).start();
+        reactor.run();
     }
 
 }
