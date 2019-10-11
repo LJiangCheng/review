@@ -12,7 +12,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 /**
- * JavaApi的原生NIO服务端
+ * JavaApi的单一线程NIO服务端
+ * 因为读写操作是和主线程一起，并发量大的时候服务端也是会阻塞的
  */
 public class NIOServer {
 

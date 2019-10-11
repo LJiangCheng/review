@@ -12,7 +12,7 @@ import java.util.Set;
  * 等待事件到来，分发事件处理
  * Reactor线程负责多路分离Socket，有新连接到来触发connect事件之后，交由Acceptor进行处理，有IO读写事件之后交给handler处理
  */
-public class AbstractReactor implements Runnable {
+public abstract class AbstractReactor implements Runnable {
 
     protected final Selector selector;
     protected final int timeOut;

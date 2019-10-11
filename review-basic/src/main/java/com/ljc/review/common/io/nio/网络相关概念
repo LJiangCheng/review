@@ -1,0 +1,8 @@
+
+1.TCP/IP协议 Transmission Control Protocol
+    1).IP协议负责路由寻址，规定了将数据报从一个网络传输到另一个网络所应遵循的规则
+    2).TCP属于传输层协议，位于IP层之上，应用层之下
+    3).系统标识一个TCP连接：{local ip, local port,remote ip,remote port} 因此一个端口可建立的连接理论上可以看做无上限，但实际中还要受限于机器性能
+
+2.长连接和短连接
+    短连接：

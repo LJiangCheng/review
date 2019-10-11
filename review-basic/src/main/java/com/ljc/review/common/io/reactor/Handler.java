@@ -22,7 +22,7 @@ public class Handler implements Runnable {
     private ByteBuffer input = ByteBuffer.allocate(1024);
     private ByteBuffer output = ByteBuffer.allocate(1024);
     //初始化线程池
-    private static TaskExecutor taskExecutor = null;
+    private static TaskExecutor taskExecutor;
     static {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
         threadPoolTaskExecutor.setCorePoolSize(5);
