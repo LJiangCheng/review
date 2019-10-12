@@ -1,0 +1,32 @@
+server:
+  port: 8091
+  tomcat:
+    max-threads: 100
+    uri-encoding: UTF-8
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbc-url: jdbc:mysql://120.79.192.46:3306/activiti?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 129374
+# Specify the DBMS
+  jpa:
+    database: MYSQL
+# Show or not log for each sql query
+    show-sql: true
+# DDL mode. This is actually a shortcut for the "hibernate.hbm2ddl.auto" property. Default to "create-drop" when using an embedded database, "none" otherwise.
+    hibernate:
+      ddl-auto: update
+# Hibernate 4 naming strategy fully qualified name. Not supported with Hibernate 5.
+# stripped before adding them to the entity manager)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+
+#每次应用启动不检查Activiti数据表是否存在及版本号是否匹配，提升应用启动速度
+  activiti:
+    database-schema-update: false
+    check-process-definitions: false
+#保存历史数据级别设置为full最高级别，便于历史数据的追溯
+    history-level: full
