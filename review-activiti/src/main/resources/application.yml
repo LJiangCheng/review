@@ -24,9 +24,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
 
-#每次应用启动不检查Activiti数据表是否存在及版本号是否匹配，提升应用启动速度
+#check Activiti table and version or not
   activiti:
     database-schema-update: false
     check-process-definitions: false
-#保存历史数据级别设置为full最高级别，便于历史数据的追溯
+#history data save level
     history-level: full
