@@ -16,12 +16,12 @@ public class TestImage {
     @Test
     public void testWaterMarker() {
         //水印图
-        File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\water.png");
+        File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\water_details.png");
         //原图
-        File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\800_3.jpg");
+        File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\red.jpg");
         //目标文件
-        File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\800_3logo.jpg");
-        ImageProcessor.centerLogo(source, logo, destFile, 1, 0.1F, 100);
+        File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\redlogo.jpg");
+        ImageProcessor.fullLogo(source, logo, destFile, 1, 0.1F, 100);
     }
 
     /**

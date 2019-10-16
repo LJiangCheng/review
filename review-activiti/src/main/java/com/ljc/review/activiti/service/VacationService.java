@@ -50,6 +50,7 @@ public class VacationService {
      */
     public BaseResult start() {
         Map<String, Object> variables = createVacationMsg();
+        variables.put("userId", "Kermit");
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("vacationRequest", variables);
 
         System.out.println("流程实例ID：" + processInstance.getId());//流程实例ID
@@ -108,11 +109,13 @@ public class VacationService {
         Map<String, Object> taskVariables = new HashMap<>();
         if (StringUtils.equals("manager", type)) {
             //设置本节点的选择，通过选择决定流程走向，以及将参数传递给下一个节点
-            taskVariables.put("vacationApproved", "false");
-            taskVariables.put("managerMotivation", "We have a tight deadline!");
+            taskVariables.put("vacationApproved", "true");
+            taskVariables.put("managerMotivation", "Have fun!");
+            taskVariables.put("userId", taskService.getVariable(taskId, "userId"));
         } else if (StringUtils.equals("employee", type)) {
             taskVariables = createVacationMsg();
             taskVariables.put("resendRequest", "true");
+            taskVariables.put("userId", taskService.getVariable(taskId, "userId"));
         }
         taskService.complete(taskId, taskVariables);
         return BaseResult.success(true);
@@ -129,6 +132,7 @@ public class VacationService {
                 System.out.println("流程实例ID：" + task.getProcessInstanceId());
                 System.out.println("执行对象ID：" + task.getExecutionId());
                 System.out.println("流程定义ID：" + task.getProcessDefinitionId());
+                System.out.println("流程发起人：" + taskService.getVariable(task.getId(), "userId"));
                 System.out.println("========================================");
             }
         } else {
