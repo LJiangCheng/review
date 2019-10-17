@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * 请假审批流程
  */
@@ -75,6 +78,15 @@ public class VacationController {
     @RequestMapping("processTask")
     public BaseResult processTask(@RequestParam("taskId") String taskId, String type) {
         return vacationService.processTask(taskId, type);
+    }
+
+    /**
+     * 查询历史流程
+     * 并流程图形式响应
+     */
+    @RequestMapping("queryHistory")
+    public void queryHistory(@RequestParam String processId, HttpServletResponse response) throws IOException {
+        vacationService.queryHistory(processId, response);
     }
 
 }

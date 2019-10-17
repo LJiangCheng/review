@@ -1,19 +1,36 @@
 package com.ljc.review.activiti.service;
 
 import com.ljc.review.activiti.entity.BaseResult;
+import com.ljc.review.activiti.util.ActivitiUtils;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricActivityInstanceQuery;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.util.Activiti5Util;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class VacationService {
@@ -119,6 +136,64 @@ public class VacationService {
         }
         taskService.complete(taskId, taskVariables);
         return BaseResult.success(true);
+    }
+
+    /**
+     * 查询流程历史
+     * 并输出当前流程图
+     */
+    public void queryHistory(String processId, HttpServletResponse response) throws IOException {
+        //查询当前流程实例
+        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processId).singleResult();
+        if (processInstance == null) {
+            return;
+        }
+        //根据流程对象获取流程对象模型
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+        //获取图表生成器
+        ProcessEngineConfiguration processEngineConfiguration = processEngine.getProcessEngineConfiguration();
+        Context.setProcessEngineConfiguration((ProcessEngineConfigurationImpl) processEngineConfiguration);
+        ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
+        //构造历史流程节点查询对象
+        HistoricActivityInstanceQuery historyInstanceQuery = historyService.createHistoricActivityInstanceQuery().processInstanceId(processId);
+        //获取流程历史中已执行节点，并按照节点在流程中执行先后顺序排序
+        List<HistoricActivityInstance> historicActivityInstanceList = historyInstanceQuery.orderByHistoricActivityInstanceStartTime().asc().list();
+        if (historicActivityInstanceList == null || historicActivityInstanceList.size() == 0) {
+            outputImg(response, bpmnModel, null, null, diagramGenerator);
+            return;
+        }
+        // 已执行的节点ID集合(将historicActivityInstanceList中元素的activityId字段取出封装到executedActivityIdList)
+        List<String> executedActivityIdList = historicActivityInstanceList.stream().map(HistoricActivityInstance::getActivityId).collect(Collectors.toList());
+        // 获取流程已走过的线
+        List<String> flowIds = ActivitiUtils.getHighLightedFlows(bpmnModel, historicActivityInstanceList);
+        // 输出图像，并设置高亮
+        outputImg(response, bpmnModel, flowIds, executedActivityIdList, diagramGenerator);
+    }
+
+    /**
+     * <p>输出图像</p>
+     * @param response               响应实体
+     * @param bpmnModel              图像对象
+     * @param flowIds                已执行的线集合
+     * @param executedActivityIdList void已执行的节点ID集合
+     * @param diagramGenerator
+     */
+    private void outputImg(HttpServletResponse response, BpmnModel bpmnModel, List<String> flowIds, List<String> executedActivityIdList, ProcessDiagramGenerator diagramGenerator) {
+        InputStream imageStream = null;
+        try {
+            imageStream = diagramGenerator.generateDiagram(bpmnModel, "png", executedActivityIdList, flowIds, "宋体", "微软雅黑", "黑体", null, 1.0);
+            // 输出资源内容到相应对象
+            byte[] b = new byte[1024];
+            int len;
+            while ((len = imageStream.read(b, 0, 1024)) != -1) {
+                response.getOutputStream().write(b, 0, len);
+            }
+            response.getOutputStream().flush();
+        } catch (Exception e) {
+            System.out.println("流程图输出异常！");
+        } finally { // 流关闭
+            IoUtil.closeSilently(imageStream);
+        }
     }
 
     //打印任务信息
