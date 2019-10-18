@@ -1,0 +1,225 @@
+The Netty Project 3.x User Guide
+1. Architectural Overview
+    1. Rich Buffer Data Structure 充足的缓冲实现
+        1.1. Combining and Slicing ChannelBuffers
+    2. Universal Asynchronous I/O API
+    3. Event Model based on the Interceptor Chain Pattern
+    4. Advanced Components for More Rapid Development
+        4.1. Codec framework
+        4.2. SSL / TLS Support
+        4.3. HTTP Implementation
+        4.4. WebSockets Implementation
+        4.5. Google Protocol Buffer Integration
+    5. Summary
+2. Frequently Asked Questions
+    1. When can I write downstream data?
+    2. How do I incorporate my blocking application code with the non-blocking NioServerSocketChannelFactory?
+    3. Do I need to synchronize my handler code given that events can happen at the same time?
+    4. How do I pass data between handlers in the same Channel?
+
+
+The Architecture Diagram of Netty
+In this chapter, we will examine what core functionalities are provided in Netty and how they constitute a complete network application development stack on top of the core. Please keep this diagram in mind as you read this chapter.
+
+Also keep in mind that a lot of the detailed documentation is in the javadoc. Please click on links to class names and package names.
+
+1. Rich Buffer Data Structure
+Netty uses its own buffer API instead of NIO ByteBuffer to represent a sequence of bytes. This approach has significant advantages over using ByteBuffer. Netty's new buffer type, ChannelBuffer has been designed from the ground up to address the problems of ByteBuffer and to meet the daily needs of network application developers. To list a few cool features:
+
+You can define your own buffer type if necessary.
+
+Transparent zero copy is achieved by a built-in composite buffer type.
+
+A dynamic buffer type is provided out-of-the-box, whose capacity is expanded on demand, just like StringBuffer.
+
+There's no need to call flip() anymore.
+
+It is often faster than ByteBuffer.
+
+For more information, please refer to the org.jboss.netty.buffer package description.
+
+1.1. Combining and Slicing ChannelBuffers
+When transfering data between communication layers, data often needs to be combined or sliced. For example, if a payload is split over multiple packages, it often needs to be be combined for decoding.
+
+Traditionally, data from the multiple packages are combined by copying them into a new byte buffer.
+
+Netty supports a zero-copy approach where by a ChannelBuffer "points" to the required buffers hence eliminating the need to perform a copy.
+
+Combining and Slicing ChannelBuffers
+2. Universal Asynchronous I/O API
+Traditional I/O APIs in Java provide different types and methods for different transport types. For example, java.net.Socket and java.net.DatagramSocket do not have any common super type and therefore they have very different ways to perform socket I/O.
+
+This mismatch makes porting a network application from one transport to another tedious and difficult. The lack of portability between transports becomes a problem when you need to support additional transports, as this often entails rewriting the network layer of the application. Logically, many protocols can run on more than one transport such as TCP/IP, UDP/IP, SCTP, and serial port communication.
+
+To make matters worse, Java's New I/O (NIO) API introduced incompatibilities with the old blocking I/O (OIO) API and will continue to do so in the next release, NIO.2 (AIO). Because all these APIs are different from each other in design and performance characteristics, you are often forced to determine which API your application will depend on before you even begin the implementation phase.
+
+For instance, you might want to start with OIO because the number of clients you are going to serve will be very small and writing a socket server using OIO is much easier than using NIO. However, you are going to be in trouble when your business grows exponentially and your server needs to serve tens of thousands of clients simultaneously. You could start with NIO, but doing so may hinder rapid development by greatly increasing development time due to the complexity of the NIO Selector API.
+
+Netty has a universal asynchronous I/O interface called a Channel, which abstracts away all operations required for point-to-point communication. That is, once you wrote your application on one Netty transport, your application can run on other Netty transports. Netty provides a number of essential transports via one universal API:
+
+NIO-based TCP/IP transport (See org.jboss.netty.channel.socket.nio),
+
+OIO-based TCP/IP transport (See org.jboss.netty.channel.socket.oio),
+
+OIO-based UDP/IP transport, and
+
+Local transport (See org.jboss.netty.channel.local).
+
+Switching from one transport to another usually takes just a couple lines of changes such as choosing a different ChannelFactory implementation.
+Also, you are even able to take advantage of new transports which aren't yet written (such as serial port communication transport), again by replacing just a couple lines of constructor calls. Moreover, you can write your own transport by extending the core API.
+
+3. Event Model based on the Interceptor Chain Pattern
+A well-defined and extensible event model is a must for an event-driven application. Netty has a well-defined event model focused on I/O. It also allows you to implement your own event type without breaking the existing code because each event type is distinguished from another by a strict type hierarchy. This is another differentiator against other frameworks. Many NIO frameworks have no or a very limited notion of an event model. If they offer extension at all, they often break the existing code when you try to add custom event types
+
+A ChannelEvent is handled by a list of ChannelHandlers in a ChannelPipeline. The pipeline implements an advanced form of the Intercepting Filter pattern to give a user full control over how an event is handled and how the handlers in the pipeline interact with each other. For example, you can define what to do when data is read from a socket:
+
+  1 public class MyReadHandler implements SimpleChannelHandler {
+  2     public void messageReceived(ChannelHandlerContext ctx, MessageEvent evt) {
+            Object message = evt.getMessage();
+  4         // Do something with the received message.
+            ...
+  6
+            // And forward the event to the next handler.
+  8         ctx.sendUpstream(evt);
+        }
+ 10 }
+You can also define what to do when a handler receives a write request:
+
+  1 public class MyWriteHandler implements SimpleChannelHandler {
+  2     public void writeRequested(ChannelHandlerContext ctx, MessageEvent evt) {
+            Object message = evt.getMessage();
+  4         // Do something with the message to be written.
+            ...
+  6
+            // And forward the event to the next handler.
+  8         ctx.sendDownstream(evt);
+        }
+ 10 }
+For more information on the event model, please refer to the API documentation of ChannelEvent and ChannelPipeline.
+
+4. Advanced Components for More Rapid Development
+On top of the core components mentioned above, that already enable the implementation of all types of network applications, Netty provides a set of advanced features to accelerate the page of development even more.
+
+4.1. Codec framework
+As demonstrated in Section 8, “ Speaking in POJO instead of ChannelBuffer ”, it is always a good idea to separate a protocol codec from business logic. However, there are some complications when implementing this idea from scratch. You have to deal with the fragmentation of messages. Some protocols are multi-layered (i.e. built on top of other lower level protocols). Some are too complicated to be implemented in a single state machine.
+
+Consequently, a good network application framework should provide an extensible, reusable, unit-testable, and multi-layered codec framework that generates maintainable user codecs.
+
+Netty provides a number of basic and advanced codecs to address most issues you will encounter when you write a protocol codec regardless if it is simple or not, binary or text - simply whatever.
+
+4.2. SSL / TLS Support
+Unlike old blocking I/O, it is a non-trivial task to support SSL in NIO. You can't simply wrap a stream to encrypt or decrypt data but you have to use javax.net.ssl.SSLEngine. SSLEngine is a state machine which is as complex as SSL itself. You have to manage all possible states such as cipher suite and encryption key negotiation (or re-negotiation), certificate exchange, and validation. Moreover, SSLEngine is not even completely thread-safe, as one would expect.
+
+In Netty, SslHandler takes care of all the gory details and pitfalls of SSLEngine. All you need to do is to configure the SslHandler and insert it into your ChannelPipeline. It also allows you to implement advanced features like StartTLS very easily.
+
+4.3. HTTP Implementation
+HTTP is definitely the most popular protocol in the Internet. There are already a number of HTTP implementations such as a Servlet container. Then why does Netty have HTTP on top of its core?
+
+Netty's HTTP support is very different from the existing HTTP libraries. It gives you complete control over how HTTP messages are exchanged at a low level. Because it is basically the combination of an HTTP codec and HTTP message classes, there is no restriction such as an enforced thread model. That is, you can write your own HTTP client or server that works exactly the way you want. You have full control over everything that's in the HTTP specification, including the thread model, connection life cycle, and chunked encoding.
+
+Thanks to its highly customizable nature, you can write a very efficient HTTP server such as:
+
+Chat server that requires persistent connections and server push technology (e.g. Comet)
+
+Media streaming server that needs to keep the connection open until the whole media is streamed (e.g. 2 hours of video)
+
+File server that allows the uploading of large files without memory pressure (e.g. uploading 1GB per request)
+
+Scalable mash-up client that connects to tens of thousands of 3rd party web services asynchronously
+
+4.4. WebSockets Implementation
+WebSockets allows for a bi-directional, full-duplex communications channels, over a single Transmission Control Protocol (TCP) socket. It is designed to allow streaming of data between a web browser and a web server.
+
+The WebSocket protocol has been standardized by the IETF as RFC 6455.
+
+Netty implementes RFC 6455 and a number of older versions of the specification. Please refer to the org.jboss.netty.handler.codec.http.websocketx package and associated examples.
+
+4.5. Google Protocol Buffer Integration
+Google Protocol Buffers are an ideal solution for the rapid implementation of a highly efficient binary protocols that evolve over time. With ProtobufEncoder and ProtobufDecoder, you can turn the message classes generated by the Google Protocol Buffers Compiler (protoc) into Netty codec. Please take a look into the 'LocalTime' example that shows how easily you can create a high-performing binary protocol client and server from the sample protocol definition.
+
+5. Summary
+In this chapter, we reviewed the overall architecture of Netty from the feature standpoint. Netty has a simple, yet powerful architecture. It is composed of three components - buffer, channel, and event model - and all advanced features are built on top of the three core components. Once you understood how these three work together, it should not be difficult to understand the more advanced features which were covered briefly in this chapter.
+
+You might still have unanswered questions about what the overall architecture looks like exactly and how each of the features work together. If so, it is a good idea to talk to us to improve this guide.
+
+================================================
+Frequently Asked Questions
+
+1. When can I write downstream data?
+As long as you have the reference to the Channel (or ChannelHandlerContext), you can call Channel.write() (or Channels.write()) from anywhere, any thread.
+
+writeRequested() is called when you trigger the writeRequested event by calling Channel.write() or calling ChannelHandlerContext.sendDownstream(MessageEvent).
+
+See discussion.
+
+2. How do I incorporate my blocking application code with the non-blocking NioServerSocketChannelFactory?
+NioServerSocketChannelFactory uses boss threads and worker threads.
+
+Boss threads are responsible for accepting incoming connections while worker threads are reponsible for performing non-blocking read and write for associated channels. The default number of worker threads in the pool is 2 * the number of available processors.
+
+If your applicaiton's handler blocks such as (reading from a database) or is CPU intensive, the worker thread pool maybe exhausted and performance will degrade.
+
+We recommend that you implement your blocking application code in another thread pool. You can do this by adding OrderedMemoryAwareThreadPoolExecutor to the the channel pipeline before your handler or implement your own.
+
+  1 public static void main(String[] args) throws Exception {
+  2         OrderedMemoryAwareThreadPoolExecutor eventExecutor =
+                new OrderedMemoryAwareThreadPoolExecutor(
+  4                     5, 1000000, 10000000, 100,
+                        TimeUnit.MILLISECONDS);
+  6
+            ServerBootstrap bootstrap = new ServerBootstrap(
+  8                 new NioServerSocketChannelFactory(
+                            Executors.newCachedThreadPool(),
+ 10                         Executors.newCachedThreadPool()));
+
+ 12         sb.setPipelineFactory(new MyPipelineFactory(eventExecutor));
+            sb.bind(socketAddress);
+ 14
+            // Other code
+ 16
+            return;
+ 18     }
+
+ 20     public class MyPipelineFactory implements ChannelPipelineFactory {
+        @Override
+ 22     public ChannelPipeline getPipeline() throws Exception {
+            // Create a default pipeline implementation.
+ 24         ChannelPipeline pipeline = pipeline();
+
+ 26         pipeline.addLast("decoder", new HttpRequestDecoder());
+            pipeline.addLast("aggregator", new HttpChunkAggregator(65536));
+ 28         pipeline.addLast("encoder", new HttpResponseEncoder());
+            pipeline.addLast("chunkedWriter", new ChunkedWriteHandler());
+ 30
+            // Insert OrderedMemoryAwareThreadPoolExecutor before your blocking handler
+ 32         pipeline.addLast("pipelineExecutor", new ExecutionHandler(_pipelineExecutor));
+
+ 34         // MyHandler contains code that blocks
+            pipeline.addLast("handler", new MyHandler());
+ 36
+            return pipeline;
+ 38     }
+
+ 40     public class MyHandler extends SimpleChannelUpstreamHandler {
+            // Your blocking application code
+ 42 }
+3. Do I need to synchronize my handler code given that events can happen at the same time?
+Your ChannelUpstreamHandler will be invoked sequentially by the same thread (i.e. an I/O thread) and therefore a handler does not need to worry about being invoked with a new upstream event before the previous upstream event is finished.
+
+However, downstream events can be fired by more than one thread simultaneously. If your ChannelDownstreamHandler accesses a shared resource or stores stateful information, you might need proper synchronization.
+
+See discussion.
+
+4. How do I pass data between handlers in the same Channel?
+Use ChannelLocal.
+
+  1
+  2     // Declare
+        public static final ChannelLocal<int> data = new ChannelLocal<int>();
+  4
+        // Set
+  6     data.set(e.getChannel(), 1);
+
+  8     // Get
+        int a = data.get(e.getChannel());
+See discussion.
