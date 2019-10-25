@@ -1,0 +1,7 @@
+1.Makes a buffer ready for a new sequence of channel-read or relative put operations.
+  为新的通道读取或相关的put操作序列准备一个缓冲区。
+
+2.The mutation methods of each buffer class are specified as optional operations that will throw a ReadOnlyBufferException when invoked upon a read-only buffer
+
+3.Methods in this class that do not otherwise have a value to return are specified to return the buffer upon which they are invoked
+  do not otherwise:不另外
