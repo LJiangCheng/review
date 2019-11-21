@@ -1,0 +1,11 @@
+
+1.You may run into physical constraints on your services where you’ll need to make an aggregation service that joins data together
+  because two separate services will be too chatty, or where no clear boundaries exist between the domain lines of a service.
+
+2.Don't consider using microservices unless your organization is willing to invest in the automation and operational work (monitoring,
+  scaling) that a highly distributed application needs to be successful.
+
+3.A microservice wraps around and abstracts away a small number of tables and works well as a mechanism for performing “operational”
+  tasks such as creating, adding, and performing simple (non-complex) queries against a store.  --这里是讲微服务自身的'属性'而不是它'应该'开发成什么样
+
+4.We build products that empower developers and connect them to solutions that enable productivity, growth, and discovery. --StackOverFlow Homepage Advertise

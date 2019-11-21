@@ -1,12 +1,15 @@
 package com.ljc.review.common.test;
 
 import com.alibaba.fastjson.JSONObject;
+import javafx.scene.input.DataFormat;
 import org.junit.Test;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.nio.Buffer;
 import java.util.*;
 
@@ -15,6 +18,28 @@ public class BaseTest {
     public static void main(String[] args) {
         String[] arr = new String[]{"tom", "teddy", "nick"};
         System.out.println(JSONObject.toJSONString(Arrays.asList(arr)));
+    }
+
+    @Test
+    public void bigDecimal() {
+        BigDecimal total = new BigDecimal("10.000");
+        BigDecimal p1 = new BigDecimal("3.333333");
+        BigDecimal p2 = new BigDecimal("3.333333");
+        BigDecimal p3 = new BigDecimal("3.333333");
+        System.out.println(p1.add(p2).add(p3));
+        BigDecimal divide1 = p1.divide(total, 16, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal divide2 = p2.divide(total, 16, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal divide3 = p3.divide(total, 16, BigDecimal.ROUND_HALF_EVEN);
+        System.out.println(divide1.add(divide2).add(divide3));
+        BigDecimal m1 = total.multiply(divide1, new MathContext(16, RoundingMode.HALF_EVEN));
+        System.out.println(p1 + "=" + m1);
+        System.out.println(p1.subtract(m1));
+        BigDecimal m2 = total.multiply(divide2, new MathContext(16, RoundingMode.HALF_EVEN));
+        System.out.println(p2 + "=" + m2);
+        System.out.println(p2.subtract(m2));
+        BigDecimal m3 = total.multiply(divide3, new MathContext(16, RoundingMode.HALF_EVEN));
+        System.out.println(p3 + "=" + m3);
+        System.out.println(p3.subtract(m3));
     }
 
     @Test
