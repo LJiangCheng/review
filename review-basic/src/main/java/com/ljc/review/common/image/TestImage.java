@@ -1,5 +1,6 @@
 package com.ljc.review.common.image;
 
+import cn.hutool.core.img.ImgUtil;
 import com.ljc.review.common.image.resize.ResizeImage;
 import com.ljc.review.common.image.watermark.ImageProcessor;
 import org.junit.Test;
@@ -10,12 +11,30 @@ import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 
 public class TestImage {
+
+    @Test
+    public void logoMemory() throws IOException {
+        //原图
+        File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2.jpg");
+        //水印图
+        File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\water.png");
+        //目标文件
+        FileInputStream srcStream;
+        FileOutputStream destStream;
+        for (int i = 0; i < 30; i++) {
+            long l1 = System.currentTimeMillis();
+            File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2\\redlogon" + i + ".jpg");
+            srcStream = new FileInputStream(source);
+            destStream = new FileOutputStream(destFile);
+            ImgUtil.pressImage(srcStream, destStream, ImageIO.read(logo), 0, 0, (float) 1);
+            long l2 = System.currentTimeMillis();
+            printMemory(l1,l2);
+        }
+    }
 
     /**
      * 全图水印内存测试
@@ -27,9 +46,9 @@ public class TestImage {
             //水印图
             File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\water.png");
             //原图
-            File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2.jpg");
+            File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\details.png");
             //目标文件
-            File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\redlogon" + i + ".jpg");
+            File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2\\redlogon" + i + ".png");
             if (destFile.exists()) destFile.delete();
             ImageProcessor.fullLogo(source, logo, destFile, 1, 0.1F, 85);
             long l2 = System.currentTimeMillis();
@@ -67,8 +86,8 @@ public class TestImage {
 
     @Test
     public void imageReadTest() throws IOException {
-        for(int i=0;i<10;i++) {
-            //BufferedImage image = ImageIO.read(new File("C:\\Users\\toolmall\\Desktop\\watermaker\\webp\\2.jpg"));
+        for(int i=0;i<30;i++) {
+            /*//BufferedImage image = ImageIO.read(new File("C:\\Users\\toolmall\\Desktop\\watermaker\\webp\\2.jpg"));
             Iterator<ImageReader> jpgReader = ImageIO.getImageReadersByFormatName("jpg");
             ImageReader reader = jpgReader.next();
             ImageInputStream iis = ImageIO.createImageInputStream(new File("C:\\Users\\toolmall\\Desktop\\watermaker\\webp\\2.jpg"));
@@ -76,7 +95,7 @@ public class TestImage {
             System.out.print("width:" + reader.getWidth(0));
             System.out.print("  height:" + reader.getHeight(0) + "  ");
             printMemory(0, 0);
-            //image.getGraphics().dispose();
+            //image.getGraphics().dispose();*/
         }
     }
 
