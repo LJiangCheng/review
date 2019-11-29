@@ -24,7 +24,7 @@ public class Scaler {
                         ImageData temp = new ImageData();
                         DownScaling downScalingPart = new DownScaling(srcImg);
                         temp = downScalingPart.downscaling(srcImg.getWidth(), dstHeight);
-                        temp.setChannels();         //set ARGB channels by Pixels[]
+                        //temp.setChannels();         //set ARGB channels by Pixels[]
                         UpScaling upScalingPart = new UpScaling(temp);
                         dstImg = upScalingPart.upscaling(dstWidth, dstHeight);
                     }
@@ -38,7 +38,7 @@ public class Scaler {
                         ImageData temp = new ImageData();
                         DownScaling downScalingPart = new DownScaling(srcImg);
                         temp = downScalingPart.downscaling(dstWidth, srcImg.getHeight());
-                        temp.setChannels();         //set ARGB channels by Pixels[]
+                        //temp.setChannels();         //set ARGB channels by Pixels[]
                         UpScaling upScalingPart = new UpScaling(temp);
                         dstImg = upScalingPart.upscaling(dstWidth, dstHeight);
                     }

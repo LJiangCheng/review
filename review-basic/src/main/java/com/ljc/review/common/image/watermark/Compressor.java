@@ -17,15 +17,15 @@ import java.io.IOException;
 
 public class Compressor {
 
-    public void JpgCompressor (ImageData Img, File dstImgDir, int Quality) {
+    public void JpgCompressor (ImageData img, File dstImgDir, int Quality) {
         ImageOutputStream imageOutputStream = null;
         try {
-            int width = Img.getWidth();
-            int height = Img.getHeight();
+            int width = img.getWidth();
+            int height = img.getHeight();
             BufferedImage bf = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
-                    bf.setRGB(i, j, Img.getPixels()[i + j * width]);
+                    bf.setRGB(i, j, img.getPixels()[i + j * width]);
                 }
             }
             //Compress image
@@ -38,7 +38,7 @@ public class Compressor {
             imageWriteParam.setCompressionQuality((float)Quality / (float)100.0);
             imageWriter.write(null, new IIOImage(bf, null, null), imageWriteParam);
             imageOutputStream.flush();
-
+            bf.flush();
         } catch (IOException e) {
             e.printStackTrace();
         } finally{

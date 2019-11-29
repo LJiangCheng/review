@@ -33,10 +33,10 @@ public class ImageProcessor {
         //打水印
         srcImage = LogoInserter.insertLogo(srcImage, waterMarkImage, x, y);
         // 图片锐化
-        Sharpen sh = new Sharpen();
-        ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);
+        /*Sharpen sh = new Sharpen();
+        ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);*/
         // 输出图片
-        imageUtil.writeImage(tempImg, dstFile, Quality);
+        imageUtil.writeImage(srcImage, dstFile, Quality);
     }
 
     /**
@@ -50,10 +50,8 @@ public class ImageProcessor {
         ImageUtil imageUtil = new ImageUtil();
         // 原始图片
         ImageData srcImage = imageUtil.readImage(srcFile);
-        TestImage.printMemory();
         // 水印图片
         ImageData waterMarkImage = imageUtil.readImage(waterMarkFile);
-        TestImage.printMemory();
         // 全图打上水印
         int srcWidth = srcImage.getWidth(), srcHeight = srcImage.getHeight();
         int logoWidth = waterMarkImage.getWidth(), logoHeight = waterMarkImage.getHeight();
@@ -66,7 +64,6 @@ public class ImageProcessor {
         /*Sharpen sh = new Sharpen();
         ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);*/
         // 输出图片
-        TestImage.printMemory();
         imageUtil.writeImage(srcImage, dstFile, Quality);
     }
 

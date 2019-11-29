@@ -18,6 +18,26 @@ import java.util.Iterator;
 public class TestImage {
 
     /**
+     * 全图水印内存测试
+     */
+    @Test
+    public void fullLogoMemory() throws IOException {
+        for(int i=0;i<30;i++) {
+            long l1 = System.currentTimeMillis();
+            //水印图
+            File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\water.png");
+            //原图
+            File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2.jpg");
+            //目标文件
+            File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\redlogon" + i + ".jpg");
+            if (destFile.exists()) destFile.delete();
+            ImageProcessor.fullLogo(source, logo, destFile, 1, 0.1F, 85);
+            long l2 = System.currentTimeMillis();
+            printMemory(l1, l2);
+        }
+    }
+
+    /**
      * 图片水印测试
      */
     @Test
@@ -42,7 +62,7 @@ public class TestImage {
         } else {
             ImageProcessor.fullLogo(source, logo, destFile, 1, 0.1F, 85);
         }
-        printMemory();
+        printMemory(0, 0);
     }
 
     @Test
@@ -55,7 +75,7 @@ public class TestImage {
             reader.setInput(iis, true);
             System.out.print("width:" + reader.getWidth(0));
             System.out.print("  height:" + reader.getHeight(0) + "  ");
-            printMemory();
+            printMemory(0, 0);
             //image.getGraphics().dispose();
         }
     }
@@ -73,13 +93,13 @@ public class TestImage {
         return file;
     }
 
-    public static void printMemory() {
+    public static void printMemory(long l1, long l2) {
         Runtime runtime = Runtime.getRuntime();
         //long max = runtime.maxMemory() / 1024 / 1024;
         long total = runtime.totalMemory() / 1024 / 1024;
         long free = runtime.freeMemory() / 1024 / 1024;
         long used = total - free;
-        System.out.println("used: " + used + "M   free: " + free + "M ");
+        System.out.println("used: " + used + "M   free: " + free + "M " + "cost：" + (l2 - l1) / 1000 + "s");
     }
 
     /**
