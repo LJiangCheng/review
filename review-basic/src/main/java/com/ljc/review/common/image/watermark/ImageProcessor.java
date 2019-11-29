@@ -22,11 +22,6 @@ public class ImageProcessor {
      * @param sigma 西格玛值
      */
     public static void centerLogo(File srcFile, File waterMarkFile, File dstFile, double sigma, float weight, int Quality) throws IOException {
-        /*ImageUtil imageUtil = new ImageUtil();
-        // 原始图片
-        ImageData srcImage = imageUtil.readImage(srcFile);
-        // 水印图片
-        ImageData waterMarkImage = imageUtil.readImage(waterMarkFile);*/
         BufferedImage srcImage = ImageIO.read(srcFile);
         BufferedImage waterMarkImage = ImageIO.read(waterMarkFile);
         // 计算坐标地址
@@ -37,13 +32,6 @@ public class ImageProcessor {
         if(x < 0) x = 0;
         if(y < 0) y = 0;
         LogoInserter.insertLogo(srcImage, waterMarkImage, x, y);
-        //打水印
-        //srcImage = LogoInserter.insertLogo(srcImage, waterMarkImage, x, y);
-        // 图片锐化
-        /*Sharpen sh = new Sharpen();
-        ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);*/
-        // 输出图片
-        //imageUtil.writeImage(srcImage, dstFile, Quality);
         ImageIO.write(srcImage, FileUtils.getFileExtension(dstFile), dstFile);
         srcImage.flush();
         waterMarkImage.flush();
@@ -57,13 +45,27 @@ public class ImageProcessor {
      * @param sigma 西格玛值
      */
     public static void fullLogo(File srcFile, File waterMarkFile, File dstFile, double sigma, float weight, int Quality) throws IOException {
-        //ImageUtil imageUtil = new ImageUtil();
-        /*// 原始图片
-        ImageData srcImage = imageUtil.readImage(srcFile);
-        // 水印图片
-        ImageData waterMarkImage = imageUtil.readImage(waterMarkFile);*/
         BufferedImage srcImage = ImageIO.read(srcFile);
         BufferedImage waterMarkImage = ImageIO.read(waterMarkFile);
+        // 全图打上水印
+        int srcWidth = srcImage.getWidth(), srcHeight = srcImage.getHeight();
+        int logoWidth = waterMarkImage.getWidth(), logoHeight = waterMarkImage.getHeight();
+        for (int y=0; y<srcHeight; y+=logoHeight) {
+            for (int x=0; x<srcWidth; x+=logoWidth) {
+                LogoInserter.insertLogo(srcImage, waterMarkImage, x, y);
+            }
+        }
+        ImageIO.write(srcImage, FileUtils.getFileExtension(dstFile), dstFile);
+        srcImage.flush();
+        waterMarkImage.flush();
+    }
+
+    public static void oldFullLogo(File srcFile, File waterMarkFile, File dstFile, double sigma, float weight, int Quality) throws IOException {
+        ImageUtil imageUtil = new ImageUtil();
+        // 原始图片
+        ImageData srcImage = imageUtil.readImage(srcFile);
+        // 水印图片
+        ImageData waterMarkImage = imageUtil.readImage(waterMarkFile);
         // 全图打上水印
         int srcWidth = srcImage.getWidth(), srcHeight = srcImage.getHeight();
         int logoWidth = waterMarkImage.getWidth(), logoHeight = waterMarkImage.getHeight();
@@ -76,10 +78,7 @@ public class ImageProcessor {
         /*Sharpen sh = new Sharpen();
         ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);*/
         // 输出图片
-        //imageUtil.writeImage(srcImage, dstFile, Quality);
-        ImageIO.write(srcImage, FileUtils.getFileExtension(dstFile), dstFile);
-        srcImage.flush();
-        waterMarkImage.flush();
+        imageUtil.writeImage(srcImage, dstFile, Quality);
     }
 
 }

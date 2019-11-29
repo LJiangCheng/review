@@ -3,6 +3,8 @@ package com.ljc.review.common.image.watermark;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,24 +21,51 @@ public class ImageUtil {
      */
 
     public ImageData readImage (File srcFile) {
+
+        File file = srcFile;
         ImageData srcImg = new ImageData();
-        int[] pixel;
-        if (!srcFile.exists()) {
+        int[] pixel = null;
+
+        if (!file.exists()) {
             System.out.println(srcFile + " does not exist!");
         }
         try {
-            BufferedImage bufImg = ImageIO.read(srcFile);
+            BufferedImage bufImg = null;
+            if(FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("jpg")){
+                Image src=Toolkit.getDefaultToolkit().getImage(file.getPath());
+                bufImg = toBufferedImage(src);//Image to BufferedImage
+            } else {
+                bufImg = ImageIO.read(file);
+            }
+
             int height = bufImg.getHeight();
             int width = bufImg.getWidth();
             srcImg.setSize(width,height);
             pixel = new int[width * height];
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
-                    pixel[i + j * width] = bufImg.getRGB(i, j);
+                    pixel[i + j * width] = bufImg.getRGB(i, j) & 0xFFFFFFFF;
                 }
             }
             srcImg.setPixel(pixel);
-            bufImg.flush();
+
+            int c, a, r, g, b;
+            byte[] A = new byte[width * height];
+            byte[] R = new byte[width * height];
+            byte[] G = new byte[width * height];
+            byte[] B = new byte[width * height];
+            for (int i = 0; i < width * height; i++){
+                c = pixel[i];
+                a = (c&0xff000000) >> 24;
+                r = (c&0xff0000) >> 16;
+                g = (c&0xff00) >> 8;
+                b = c&0xff;
+                A[i] = (byte)a;
+                R[i] = (byte)r;
+                G[i] = (byte)g;
+                B[i] = (byte)b;
+            }
+            srcImg.setChannels(A, R, G, B);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,34 +77,37 @@ public class ImageUtil {
      * Write the destination image to file.
      */
 
-    public void writeImage (ImageData img, File dstFile, int Quality) {
-        int width = img.getWidth();
-        int height = img.getHeight();
-        BufferedImage bf;
+    public void writeImage (ImageData Img, File dstFile, int Quality) {
+
+        int width = Img.getWidth();
+        int height = Img.getHeight();
+        BufferedImage bf = null;
         String ext = FilenameUtils.getExtension(dstFile.getName());
 
         if (ext.equalsIgnoreCase("jpg")) {
             Compressor cmp = new Compressor();
-            cmp.JpgCompressor(img, dstFile, Quality);
+            cmp.JpgCompressor(Img, dstFile, Quality);
         } else {
             bf = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             for (int i = 0; i < width; i++) {
                 for (int j = 0; j < height; j++) {
-                    bf.setRGB(i, j, img.getPixels()[i + j * width]);
+                    bf.setRGB(i, j, Img.getPixels()[i + j * width]);
                 }
             }
             try {
-                ImageIO.write(bf, ext, dstFile);
+                File file = dstFile;
+                ImageIO.write(bf, ext, file);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            bf.flush();
         }
     }
 
     /**
      * Read JPG format image and return a BufferedImage .
      */
+
     public static BufferedImage toBufferedImage(Image image) {
         if (image instanceof BufferedImage) {
             return (BufferedImage) image;

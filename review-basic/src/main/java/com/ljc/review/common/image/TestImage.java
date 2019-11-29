@@ -40,20 +40,30 @@ public class TestImage {
      * 全图水印内存测试
      */
     @Test
-    public void fullLogoMemory() throws IOException {
-        for(int i=0;i<30;i++) {
-            long l1 = System.currentTimeMillis();
-            //水印图
-            File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\water.png");
-            //原图
-            File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\details.png");
-            //目标文件
-            File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2\\redlogon" + i + ".png");
-            if (destFile.exists()) destFile.delete();
-            ImageProcessor.fullLogo(source, logo, destFile, 1, 0.1F, 85);
-            long l2 = System.currentTimeMillis();
-            printMemory(l1, l2);
+    public void fullLogoMemory() throws IOException, InterruptedException {
+        for (int j = 0; j < 12; j++) {
+            final int n = j;
+            new Thread(() -> {
+                for(int i=0;i<3;i++) {
+                    long l1 = System.currentTimeMillis();
+                    //水印图
+                    File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\water_details.png");
+                    //原图
+                    File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\details.png");
+                    //目标文件
+                    File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2\\redlogon" + i + "_" + n + ".png");
+                    if (destFile.exists()) destFile.delete();
+                    try {
+                        ImageProcessor.oldFullLogo(source, logo, destFile, 1, 0.1F, 85);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    long l2 = System.currentTimeMillis();
+                    printMemory(l1, l2);
+                }
+            }).start();
         }
+        Thread.sleep(1000000000);
     }
 
     /**
@@ -77,9 +87,9 @@ public class TestImage {
             //将宽度缩小为910，同时等比缩小高度
             drawImage(image, fullPath, 910, Math.round(height * (910F / width)), 0, 0, null);
             image.getGraphics().dispose();
-            ImageProcessor.fullLogo(new File(fullPath), logo, destFile, 1, 0.1F, 85);
+            //ImageProcessor.fullLogo(new File(fullPath), logo, destFile, 1, 0.1F, 85);
         } else {
-            ImageProcessor.fullLogo(source, logo, destFile, 1, 0.1F, 85);
+            //ImageProcessor.fullLogo(source, logo, destFile, 1, 0.1F, 85);
         }
         printMemory(0, 0);
     }
