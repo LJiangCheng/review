@@ -1,5 +1,7 @@
 package com.ljc.review.common.image.watermark;
 
+import com.ljc.review.common.image.TestImage;
+
 import java.io.File;
 
 /**
@@ -48,8 +50,10 @@ public class ImageProcessor {
         ImageUtil imageUtil = new ImageUtil();
         // 原始图片
         ImageData srcImage = imageUtil.readImage(srcFile);
+        TestImage.printMemory();
         // 水印图片
         ImageData waterMarkImage = imageUtil.readImage(waterMarkFile);
+        TestImage.printMemory();
         // 全图打上水印
         int srcWidth = srcImage.getWidth(), srcHeight = srcImage.getHeight();
         int logoWidth = waterMarkImage.getWidth(), logoHeight = waterMarkImage.getHeight();
@@ -59,10 +63,11 @@ public class ImageProcessor {
             }
         }
         // 图片锐化
-        Sharpen sh = new Sharpen();
-        ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);
+        /*Sharpen sh = new Sharpen();
+        ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);*/
         // 输出图片
-        imageUtil.writeImage(tempImg, dstFile, Quality);
+        TestImage.printMemory();
+        imageUtil.writeImage(srcImage, dstFile, Quality);
     }
 
 }
