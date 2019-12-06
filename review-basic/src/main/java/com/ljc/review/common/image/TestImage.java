@@ -3,6 +3,8 @@ package com.ljc.review.common.image;
 import cn.hutool.core.img.ImgUtil;
 import com.ljc.review.common.image.resize.ResizeImage;
 import com.ljc.review.common.image.watermark.ImageProcessor;
+import net.coobird.thumbnailator.Thumbnails;
+import net.coobird.thumbnailator.geometry.Positions;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -15,6 +17,19 @@ import java.io.*;
 import java.util.Iterator;
 
 public class TestImage {
+
+    @Test
+    public void tu() throws IOException {
+        long l1 = System.currentTimeMillis();
+        Thumbnails.of(new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2.jpg"))
+                .size(910, 578)
+                //.rotate(90)
+                .watermark(Positions.CENTER_LEFT, ImageIO.read(new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\water.png")), 1f)
+                .outputQuality(0.8)
+                .toFile(new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2\\redlogon" + 1 + ".jpg"));
+        long l2 = System.currentTimeMillis();
+        printMemory(l1, l2);
+    }
 
     @Test
     public void logoMemory() throws IOException {
@@ -32,8 +47,13 @@ public class TestImage {
             destStream = new FileOutputStream(destFile);
             ImgUtil.pressImage(srcStream, destStream, ImageIO.read(logo), 0, 0, (float) 1);
             long l2 = System.currentTimeMillis();
-            printMemory(l1,l2);
+            printMemory(l1, l2);
         }
+    }
+
+    @Test
+    public void mem() throws InterruptedException {
+        Thread.sleep(1000000000);
     }
 
     /**
@@ -41,17 +61,17 @@ public class TestImage {
      */
     @Test
     public void fullLogoMemory() throws IOException, InterruptedException {
-        for (int j = 0; j < 12; j++) {
+        /*for (int j = 1; j < 3; j++) {
             final int n = j;
             new Thread(() -> {
-                for(int i=0;i<3;i++) {
+                for (int i = 0; i < 3; i++) {
                     long l1 = System.currentTimeMillis();
                     //水印图
                     File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\water_details.png");
                     //原图
-                    File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\details.png");
+                    File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2.jpg");
                     //目标文件
-                    File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2\\redlogon" + i + "_" + n + ".png");
+                    File destFile = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2\\redlogon" + i + "_" + n + ".jpg");
                     if (destFile.exists()) destFile.delete();
                     try {
                         ImageProcessor.oldFullLogo(source, logo, destFile, 1, 0.1F, 85);
@@ -63,6 +83,20 @@ public class TestImage {
                 }
             }).start();
         }
+        Thread.sleep(40000);
+        for (int i = 0; i < 3; i++) {
+            new Thread(() -> {
+                for(int j = 0;j<30;j++) {
+                    synchronized (this){
+                        System.out.print("====>测试 ");
+                        printMemory(0, 0);
+                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ignore) {}
+                }
+            }).start();
+        }*/
         Thread.sleep(1000000000);
     }
 
@@ -96,7 +130,7 @@ public class TestImage {
 
     @Test
     public void imageReadTest() throws IOException {
-        for(int i=0;i<30;i++) {
+        for (int i = 0; i < 30; i++) {
             /*//BufferedImage image = ImageIO.read(new File("C:\\Users\\toolmall\\Desktop\\watermaker\\webp\\2.jpg"));
             Iterator<ImageReader> jpgReader = ImageIO.getImageReadersByFormatName("jpg");
             ImageReader reader = jpgReader.next();
@@ -128,11 +162,12 @@ public class TestImage {
         long total = runtime.totalMemory() / 1024 / 1024;
         long free = runtime.freeMemory() / 1024 / 1024;
         long used = total - free;
-        System.out.println("used: " + used + "M   free: " + free + "M " + "cost：" + (l2 - l1) / 1000 + "s");
+        System.out.println("used: " + used + "M   free: " + free + "M " + "cost：" + (l2 - l1) + "ms");
     }
 
     /**
      * 图片缩放测试
+     *
      * @throws IOException
      */
     @Test

@@ -75,8 +75,8 @@ public class ImageProcessor {
             }
         }
         // 图片锐化
-        /*Sharpen sh = new Sharpen();
-        ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);*/
+        Sharpen sh = new Sharpen();
+        ImageData tempImg = sh.ImageSharpen(srcImage, sigma, weight);
         // 输出图片
         imageUtil.writeImage(srcImage, dstFile, Quality);
     }
