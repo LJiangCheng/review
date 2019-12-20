@@ -4,19 +4,30 @@ import org.junit.Test;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
-import java.math.BigDecimal;
-import java.nio.Buffer;
-import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class BaseTest {
 
-    public static void main(String[] args) {
-        try {
-            int i = 10 / 0;
-        } catch (Exception e) {
-            //throw e;
+    public static void main(String[] args) throws Exception {
+        BufferedReader bufferedReader =
+                new BufferedReader(new InputStreamReader(new FileInputStream(new File("C:\\Users\\ljc\\Desktop\\1.txt")), StandardCharsets.UTF_8));
+        BufferedWriter bufferedWriter =
+                new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("C:\\Users\\ljc\\Desktop\\诡秘之主.txt"), true), StandardCharsets.UTF_8));
+        String s;
+        while ((s = bufferedReader.readLine()) != null) {
+            if (!StringUtils.isEmpty(s)) {
+                s = s.replace("\n", "").trim();
+                if (!s.equals("?") && !s.equals("？")) {
+                    bufferedWriter.write(s);
+                    bufferedWriter.newLine();
+                    bufferedWriter.flush();
+                }
+            }
         }
-        System.out.println("aaa");
+        String ss = "";
     }
 
     @Test
