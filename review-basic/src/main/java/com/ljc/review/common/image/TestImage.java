@@ -33,11 +33,8 @@ public class TestImage {
 
     @Test
     public void logoMemory() throws IOException {
-        //原图
         File source = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\2.jpg");
-        //水印图
         File logo = new File("C:\\Users\\toolmall\\Desktop\\watermaker\\水印\\water.png");
-        //目标文件
         FileInputStream srcStream;
         FileOutputStream destStream;
         for (int i = 0; i < 30; i++) {
