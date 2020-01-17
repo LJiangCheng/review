@@ -8,11 +8,16 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+/**
+ * WebSecurityConfigurerAdapter的Order为100
+ * 如果同时配置WebSecurityConfigurerAdapter和ResourceServerConfigurerAdapter，后者的FilterChain优先生效
+ */
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
@@ -51,6 +56,19 @@ public class SpringSecurityConfigurerAdapter extends WebSecurityConfigurerAdapte
                 .and()
                 .authorizeRequests()
                 .antMatchers("/oauth/*").permitAll();
+
+        http
+                // Since we want the protected resources to be accessible in the UI as well we need
+                // session creation to be allowed (it's disabled by default in 2.0.6)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .and()
+                .requestMatchers().anyRequest()
+                .and()
+                .anonymous()
+                .and()
+                .authorizeRequests()
+//                    .antMatchers("/product/**").access("#oauth2.hasScope('select') and hasRole('ROLE_USER')")
+                .antMatchers("/order/**").authenticated();//配置order访问控制，必须认证过后才可以访问
         // @formatter:on
     }
 

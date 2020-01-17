@@ -16,8 +16,13 @@ import java.util.*;
 public class BaseTest {
 
     public static void main(String[] args) {
-        String[] arr = new String[]{"tom", "teddy", "nick"};
-        System.out.println(JSONObject.toJSONString(Arrays.asList(arr)));
+        String a = "";
+        String[] split = a.split(",");
+        StringBuilder sb = new StringBuilder();
+        for (String s : split) {
+            sb.append("'").append(s).append("'").append(",");
+        }
+        System.out.println(sb.toString());
     }
 
     @Test
