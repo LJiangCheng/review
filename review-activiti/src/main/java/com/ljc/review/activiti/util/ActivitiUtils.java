@@ -45,7 +45,7 @@ public class ActivitiUtils {
                 if (activityImpl1.getStartTime().getTime() != activityImpl2.getStartTime().getTime()) {
                     break;
                 }
-                // 如果第一个节点和第二个节点开始时间相同保存
+                // 如果第一个节点和第二个节点的开始时间相同
                 FlowNode sameActivityImpl2 = (FlowNode) bpmnModel.getMainProcess().getFlowElement(activityImpl2.getActivityId());
                 sameStartTimeNodes.add(sameActivityImpl2);
             }

@@ -23,15 +23,15 @@ public class UpScaling {
         dstImg.setSize(dstWidth, dstHeight);
 
         //Below four lines is from case RGB_RESIZE
-        byte [] a = byteProcess(dstWidth, dstHeight, srcImg.getAchannel());
+        /*byte [] a = byteProcess(dstWidth, dstHeight, srcImg.getAchannel());
         byte [] r = byteProcess(dstWidth, dstHeight, srcImg.getRchannel());
         byte [] g = byteProcess(dstWidth, dstHeight, srcImg.getGchannel());
         byte [] b = byteProcess(dstWidth, dstHeight, srcImg.getBchannel());
-        srcImg.setChannels(a, r, g, b);
+        srcImg.setChannels(a, r, g, b);*/
 
         int [] pixel = new int[dstWidth*dstHeight];
         for (int i=0; i < dstWidth*dstHeight; i++){
-            pixel[i] = ((a[i]&0xff)<<24) | ((r[i]&0xff)<<16) | ((g[i]&0xff)<<8) | b[i]&0xff;
+            //pixel[i] = ((a[i]&0xff)<<24) | ((r[i]&0xff)<<16) | ((g[i]&0xff)<<8) | b[i]&0xff;
         }
         dstImg.setPixel(pixel);
 

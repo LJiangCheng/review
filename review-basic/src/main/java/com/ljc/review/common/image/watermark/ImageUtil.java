@@ -72,36 +72,9 @@ public class ImageUtil {
     }
 
     /**
-     * Write the destination image to file.
-     */
-
-    public void writeImage (ImageData Img, File dstFile, int Quality) {
-        int width = Img.getWidth();
-        int height = Img.getHeight();
-        BufferedImage bf;
-        String ext = FilenameUtils.getExtension(dstFile.getName());
-
-        if (ext.equalsIgnoreCase("jpg")) {
-            Compressor cmp = new Compressor();
-            cmp.JpgCompressor(Img, dstFile, Quality);
-        } else {
-            bf = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            for (int i = 0; i < width; i++) {
-                for (int j = 0; j < height; j++) {
-                    bf.setRGB(i, j, Img.getPixels()[i + j * width]);
-                }
-            }
-            try {
-                ImageIO.write(bf, ext, dstFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
      * Read JPG format image and return a BufferedImage .
      */
+
     public static BufferedImage toBufferedImage(Image image) {
         if (image instanceof BufferedImage) {
             return (BufferedImage) image;
@@ -131,6 +104,37 @@ public class ImageUtil {
         g.drawImage(image, 0, 0, null);
         g.dispose();
         return bimage;
+    }
+
+    /**
+     * Write the destination image to file.
+     */
+
+    public void writeImage(ImageData Img, File dstFile, int Quality) {
+
+        int width = Img.getWidth();
+        int height = Img.getHeight();
+        BufferedImage bf = null;
+        String ext = FilenameUtils.getExtension(dstFile.getName());
+
+        if (ext.equalsIgnoreCase("jpg")) {
+            Compressor cmp = new Compressor();
+            cmp.JpgCompressor(Img, dstFile, Quality);
+        } else {
+            bf = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            for (int i = 0; i < width; i++) {
+                for (int j = 0; j < height; j++) {
+                    bf.setRGB(i, j, Img.getPixels()[i + j * width]);
+                }
+            }
+            try {
+                File file = dstFile;
+                ImageIO.write(bf, ext, file);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
