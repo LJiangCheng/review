@@ -1,4 +1,4 @@
-package com.ljc.review.common.concurrent.inpratice.章5;
+package com.ljc.review.common.concurrent.inpratice.章5基础模块;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
