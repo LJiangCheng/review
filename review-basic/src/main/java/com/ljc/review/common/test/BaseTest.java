@@ -87,11 +87,6 @@ public class BaseTest {
                 noRepeteList.add(word);
             }
         }
-        //大纲
-        //梗概：
-
-        //这是我第27次从十月一日的早晨醒来，时间依然是八点整。曾经无数次幻想的场景变成了现实，我重复的过上了十一假期。
-        //
         //输出到文件
         File noRepeteFile = new File("C:\\Users\\toolmall\\Desktop\\无重复字符词.txt");
         noRepeteFile.createNewFile();
