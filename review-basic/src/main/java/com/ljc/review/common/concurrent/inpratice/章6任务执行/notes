@@ -1,0 +1,10 @@
+
+简述：本章主要描述并行的任务执行和任务状态控制、结果获取
+
+1.任务的抽象表示
+    Runnable
+    Callable
+2.任务的执行
+    Executor：可接受Runnable或Callable，可返回Future，通过Future获取任务的执行状态和结果。将任务提交与执行策略解耦，并支持多种不同的执行策略。
+    CompletionService：Executor和BlockingQueue的融合，使用一个BlockingQueue来保存执行的结果，然后通过take方法获取执行结果
+3.任务的分解：必须定义清晰的任务边界
