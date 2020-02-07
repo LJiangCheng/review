@@ -1,0 +1,4 @@
+
+要实现一个依赖状态的类--如果没有满足依赖状态的前提条件，这个类必须阻塞，最好的方式是基于现有类库来实现，如Semaphore、
+CountDownLatch、ConcurrentLinkedQueue等。然而，如果现有的类库不能满足需要，那么可以使用内置条件队列、显式Condition
+对象、AQS等来自定义同步工具。

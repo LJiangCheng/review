@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * "搬箱子"谜题并行解决方案（广度优先搜索，受限于内存大小，且需要考虑并行任务的终止条件）
+ * 关注点：闭锁、提交任务、获取结果、任务计数器、线程安全、生命周期
  */
 public class ConcurrentPuzzleSolver<P, M> {
     private final Puzzle<P, M> puzzle;
