@@ -1,4 +1,4 @@
-package com.ljc.review.common.concurrent.inpratice.章15原子变量与非同步阻塞机制.cas;
+package com.ljc.review.common.concurrent.inpratice.章15原子变量与非阻塞同步机制.cas;
 
 import java.util.concurrent.atomic.AtomicReference;
 

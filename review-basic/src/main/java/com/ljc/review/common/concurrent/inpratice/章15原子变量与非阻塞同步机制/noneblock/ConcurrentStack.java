@@ -1,4 +1,4 @@
-package com.ljc.review.common.concurrent.inpratice.章15原子变量与非同步阻塞机制.noneblock;
+package com.ljc.review.common.concurrent.inpratice.章15原子变量与非阻塞同步机制.noneblock;
 
 import com.ljc.review.common.concurrent.inpratice.annotations.ThreadSafe;
 
@@ -36,7 +36,6 @@ public class ConcurrentStack<E> {
     private static class Node<E>{
         public final E item;
         public Node<E> next;
-
         public Node(E item) {
             this.item = item;
         }
