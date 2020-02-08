@@ -1,7 +1,11 @@
 
 1.内置锁和显式锁
     内置锁：synchronized
-    显式锁：Lock 某些情况下，当内置锁过于灵活时，可以使用显式锁
+    显式锁：Lock
+    易用性上来说synchronized更简单，但Lock更灵活
+    性能上来说，1.6以后synchronized与Lock大致相当(Lock略优)且还有优化空间，官方也表示提倡在能使用synchronized的场景中尽量使用
+    synchronized。不过开发者在数据结构或框架的设计中一般倾向于使用Lock
+
 
 2.内置条件队列和显式条件队列
     内置条件队列缺陷：
