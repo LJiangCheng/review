@@ -1,0 +1,13 @@
+
+1.java.util.concurrent的许多类中，如Semaphore、ConcurrentLinkedQueue都提供了比Synchronized更高的性能和可伸缩性，
+这种提升的主要来源是原子变量和非阻塞的同步机制。
+注：JDK1.6以后synchronized和Lock性能相当，synchronized简单，Lock灵活
+    a.Lock支持中断等待获取锁的线程
+    b.synchronized自动释放锁，Lock需要手动释放，麻烦的同时也提供了额外的灵活性
+    c.Lock可以实现公平锁和非公平锁
+    d.Lock可以绑定多个条件
+
+2.锁的劣势
+    a.调度开销，特别是当为细粒度的操作加锁时
+    b.优先级反转：优先级高的线程等待优先级低的线程释放锁
+

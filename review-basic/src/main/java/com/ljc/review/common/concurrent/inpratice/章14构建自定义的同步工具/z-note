@@ -1,0 +1,20 @@
+
+1.内置锁和显式锁
+    内置锁：synchronized
+    显式锁：Lock
+    易用性上来说synchronized更简单，但Lock更灵活
+    性能上来说，1.6以后synchronized与Lock大致相当(Lock略优)且还有优化空间，官方也表示提倡在能使用synchronized的场景中尽量使用
+    synchronized。不过开发者在数据结构或框架的设计中一般倾向于使用Lock
+
+
+2.内置条件队列和显式条件队列
+    内置条件队列缺陷：
+        a.每个内置锁都只能有一个相关联的内置条件队列。因而多个线程可能在同一条件队列上等待不同的条件谓词，并且在最常见的加锁模式下公开条件
+        队列对象。这些因素都使得无法满足在使用notifyAll时所有等待线程为同一类型的需求。
+    显式条件队列：
+        与显式锁关联，使用Lock.newCondition创建。一个Lock可以关联任意数量的Condition
+        Condition继承了相关的Lock的公平性，对于公平的锁，线程会按照FIFO顺序从await中释放
+
+3.要实现一个依赖状态的类--如果没有满足依赖状态的前提条件，这个类必须阻塞，最好的方式是基于现有类库来实现，如Semaphore、
+  CountDownLatch、ConcurrentLinkedQueue等。然而，如果现有的类库不能满足需要，那么可以使用内置条件队列、显式Condition
+  对象、AQS等来自定义同步工具。

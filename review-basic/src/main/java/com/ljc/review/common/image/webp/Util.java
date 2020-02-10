@@ -1,10 +1,9 @@
 package com.ljc.review.common.image.webp;
 
+//import com.luciad.imageio.webp.WebPReadParam;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.FileImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -42,7 +41,7 @@ public class Util {
     public static BufferedImage webpDecoder(File srcFile) {
         // Obtain a WebP ImageReader instance
         BufferedImage image = null;
-        try {
+        /*try{
             ImageReader reader = ImageIO.getImageReadersByMIMEType("image/webp").next();
             // Configure decoding parameters
             WebPReadParam readParam = new WebPReadParam();
@@ -51,9 +50,10 @@ public class Util {
             reader.setInput(new FileImageInputStream(srcFile));
             // Decode the image
             image = reader.read(0, readParam);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        catch(IOException e) {
+            e.printStackTrace();
+        }*/
         return image;
     }
 

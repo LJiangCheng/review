@@ -1,13 +1,12 @@
 package com.ljc.review.common.image.webp;
 
-import com.luciad.imageio.webp.WebPWriteParam;
+//import com.luciad.imageio.webp.WebPWriteParam;
 import org.apache.commons.io.FilenameUtils;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -53,7 +52,7 @@ public class Compressor {
 
     public void WebpCompressor(ImageData Img, File dstImgDir, int Quality) {
 
-        try {
+        /*try {
 
             int width = Img.getWidth();
             int height = Img.getHeight();
@@ -75,7 +74,7 @@ public class Compressor {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 }

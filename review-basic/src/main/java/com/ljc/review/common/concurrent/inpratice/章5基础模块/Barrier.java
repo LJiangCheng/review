@@ -28,15 +28,6 @@ public class Barrier {
         }
     }
 
-    public void start() {
-        //将任务分解交付工作线程
-        for (int i = 0; i < workers.length; i++) {
-            new Thread(workers[i]).start();
-        }
-        //等待总任务（即所有子任务）完成
-        mainBoard.waitForConvergence();
-    }
-
     /**
      * 手动实现类似栅栏效果
      * TODO 思考，有哪些隐藏的问题？和Jdk的实现相比又怎样的不同？
@@ -61,23 +52,13 @@ public class Barrier {
         endGate.await();
     }
 
-    //模拟计算任务接口
-    interface Board {
-        int getMaxX();
-
-        int getMaxY();
-
-        int getValue(int x, int y);
-
-        int setNewValue(int x, int y, int value);
-
-        void commitNewValues();
-
-        boolean hasConverged();
-
-        void waitForConvergence();
-
-        Board getSubBoard(int numPartitions, int index);
+    public void start() {
+        //将任务分解交付工作线程
+        for (int i = 0; i < workers.length; i++) {
+            new Thread(workers[i]).start();
+        }
+        //等待总任务（即所有子任务）完成
+        mainBoard.waitForConvergence();
     }
 
     private class Worker implements Runnable {
@@ -109,6 +90,18 @@ public class Barrier {
             // Compute the new value that goes in (x,y)
             return 0;
         }
+    }
+
+    //模拟计算任务接口
+    interface Board {
+        int getMaxX();
+        int getMaxY();
+        int getValue(int x, int y);
+        int setNewValue(int x, int y, int value);
+        void commitNewValues();
+        boolean hasConverged();
+        void waitForConvergence();
+        Board getSubBoard(int numPartitions, int index);
     }
 
 }

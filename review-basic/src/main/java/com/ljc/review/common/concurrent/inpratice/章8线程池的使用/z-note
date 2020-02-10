@@ -1,0 +1,10 @@
+
+1.任务和执行策略之间的隐形耦合
+    a.线程饥饿死锁:任务之间存在依赖关系
+    b.运行时间较长的任务
+    c.其他资源限制，如JDBC连接数量、内存、文件句柄、Socket句柄等
+
+2.扩展ThreadPoolExecutor
+    beforeExecute
+    afterExecute
+    terminated
