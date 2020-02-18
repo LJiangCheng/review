@@ -1,4 +1,4 @@
-package com.ljc.review.common.concurrent.inpratice.completablefuture;
+package com.ljc.review.common.concurrent.Jdk并发组件探究.future;
 
 import org.junit.Test;
 

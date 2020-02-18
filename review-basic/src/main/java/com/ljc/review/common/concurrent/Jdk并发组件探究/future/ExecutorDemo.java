@@ -1,10 +1,10 @@
-package com.ljc.review.common.concurrent.future;
+package com.ljc.review.common.concurrent.Jdk并发组件探究.future;
 
 import org.junit.Test;
 
 import java.util.concurrent.*;
 
-public class ExecutorTest {
+public class ExecutorDemo {
 
     @Test
     public void testRunnableToCall() {

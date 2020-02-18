@@ -1,4 +1,4 @@
-package com.ljc.review.common.concurrent.inpratice.章5基础模块.cache.compute;
+package com.ljc.review.common.concurrent.inpratice.章5基础模块.cache;
 
 /**
  * 并发缓存的实现示例

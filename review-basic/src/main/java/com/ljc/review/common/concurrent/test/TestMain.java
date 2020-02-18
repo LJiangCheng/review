@@ -1,4 +1,4 @@
-package com.ljc.review.common.concurrent.testdemo;
+package com.ljc.review.common.concurrent.test;
 
 import org.junit.Test;
 
