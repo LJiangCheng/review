@@ -1,10 +1,7 @@
 package com.ljc.review.common.concurrent.Jdk并发组件探究.lock;
 
-import cn.hutool.core.math.MathUtil;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
@@ -14,7 +11,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Consumer;
 
 /**
  * 基于读写锁实现缓存

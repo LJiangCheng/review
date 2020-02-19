@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 栅栏：同步工具类的一种
  * 阻塞一组线程，直到某个事件发生。
- * 与闭锁的区别在于，所有线程必须同时到达栅栏位置，才能继续执行。闭锁用于等待事件，而栅栏用于等待其他线程。且闭锁是一次性的，栅栏可以复位
+ * 与闭锁的区别在于，所有线程必须同时到达栅栏位置，才能继续执行。闭锁用于等待事件，而栅栏用于等待其他线程。且闭锁是一次性的，栅栏会自动复位
  */
 public class Barrier {
 
@@ -21,7 +21,7 @@ public class Barrier {
     public Barrier(Board board) {
         this.mainBoard = board;
         int count = Runtime.getRuntime().availableProcessors();  //处理器核心数量
-        this.barrier = new CyclicBarrier(count, mainBoard::commitNewValues); //指定栅栏同步的线程数量，及所有线程都到达后需要执行的任务，由最后到达的线程执行。可以在这里检视并通知任务是否完全完成
+        this.barrier = new CyclicBarrier(count, mainBoard::commitNewValues); //指定栅栏同步的线程数量，及所有线程都到达后需要首先执行的任务，由最后到达的线程执行。
         this.workers = new Worker[count];
         for (int i = 0; i < count; i++) {
             workers[i] = new Worker(mainBoard.getSubBoard(count, i)); //根据核心数量创建工作线程，指定其任务范围
