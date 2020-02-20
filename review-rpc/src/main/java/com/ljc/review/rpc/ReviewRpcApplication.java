@@ -1,12 +1,13 @@
-package com.ljc.security;
+package com.ljc.review.rpc;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringSecurityApplication {
+public class ReviewRpcApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SpringSecurityApplication.class, args);
+		SpringApplication.run(ReviewRpcApplication.class, args);
 	}
+
 }
