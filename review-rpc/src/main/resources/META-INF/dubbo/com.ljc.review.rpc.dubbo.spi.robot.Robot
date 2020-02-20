@@ -1,2 +1,2 @@
-optimusPrime = org.apache.spi.OptimusPrime
-bumblebee = org.apache.spi.Bumblebee
+optimusPrime=com.ljc.review.rpc.dubbo.spi.robot.OptimusPrime
+bumblebee=com.ljc.review.rpc.dubbo.spi.robot.Bumblebee
