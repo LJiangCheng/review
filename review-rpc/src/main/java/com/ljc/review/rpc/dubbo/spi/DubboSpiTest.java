@@ -9,12 +9,25 @@ import com.ljc.review.rpc.dubbo.spi.robot.Robot;
  */
 public class DubboSpiTest {
 
-    public static void main(String[] args) {
+    private String name = "";
+
+    /**
+     * spi入口
+     */
+    public void spi() {
         ExtensionLoader<Robot> loader = ExtensionLoader.getExtensionLoader(Robot.class);
         Robot optimusPrime = loader.getExtension("optimusPrime");
         optimusPrime.sayHello();
         Robot bumblebee = loader.getExtension("bumblebee");
         bumblebee.sayHello();
+        System.out.println(new DubboSpiTest().name);
+    }
+
+    /**
+     * 自适应扩展入口
+     */
+    public void extension() {
+
     }
 
 }

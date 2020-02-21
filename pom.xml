@@ -17,6 +17,7 @@
         <module>review-auth</module>
         <module>review-alg</module>
         <module>review-rpc</module>
+        <module>review-activiti</module>
     </modules>
 
     <properties>
