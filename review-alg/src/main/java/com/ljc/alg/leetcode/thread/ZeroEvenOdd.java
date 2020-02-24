@@ -22,6 +22,9 @@ import java.util.function.Consumer;
  * 0.如何保证任务顺序
  * 1.如何切换任务
  * 2.如何保证任务可以终止
+ *
+ * 可用的同步工具：CountDownLatch/Semaphore/CyclicBarrier/ReentrantLock/ReentrantReadWriteLock/Synchronized/Atomic/FutureTask/
+ * ConcurrentHashMap/BlockingQueue/BlockingDeque/
  */
 public class ZeroEvenOdd {
     private final int n;
