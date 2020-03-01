@@ -20,6 +20,8 @@ import java.util.function.Consumer;
  * <p>
  * 1.如何切换任务
  * 2.如何终止任务
+ *
+ *
  */
 public class ZeroEvenOdd {
     private final int n;
@@ -73,9 +75,9 @@ public class ZeroEvenOdd {
     }
 
     void odd(Consumer<Integer> consumer) throws InterruptedException {
+        Thread.yield();
         try {
             lock.lock();
-            oddCondition.await();
             for (int i = 1; i <= n; i++) {
                 if (i % 2 != 0) {
                     consumer.accept(i);
@@ -89,9 +91,9 @@ public class ZeroEvenOdd {
     }
 
     void even(Consumer<Integer> consumer) throws InterruptedException {
+        Thread.yield();
         try {
             lock.lock();
-            evenCondition.await();
             for (int i = 1; i <= n; i++) {
                 if (i % 2 == 0) {
                     consumer.accept(i);
