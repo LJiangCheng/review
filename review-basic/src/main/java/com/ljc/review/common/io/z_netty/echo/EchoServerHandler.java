@@ -1,4 +1,4 @@
-package com.ljc.review.common.io.s_netty.echo;
+package com.ljc.review.common.io.z_netty.echo;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

@@ -1,4 +1,4 @@
-package com.ljc.review.common.io.s_netty.echo;
+package com.ljc.review.common.io.z_netty.echo;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
