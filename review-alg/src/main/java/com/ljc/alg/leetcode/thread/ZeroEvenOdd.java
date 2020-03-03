@@ -79,6 +79,28 @@ public class ZeroEvenOdd {
     private Condition oddCondition = lock.newCondition();
     private Condition evenCondition = lock.newCondition();
 
+    public static void main(String[] args) throws InterruptedException {
+        ZeroEvenOdd zeo = new ZeroEvenOdd(90);
+        new Thread(() -> {
+            try {
+                zeo.zero(System.out::print);
+            } catch (InterruptedException ignored) {
+            }
+        }).start();
+        new Thread(() -> {
+            try {
+                zeo.odd(System.out::print);
+            } catch (InterruptedException ignored) {
+            }
+        }).start();
+        new Thread(() -> {
+            try {
+                zeo.even(System.out::print);
+            } catch (InterruptedException ignored) {
+            }
+        }).start();
+    }
+
     void zero(Consumer<Integer> consumer) throws InterruptedException {
         try {
             lock.lock();
@@ -148,28 +170,6 @@ public class ZeroEvenOdd {
         } finally {
             lock.unlock();
         }
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        ZeroEvenOdd zeo = new ZeroEvenOdd(90);
-        new Thread(() -> {
-            try {
-                zeo.zero(System.out::print);
-            } catch (InterruptedException ignored) {
-            }
-        }).start();
-        new Thread(() -> {
-            try {
-                zeo.odd(System.out::print);
-            } catch (InterruptedException ignored) {
-            }
-        }).start();
-        new Thread(() -> {
-            try {
-                zeo.even(System.out::print);
-            } catch (InterruptedException ignored) {
-            }
-        }).start();
     }
 
 }
