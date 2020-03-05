@@ -1,6 +1,6 @@
 package com.ljc.review.common.io.z_netty.server;
 
-import com.ljc.review.common.io.z_netty.UnixTime;
+import com.ljc.review.common.io.z_netty.User;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -11,7 +11,7 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) {
-        ChannelFuture f = ctx.writeAndFlush(new UnixTime());
+        ChannelFuture f = ctx.writeAndFlush(new User("小虎", 32, "shanghai"));
         f.addListener(ChannelFutureListener.CLOSE);
     }
 

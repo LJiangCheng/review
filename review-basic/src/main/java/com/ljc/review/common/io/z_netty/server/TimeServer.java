@@ -18,12 +18,7 @@ public class TimeServer {
     }
 
     public static void main(String[] args) throws Exception {
-        int port = 8080;
-        if (args.length > 0) {
-            port = Integer.parseInt(args[0]);
-        }
-
-        new TimeServer(port).run();
+        new TimeServer(8180).run();
     }
 
     public void run() throws Exception {
@@ -35,7 +30,7 @@ public class TimeServer {
                     .channel(NioServerSocketChannel.class) // (3)
                     .childHandler(new ChannelInitializer<SocketChannel>() { // (4)
                         @Override
-                        public void initChannel(SocketChannel ch) throws Exception {
+                        public void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(new TimeEncoder(), new TimeServerHandler());
                         }
                     })

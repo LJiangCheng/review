@@ -11,9 +11,19 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class TimeClient {
 
+    private String host;
+    private int port;
+
+    public TimeClient(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
     public static void main(String[] args) throws Exception {
-        String host = args[0];
-        int port = Integer.parseInt(args[1]);
+        new TimeClient("localhost", 8180).run();
+    }
+
+    public void run() throws InterruptedException {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
