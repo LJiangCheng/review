@@ -1,6 +1,6 @@
-package com.ljc.review.common.io.z_netty.server;
+package com.ljc.review.common.io.z_netty.timerdemo.server;
 
-import com.ljc.review.common.io.z_netty.User;
+import com.ljc.review.common.io.z_netty.timerdemo.User;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
