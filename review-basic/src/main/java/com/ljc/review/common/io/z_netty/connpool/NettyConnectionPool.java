@@ -75,9 +75,9 @@ public class NettyConnectionPool {
         //等待连接完成后，返回Channel
         Channel channel = channelFuture.sync().channel();
 
-        //为刚刚创建的channel初始化channel属性
+        //为刚刚创建的channel初始化一个和DATA_MAP_ATTRIBUTEKEY关联的属性
         Attribute<Map<Integer, Object>> attribute = channel.attr(ChannelUtils.DATA_MAP_ATTRIBUTEKEY);
-        //每一个channel的dataMap
+        //记录seq-callback关联关系的dataMap
         ConcurrentHashMap<Integer, Object> dataMap = new ConcurrentHashMap<>();
         attribute.set(dataMap);
         return channel;
