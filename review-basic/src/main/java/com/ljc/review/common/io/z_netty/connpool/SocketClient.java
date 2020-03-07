@@ -29,9 +29,10 @@ public class SocketClient {
         for (int i = 0; i < 10; i++) {
             new Thread(() -> {
                 try {
-                    int seq = IntegerFactory.getInstance().incrementAndGet();  //请求序列号
                     //加大竞争，使所有线程初始化完成后一同启动
                     beginLatch.await();
+                    //生成请求序列号
+                    int seq = IntegerFactory.getInstance().incrementAndGet();
                     //获取Channel及创建关联的Callback
                     Channel channel = channelPool.getChannelSync();
                     CallbackService callbackService = new CallbackService();
@@ -75,7 +76,7 @@ public class SocketClient {
         beginLatch.countDown();
         //等待10个线程完成，打印最终结果，验证程序正确性
         endLatch.await();
-        System.out.println(resultMap);
+        System.out.println("resultMap = " + resultMap);
     }
 
 }

@@ -75,12 +75,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-		<!-- Elasticsearch核心依赖包 -->
-		<dependency>
-			<groupId>org.elasticsearch.client</groupId>
-			<artifactId>transport</artifactId>
-			<version>5.5.2</version>
-		</dependency>
 		<!--测试-->
 		<dependency>
 			<groupId>junit</groupId>
