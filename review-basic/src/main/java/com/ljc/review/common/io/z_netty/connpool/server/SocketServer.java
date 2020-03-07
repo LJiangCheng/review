@@ -1,7 +1,6 @@
 package com.ljc.review.common.io.z_netty.connpool.server;
 
 import com.ljc.review.common.io.z_netty.connpool.SelfDefineEncodeHandler;
-import com.ljc.review.common.io.z_netty.timerdemo.server.TimeServer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -22,7 +21,7 @@ public class SocketServer {
     }
 
     public static void main(String[] args) throws Exception {
-        new TimeServer(8180).run();
+        new SocketServer(8180).run();
     }
 
     public void run() throws Exception {

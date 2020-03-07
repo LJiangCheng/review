@@ -18,6 +18,7 @@ public class SocketClientHandler extends ChannelInboundHandlerAdapter {
         ByteBuf responseBuf = (ByteBuf) msg;
         responseBuf.markReaderIndex();
         //获取消息序列号
+        responseBuf.readInt();
         int seq = responseBuf.readInt();
         responseBuf.resetReaderIndex();
         //根据序列号获取对应的callback
