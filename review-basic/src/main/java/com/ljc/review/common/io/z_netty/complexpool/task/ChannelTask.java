@@ -27,7 +27,7 @@ public class ChannelTask implements Callable<String> {
     }
 
     @Override
-    public String call() throws Exception {
+    public String call() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         //同一个线程使用同一个全局唯一的随机数，保证从同一个池中获取和释放资源，同时使用改随机数作为Key获取返回值，时间戳+6位随机数
         long random = Long.valueOf(sdf.format(new Date())) * 1000000 + Math.round(Math.random() * 1000000);

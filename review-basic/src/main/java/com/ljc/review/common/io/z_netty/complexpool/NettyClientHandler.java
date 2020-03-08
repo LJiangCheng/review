@@ -62,7 +62,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
         } else if (msg instanceof ByteBuf) {
             message = ((ByteBuf) msg).toString(Charset.defaultCharset());
         }
-        //获取channel中存储的全局唯一随机值
+        //获取channel中存储的全局唯一随机值（和simplePool实现不同，这里每个channel都只对应一次请求）
         Long randomId = ctx.channel().attr(AttributeKey.<Long>valueOf(Constant.RANDOM_KEY)).get();
         LOGGER.info(" READ INFO 服务端返回结果:" + message);
         LinkedBlockingQueue<String> linked = RESULT_MAP.get(randomId);
