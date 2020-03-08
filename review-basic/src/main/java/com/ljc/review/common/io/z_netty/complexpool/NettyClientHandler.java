@@ -2,7 +2,6 @@ package com.ljc.review.common.io.z_netty.complexpool;
 
 import com.ljc.review.common.io.z_netty.complexpool.util.Constant;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -104,9 +103,9 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
                 coreChannel.put(poolHash, channels);
             }
             //ToDo 这一段的含义是否覆盖了心跳检测？
-            String heartBeat = Constant.HEART_BEAT + Constant.DELIMITER;
+            /*String heartBeat = Constant.HEART_BEAT + Constant.DELIMITER;
             ByteBuf byteBuf = Unpooled.copiedBuffer(heartBeat.getBytes());
-            channel.writeAndFlush(byteBuf);
+            channel.writeAndFlush(byteBuf);*/
         } else {
             //非心跳检测事件，不作处理
             super.userEventTriggered(ctx, evt);
