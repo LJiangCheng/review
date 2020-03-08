@@ -1,4 +1,4 @@
-package com.ljc.review.common.io.z_netty.connpool;
+package com.ljc.review.common.io.z_netty.simplepool;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

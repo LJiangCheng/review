@@ -1,6 +1,6 @@
-package com.ljc.review.common.io.z_netty.connpool;
+package com.ljc.review.common.io.z_netty.simplepool;
 
-import com.ljc.review.common.io.z_netty.connpool.utils.ChannelUtils;
+import com.ljc.review.common.io.z_netty.simplepool.utils.ChannelUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

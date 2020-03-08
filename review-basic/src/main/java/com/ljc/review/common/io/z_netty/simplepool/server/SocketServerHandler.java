@@ -1,4 +1,4 @@
-package com.ljc.review.common.io.z_netty.connpool.server;
+package com.ljc.review.common.io.z_netty.simplepool.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;

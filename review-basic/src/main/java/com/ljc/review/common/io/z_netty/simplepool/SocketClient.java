@@ -1,8 +1,8 @@
-package com.ljc.review.common.io.z_netty.connpool;
+package com.ljc.review.common.io.z_netty.simplepool;
 
-import com.ljc.review.common.io.z_netty.connpool.utils.CallbackService;
-import com.ljc.review.common.io.z_netty.connpool.utils.ChannelUtils;
-import com.ljc.review.common.io.z_netty.connpool.utils.IntegerFactory;
+import com.ljc.review.common.io.z_netty.simplepool.utils.CallbackService;
+import com.ljc.review.common.io.z_netty.simplepool.utils.ChannelUtils;
+import com.ljc.review.common.io.z_netty.simplepool.utils.IntegerFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -12,11 +12,18 @@ import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * 客户端程序入口
- * 1.多个线程可能共用一个Channel，如何保证通信的准确性？  为每一次通信设置一个唯一的序列号，通过序列号匹配线程，并进行线程同步
- * 1.1如何进行通信同步？  最简单的方式：wait/notify
- * 2.如何维护Channel的生命周期？  release返回连接池
- * 3.如何监测Channel状态？  心跳检测
+ * 简单的连接池实现示例，没有使用官方的FixedConnectionPool
+ * 已实现的功能点：
+ * 1.建立了一个到服务器的固定大小的连接池，可复用连接池中的连接
+ * 2.解决了通信的半包问题：通过规定的消息格式，前四位byte附带消息长度信息
+ * 3.解决了线程唤醒问题：通过绑定Callback对象在响应事件完成后唤醒调用线程(wait/notify) ToDo Netty的事件通知机制是怎么实现的
+ * 4.解决了消息匹配问题：在每一次请求的消息中附带请求序列号，响应时同样带上这个序列号
+ * 待实现的功能：
+ * 1.连接释放和空闲连接回收机制
+ * 2.心跳检测机制
+ * 3.复用官方提供的连接池
+ * 4.针对微服务优化，即如果服务端有多个实例，应该为每个实例维护一个连接池
+ * 5.连接任务处理的池化
  */
 public class SocketClient {
 

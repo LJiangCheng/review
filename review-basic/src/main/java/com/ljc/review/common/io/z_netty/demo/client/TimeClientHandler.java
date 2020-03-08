@@ -1,6 +1,6 @@
-package com.ljc.review.common.io.z_netty.timerdemo.client;
+package com.ljc.review.common.io.z_netty.demo.client;
 
-import com.ljc.review.common.io.z_netty.timerdemo.User;
+import com.ljc.review.common.io.z_netty.demo.User;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 

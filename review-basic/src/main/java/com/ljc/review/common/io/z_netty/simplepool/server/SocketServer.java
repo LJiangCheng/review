@@ -1,6 +1,6 @@
-package com.ljc.review.common.io.z_netty.connpool.server;
+package com.ljc.review.common.io.z_netty.simplepool.server;
 
-import com.ljc.review.common.io.z_netty.connpool.SelfDefineEncodeHandler;
+import com.ljc.review.common.io.z_netty.simplepool.SelfDefineEncodeHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

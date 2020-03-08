@@ -1,4 +1,4 @@
-package com.ljc.review.common.io.z_netty.timerdemo.client;
+package com.ljc.review.common.io.z_netty.demo.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;

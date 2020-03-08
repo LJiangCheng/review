@@ -1,7 +1,7 @@
-package com.ljc.review.common.io.z_netty.connpool;
+package com.ljc.review.common.io.z_netty.simplepool;
 
-import com.ljc.review.common.io.z_netty.connpool.utils.CallbackService;
-import com.ljc.review.common.io.z_netty.connpool.utils.ChannelUtils;
+import com.ljc.review.common.io.z_netty.simplepool.utils.CallbackService;
+import com.ljc.review.common.io.z_netty.simplepool.utils.ChannelUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
