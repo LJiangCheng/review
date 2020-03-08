@@ -1,7 +1,7 @@
-package com.ljc.review.common.io.z_netty.demo.server;
+package com.ljc.review.common.io.z_netty.ademo.server;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ljc.review.common.io.z_netty.demo.User;
+import com.ljc.review.common.io.z_netty.ademo.User;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;

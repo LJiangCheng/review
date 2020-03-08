@@ -1,4 +1,4 @@
-package com.ljc.review.common.io.z_netty.demo.server;
+package com.ljc.review.common.io.z_netty.ademo.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

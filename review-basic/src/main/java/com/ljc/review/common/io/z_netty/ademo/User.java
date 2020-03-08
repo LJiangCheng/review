@@ -1,4 +1,4 @@
-package com.ljc.review.common.io.z_netty.demo;
+package com.ljc.review.common.io.z_netty.ademo;
 
 import com.alibaba.fastjson.JSONObject;
 
