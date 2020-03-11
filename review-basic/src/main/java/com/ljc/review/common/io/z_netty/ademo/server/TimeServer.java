@@ -9,6 +9,24 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+/**
+ * 几个问题：
+ * 1.Netty的事件通知机制是如何实现的？如何保证调用过程中请求和响应的一一对应？
+ * 2.Netty使用了哪些设计模式？分别有什么好处？
+ * 3.Netty的线程模型是怎样的的？如何保证线程安全？
+ * 4.Dubbo是如何集成Netty的？
+ * 其他问题：
+ * BIO、NIO 和 AIO 的区别？
+ * NIO 的组成？
+ * Netty 的特点？
+ * Netty 的线程模型？
+ * TCP 粘包/拆包的原因及解决方法？
+ * 了解哪几种序列化协议？
+ * 如何选择序列化协议？
+ * Netty 的零拷贝实现？
+ * Netty 的高性能表现在哪些方面？
+ * NIOEventLoopGroup 源码？
+ */
 public class TimeServer {
 
     private int port;
