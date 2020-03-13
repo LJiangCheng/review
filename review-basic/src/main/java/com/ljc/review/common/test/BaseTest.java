@@ -1,6 +1,8 @@
 package com.ljc.review.common.test;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
@@ -31,6 +33,12 @@ public class BaseTest {
             }
         }
         String ss = "";
+    }
+
+    @Test
+    public void loggerTest() {
+        Logger logger = LoggerFactory.getLogger(BaseTest.class);
+        logger.info("{},{},{}", 1, 2, 3);
     }
 
     @Test
