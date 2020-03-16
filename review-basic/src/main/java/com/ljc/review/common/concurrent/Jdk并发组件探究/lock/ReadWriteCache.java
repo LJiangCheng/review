@@ -1,5 +1,7 @@
 package com.ljc.review.common.concurrent.Jdk并发组件探究.lock;
 
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -72,4 +74,32 @@ public class ReadWriteCache {
         return value;
     }
 
+    @Test
+    public void test() {
+        int i = 16;
+        System.out.println(2 << i);
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

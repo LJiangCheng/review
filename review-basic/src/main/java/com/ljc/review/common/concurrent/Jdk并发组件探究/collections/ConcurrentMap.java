@@ -7,6 +7,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * 1.AQS并发源码 2.HashMap/ConcurrentHashMap源码 3.Dubbo/Netty源码总结
+ * 1.数据库如何分库分表 2.数据库优化
+ * 1.搜索引擎索引结构部分原理
+ * 1.项目架构润色  2.秒杀系统设计学习
+ */
 public class ConcurrentMap {
 
     @Test
@@ -18,9 +24,18 @@ public class ConcurrentMap {
     }
 
     public static void main(String[] args) throws InterruptedException {
+        for (int i = 0; i < 10; i++) {
+            verifyHashMapProblem();
+        }
+    }
+
+    private static void verifyHashMapProblem() throws InterruptedException {
+        long startTime = System.currentTimeMillis();
         int n = 20;
         CountDownLatch begin = new CountDownLatch(1);
         CountDownLatch end = new CountDownLatch(n);
+        //Map<String, String> map = new ConcurrentHashMap<>(2);
+        //两个问题：1.resize过程中的死循环 2.put方法的覆盖问题 在高并发环境下必然发生！
         Map<String, String> map = new HashMap<>(2);
         for (int j = 0; j < n; j++) {
             new Thread(() -> {
@@ -38,6 +53,7 @@ public class ConcurrentMap {
         }
         begin.countDown();
         end.await();
-        System.out.println(map.size());
+        long endTime = System.currentTimeMillis();
+        System.out.println(map.size() + "========>" + (endTime - startTime) + "ms");
     }
 }
