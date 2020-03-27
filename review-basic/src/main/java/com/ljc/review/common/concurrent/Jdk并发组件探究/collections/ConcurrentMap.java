@@ -20,6 +20,7 @@ public class ConcurrentMap {
         ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
         map.put("1", "one");
         map.put("2", "two");
+        map.get("");
         System.out.println(map);
     }
 
