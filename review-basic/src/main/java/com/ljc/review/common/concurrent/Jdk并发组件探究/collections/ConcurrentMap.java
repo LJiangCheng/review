@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
-/**
+/**江碧鸟逾白，山青花欲燃。今春看又过，何日是归年
  * 1.AQS并发源码 2.HashMap/ConcurrentHashMap源码 3.Dubbo/Netty源码总结
  * 1.数据库如何分库分表 2.数据库优化
- * 1.搜索引擎索引结构部分原理
  * 1.项目架构润色  2.秒杀系统设计学习
+ * 1.搜索引擎索引结构部分原理
+ * 分布式：分布式锁、分布式事务、分布式缓存、redis集群、mysql集群
  */
 public class ConcurrentMap {
 
