@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
 /**江碧鸟逾白，山青花欲燃。今春看又过，何日是归年
@@ -18,11 +17,13 @@ public class ConcurrentMap {
 
     @Test
     public void test() {
-        ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
+        /*ConcurrentHashMap<String, String> map = new ConcurrentHashMap<>();
         map.put("1", "one");
         map.put("2", "two");
         map.get("");
-        System.out.println(map);
+        System.out.println(map);*/
+        int i = Runtime.getRuntime().availableProcessors();
+        System.out.println(i);
     }
 
     public static void main(String[] args) throws InterruptedException {
