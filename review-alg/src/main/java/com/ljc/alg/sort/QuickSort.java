@@ -10,8 +10,8 @@ import java.util.Arrays;
 public class QuickSort {
 
     public static void main(String[] args) {
-        //int[] arr = {1, 5, 2, 4, 6, 1, 3, 5, 1, 4, 234, 23, 423, 423, 4, 5,214,4545,467,788,234,123,45,12231,4564,13,4,1231,12};
-        int[] arr = {5, 2, 1, 6, 8};
+        int[] arr = {1, 5, 2, 4, 6, 1, 3, 5, 1, 4, 234, 23, 423, 423, 4, 5, 214, 4545, 467, 788, 234, 123, 45, 12231, 4564, 13, 4, 1231, 12};
+        //int[] arr = {2, 5, 1, 8, 6};
         quickSort(arr);
         System.out.println(Arrays.toString(arr));
     }
@@ -37,16 +37,19 @@ public class QuickSort {
         /*if (right - left < 1) {
             return;
         }*/
-        if (left > right) {
+        if (left >= right) {
             return;
         }
         //直接取最右边的元素为中间数
         int n = arr[right];
-        int i = left, j = right;
+        int i = left, j = right - 1;
         //遍历交换
         while (i != j) {
-            while (arr[j] > n && i < j) j--;
-            while (arr[i] < n && i < j) i++;
+            //从右往左，直到小于N或i-j交错时停止；保证右侧全是大于等于N的值
+            while (arr[j] >= n && i < j) j--;
+            //从左往右，直到大于N或i-j交错时停止；保证左侧全是小于等于N的值
+            while (arr[i] <= n && i < j) i++;
+            //如果
             if (i < j) {
                 swap(arr, i, j);
             }
@@ -63,8 +66,13 @@ public class QuickSort {
                 }
             }
         }*/
-        //将原中间值归位
-        swap(arr, right, j);
+        //将中间值放到合适的位置
+        if (arr[j] >= arr[right]) {
+            swap(arr, right, j);
+        } else if (j + 1 < right && arr[j + 1] > arr[right]) {
+            swap(arr, right, j + 1);
+            j++;
+        }
         //二分法，递归调用
         quickSort(arr, left, j - 1);
         quickSort(arr, j + 1, right);
