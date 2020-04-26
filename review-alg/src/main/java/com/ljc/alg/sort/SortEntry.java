@@ -8,7 +8,7 @@ public class SortEntry {
 
     public static void main(String[] args) {
         //创造随机数组
-        int length = 100000;
+        int length = 10000;
         Random random = new Random();
         int[] arr = new int[length];
         for (int i = 0; i < length; i++) {
@@ -16,6 +16,7 @@ public class SortEntry {
         }
         //System.out.println(Arrays.toString(arr));
         //排序并计时
+        //Sort sort = new InsertionSort();
         Sort sort = new ShellSort();
         //Sort sort = new QuickSort();
         long start = System.currentTimeMillis();

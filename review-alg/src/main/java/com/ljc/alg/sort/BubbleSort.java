@@ -4,7 +4,7 @@ import com.ljc.alg.sort.inter.AbstractSort;
 
 /**
  * 冒泡排序（稳定） O(N^2)
- * 和插入排序本质上是一样的
+ * 和插入排序本质上是一样的 但是为什么测试程序速度慢了10倍以上？？
  */
 public class BubbleSort extends AbstractSort {
 
