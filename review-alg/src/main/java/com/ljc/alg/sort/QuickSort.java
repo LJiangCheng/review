@@ -3,7 +3,7 @@ package com.ljc.alg.sort;
 import com.ljc.alg.sort.inter.AbstractSort;
 
 /**
- * 快排：二分法，非稳定排序 O(NlogN)
+ * 快排：二分法，不稳定排序 O(NlogN)
  * 注：手写的，和书上有一定区别，可继续完善
  */
 public class QuickSort extends AbstractSort {
