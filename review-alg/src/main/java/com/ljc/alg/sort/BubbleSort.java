@@ -3,7 +3,7 @@ package com.ljc.alg.sort;
 import com.ljc.alg.sort.inter.AbstractSort;
 
 /**
- * 冒泡排序 O(N^2)
+ * 冒泡排序（稳定） O(N^2)
  * 和插入排序本质上是一样的
  */
 public class BubbleSort extends AbstractSort {

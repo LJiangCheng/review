@@ -5,7 +5,7 @@ import com.ljc.alg.sort.inter.AbstractSort;
 public class InsertionSort extends AbstractSort {
 
     /**
-     * 插入排序（稳定） O(N^2) 100万-116S
+     * 插入排序（稳定） O(N^2) 100万-116秒
      * 假定0~i的子序列a已经为有序状态，将第i+1个元素从后往前比较直到找到在序列a中的正确位置，这样0~(i+1)的序列就排好序了
      */
     @Override
