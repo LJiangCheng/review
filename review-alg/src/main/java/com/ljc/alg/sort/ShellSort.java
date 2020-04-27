@@ -2,8 +2,6 @@ package com.ljc.alg.sort;
 
 import com.ljc.alg.sort.inter.AbstractSort;
 
-import java.util.Arrays;
-
 /**
  * 不稳定排序
  * 希尔排序（缩减增量排序） O(N^3/2)~O(N^7/6)根据所选用增量序列的不同而有所差异
@@ -29,14 +27,13 @@ public class ShellSort extends AbstractSort {
         //从增量序列最大值开始运行
         for (; k > 0; k--) {
             int gap = (1 << k) - 1;
-            System.out.println("k=" + k + ",arr=" + Arrays.toString(arr));
             int j;
             //对由增量筛选出的子序列进行插入排序
             //错误做法：i以gap为差值自增，对每一个增量只排序一个子序列，结果是 100万 - 212秒 比插入还慢的多，过程中反而多做了很多无用的操作
-            //正确做法：i依然要以1为差值自增，关键在于j以gap为差值自减，每一轮都对能分割出的所有子序列排序 1000万 - 4秒 得到了数量级的提升
+            //正确做法：i依然要以1为差值自增，关键在于j以gap为差值自减，每一轮都对能分割出的所有子序列排序 1000万 - 3.8秒 得到了数量级的提升
             for (int i = left + gap; i < right + 1; /*i += gap*/ i++) {
                 int temp = arr[i];
-                for (j = i; /*j > left*/ j > left + gap && temp < arr[j - gap]; j -= gap) {
+                for (j = i; /*j > left*/ j >= left + gap && temp < arr[j - gap]; j -= gap) {
                     //后移一个增量
                     arr[j] = arr[j - gap];
                 }

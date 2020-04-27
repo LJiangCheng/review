@@ -2,13 +2,14 @@ package com.ljc.alg.sort;
 
 import com.ljc.alg.sort.inter.Sort;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class SortEntry {
 
     public static void main(String[] args) {
         //创造随机数组
-        int length = 30;
+        int length = 10;
         Random random = new Random();
         int[] arr = new int[length];
         for (int i = 0; i < length; i++) {
@@ -23,7 +24,7 @@ public class SortEntry {
         sort.sort(arr);
         long end = System.currentTimeMillis();
         System.out.println("耗时:" + (end - start) + "ms");
-        //System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(arr));
     }
 
 }
