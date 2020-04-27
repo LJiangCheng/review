@@ -9,6 +9,7 @@ import com.ljc.alg.sort.inter.AbstractSort;
 public class QuickSort extends AbstractSort {
 
     private InsertionSort insertionSort = new InsertionSort();
+    private ShellSort shellSort = new ShellSort();
 
     /**
      * 快排驱动程序
@@ -63,7 +64,7 @@ public class QuickSort extends AbstractSort {
 
     /**
      * 快排执行程序优化
-     * 估时：1亿-15S 2亿~31S  基本上和上面的只有毫秒级的差距，似乎没有明显的速度提升？
+     * 估时：1千万-1.7秒 1亿-15S 2亿~31S  基本上和上面的只有毫秒级的差距，似乎没有明显的速度提升？
      *
      * @param arr   数组
      * @param left  序列左界
@@ -71,7 +72,7 @@ public class QuickSort extends AbstractSort {
      */
     private void moreQuickSort(int[] arr, int left, int right) {
         //递归终止条件
-        if (right - left > 10) {
+        if (right - left > 15) {
             int n = arr[right];
             int i = left, j = right - 1;
             while (i < j) {
@@ -88,7 +89,7 @@ public class QuickSort extends AbstractSort {
             moreQuickSort(arr, left, i - 1);
             moreQuickSort(arr, i + 1, right);
         } else {
-            insertionSort.sort(arr, left, right);
+            shellSort.sort(arr, left, right);
         }
     }
 
