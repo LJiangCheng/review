@@ -8,7 +8,7 @@ public class SortEntry {
 
     public static void main(String[] args) {
         //创造随机数组
-        int length = 10000;
+        int length = 30;
         Random random = new Random();
         int[] arr = new int[length];
         for (int i = 0; i < length; i++) {
