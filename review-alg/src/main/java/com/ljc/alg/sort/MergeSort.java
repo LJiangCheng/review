@@ -24,7 +24,7 @@ public class MergeSort extends AbstractSort {
     }
 
     /**
-     * 使用线程池
+     * 使用线程池 4个线程，1亿-8秒
      */
     private void mergeSort(int[] arr) throws InterruptedException {
         int tNum = Runtime.getRuntime().availableProcessors() + 1;
@@ -97,7 +97,7 @@ public class MergeSort extends AbstractSort {
                 int right = (i + 2) * gap;
                 int maxIndex = arr.length - 1;
                 right = right > maxIndex ? maxIndex : right;
-                System.out.println(left + "-" + leftEnd + "-" + right);
+                //System.out.println(left + "-" + leftEnd + "-" + right);
                 merge(arr, temp, left, leftEnd, right);
             }
             gap = gap * 2;
