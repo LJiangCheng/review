@@ -60,6 +60,8 @@ public class SpiderImpl implements Spider {
             PageFetcher pageFetcher = new PageFetcher(config);
             RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
             RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
+            //不遵循Robots规则
+            robotstxtConfig.setEnabled(false);
             CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
             // For each crawl, you need to add some seed urls. These are the first
