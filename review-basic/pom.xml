@@ -31,11 +31,11 @@
 		</dependency>
 
         <!--webp依赖-->
-        <dependency>
+		<!--<dependency>
             <groupId>com.github.nintha</groupId>
             <artifactId>webp-imageio-core</artifactId>
             <version>0.1.0</version>
-        </dependency>
+        </dependency>-->
 
         <!--redission依赖-->
         <dependency>
