@@ -1,5 +1,6 @@
 package com.review.spider.service.impl;
 
+import com.review.spider.bean.BaseResult;
 import com.review.spider.service.spec.Spider;
 import com.review.spider.service.spec.WebSpider;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
@@ -9,20 +10,22 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class SpiderImpl implements Spider {
 
-    public static void main(String[] args) {
-        new SpiderImpl().crawler("https://www.zhihu.com/");
-    }
+    private static final ConcurrentHashMap<String, CrawlController> TASK_MAP = new ConcurrentHashMap<>();
 
     @Override
-    public void crawler(String url) {
+    public BaseResult crawler(String url) {
+        if (TASK_MAP.containsKey(url)) {
+            return BaseResult.error("当前任务正在执行！");
+        }
         try {
             CrawlConfig config = new CrawlConfig();
-            config.setCrawlStorageFolder("/tmp/crawler4j/");
+            config.setCrawlStorageFolder("/root/crawler4j/");
             config.setPolitenessDelay(1000); //请求间隔时间毫秒数
             config.setMaxDepthOfCrawling(2);
             config.setMaxPagesToFetch(1000);
@@ -43,11 +46,26 @@ public class SpiderImpl implements Spider {
             AtomicInteger urlNums = new AtomicInteger();
             //工厂将会创建爬虫实例
             CrawlController.WebCrawlerFactory<WebSpider> factory = () -> new WebSpider(urlNums);
-            //启动。这是一个阻塞操作，意味着之后爬取结束之后方法才会终止
-            controller.start(factory, numberOfCrawlers);
+            //启动，可选阻塞或非阻塞
+            controller.startNonBlocking(factory, numberOfCrawlers);
+            TASK_MAP.putIfAbsent(url, controller);
+            return BaseResult.success();
         } catch (Exception e) {
             e.printStackTrace();
+            return BaseResult.error(e.getMessage());
         }
+    }
+
+    @Override
+    public void shutDown(String url) {
+        CrawlController controller = TASK_MAP.remove(url);
+        if (controller != null && !controller.isShuttingDown()) {
+            controller.shutdown();
+        }
+    }
+
+    public static void main(String[] args) {
+        new SpiderImpl().crawler("https://www.zhihu.com/");
     }
 
 }

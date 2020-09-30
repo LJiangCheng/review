@@ -3,10 +3,11 @@ package com.review.spider.controller;
 import com.review.spider.bean.BaseResult;
 import com.review.spider.service.spec.Spider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/spider")
 public class SpiderController {
 
@@ -17,9 +18,14 @@ public class SpiderController {
         this.spiderService = spiderService;
     }
 
-    @RequestMapping("/crawler")
+    @PostMapping("/crawler")
     public BaseResult crawler(String url) {
-        spiderService.crawler(url);
+        return spiderService.crawler(url);
+    }
+
+    @PostMapping("shutDown")
+    public BaseResult shutDown(String url) {
+        spiderService.shutDown(url);
         return BaseResult.success();
     }
 
