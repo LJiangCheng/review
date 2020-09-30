@@ -5,6 +5,7 @@ import com.review.spider.service.spec.Spider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,12 +20,12 @@ public class SpiderController {
     }
 
     @PostMapping("/crawler")
-    public BaseResult crawler(String url) {
+    public BaseResult crawler(@RequestParam String url) {
         return spiderService.crawler(url);
     }
 
     @PostMapping("shutDown")
-    public BaseResult shutDown(String url) {
+    public BaseResult shutDown(@RequestParam String url) {
         spiderService.shutDown(url);
         return BaseResult.success();
     }
