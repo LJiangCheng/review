@@ -18,6 +18,7 @@
         <module>review-alg</module>
         <module>review-rpc</module>
         <module>review-activiti</module>
+        <module>spider</module>
     </modules>
 
     <properties>

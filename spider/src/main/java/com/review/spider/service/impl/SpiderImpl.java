@@ -7,81 +7,43 @@ import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
-import org.junit.Test;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-//@Service
+@Service
 public class SpiderImpl implements Spider {
 
-    @Test
-    public void spider() {
-        crawler("https://www.zhihu.com/question/382544372/answer/1177781921");
+    public static void main(String[] args) {
+        new SpiderImpl().crawler("https://www.zhihu.com/");
     }
 
     @Override
     public void crawler(String url) {
         try {
             CrawlConfig config = new CrawlConfig();
-
-            // Set the folder where intermediate crawl data is stored (e.g. list of urls that are extracted from previously
-            // fetched pages and need to be crawled later).
             config.setCrawlStorageFolder("/tmp/crawler4j/");
-            // Be polite: Make sure that we don't send more than 1 request per second (1000 milliseconds between requests).
-            // Otherwise it may overload the target servers.
-            config.setPolitenessDelay(1000);
-            // You can set the maximum crawl depth here. The default value is -1 for unlimited depth.
+            config.setPolitenessDelay(1000); //请求间隔时间毫秒数
             config.setMaxDepthOfCrawling(2);
-            // You can set the maximum number of pages to crawl. The default value is -1 for unlimited number of pages.
             config.setMaxPagesToFetch(1000);
-            // Should binary data should also be crawled? example: the contents of pdf, or the metadata of images etc
             config.setIncludeBinaryContentInCrawling(false);
-            // Do you need to set a proxy? If so, you can use:
-            // config.setProxyHost("proxyserver.example.com");
-            // config.setProxyPort(8080);
-
-            // If your proxy also needs authentication:
-            // config.setProxyUsername(username); config.getProxyPassword(password);
-
-            // This config parameter can be used to set your crawl to be resumable
-            // (meaning that you can resume the crawl from a previously
-            // interrupted/crashed crawl). Note: if you enable resuming feature and
-            // want to start a fresh crawl, you need to delete the contents of
-            // rootFolder manually.
             config.setResumableCrawling(false);
-
-            // Set this to true if you want crawling to stop whenever an unexpected error
-            // occurs. You'll probably want this set to true when you first start testing
-            // your crawler, and then set to false once you're ready to let the crawler run
-            // for a long time.
-            //config.setHaltOnError(true);
-
-            // Instantiate the controller for this crawl.
             PageFetcher pageFetcher = new PageFetcher(config);
+            //controller配置
             RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
             RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
-            //不遵循Robots规则
+            //不遵循Robots规则：网站根目录下有一个Robots.txt文件表名本页是否愿意被收录，约定非限制
             robotstxtConfig.setEnabled(false);
             CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
-
-            // For each crawl, you need to add some seed urls. These are the first
-            // URLs that are fetched and then the crawler starts following links
-            // which are found in these pages
+            //添加url，可重复添加多个
             controller.addSeed(url);
-
-            // Number of threads to use during crawling. Increasing this typically makes crawling faster. But crawling
-            // speed depends on many other factors as well. You can experiment with this to figure out what number of
-            // threads works best for you.
+            //执行爬取的线程数量
             int numberOfCrawlers = 1;
-
-            // To demonstrate an example of how you can pass objects to crawlers, we use an AtomicInteger that crawlers
-            // increment whenever they see a url which points to an image.
+            //线程间共享数据传递
             AtomicInteger urlNums = new AtomicInteger();
-            // The factory which creates instances of crawlers.
+            //工厂将会创建爬虫实例
             CrawlController.WebCrawlerFactory<WebSpider> factory = () -> new WebSpider(urlNums);
-
-            // Start the crawl. This is a blocking operation, meaning that your code
-            // will reach the line after this only when crawling is finished.
+            //启动。这是一个阻塞操作，意味着之后爬取结束之后方法才会终止
             controller.start(factory, numberOfCrawlers);
         } catch (Exception e) {
             e.printStackTrace();
