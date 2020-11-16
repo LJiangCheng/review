@@ -50,10 +50,10 @@ public class Reactor extends AbstractReactor {
     //handler读取数据，然后使用线程池进行业务逻辑处理
     //总结：mainReactor负责接收连接并交给acceptor，acceptor负责创建读写事件和对应的handler并绑定到subReactor，subReactor负责分发准备就绪的读写事件，handler负责具体执行
     public static void main(String[] args) throws IOException {
-        //启动主Reactor线程，负责客户端的接收事件
+        //启动主Reactor线程，负责客户端连接就绪事件
         Reactor mainReactor = new Reactor(3333, 10, true);
         new Thread(mainReactor).start();
-        //启动从Reactor线程，负责读写事件的分发
+        //启动从Reactor线程，负责读写事件
         IntStream.range(0, SUB_REACTORS_SIZE).forEach(i -> new Thread(SUB_REACTORS[i]).start());
     }
 
