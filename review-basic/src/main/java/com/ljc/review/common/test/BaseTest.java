@@ -1,15 +1,12 @@
 package com.ljc.review.common.test;
 
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -17,28 +14,20 @@ import java.util.Scanner;
 public class BaseTest {
 
     public static void main(String[] args) throws Exception {
-        BufferedReader bufferedReader =
-                new BufferedReader(new InputStreamReader(new FileInputStream(new File("C:\\Users\\ljc\\Desktop\\1.txt")), StandardCharsets.UTF_8));
-        BufferedWriter bufferedWriter =
-                new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("C:\\Users\\ljc\\Desktop\\诡秘之主.txt"), true), StandardCharsets.UTF_8));
-        String s;
-        while ((s = bufferedReader.readLine()) != null) {
-            if (!StringUtils.isEmpty(s)) {
-                s = s.replace("\n", "").trim();
-                if (!s.equals("?") && !s.equals("？")) {
-                    bufferedWriter.write(s);
-                    bufferedWriter.newLine();
-                    bufferedWriter.flush();
-                }
-            }
-        }
-        String ss = "";
+        BigDecimal bigDecimal = BigDecimal.valueOf(12);
+        System.out.println(BigDecimal.ZERO.subtract(BigDecimal.ZERO.subtract(bigDecimal)));
     }
 
     @Test
     public void loggerTest() {
-        Logger logger = LoggerFactory.getLogger(BaseTest.class);
-        logger.info("{},{},{}", 1, 2, 3);
+        Object lock = new Object();
+        synchronized (lock) {
+
+        }
+    }
+
+    private void addDecimal(BigDecimal decimal) {
+        decimal = decimal.add(BigDecimal.valueOf(111));
     }
 
     @Test
